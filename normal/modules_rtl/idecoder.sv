@@ -58,9 +58,9 @@ module idecoder(
         case (instr[27:26])
             2'b00: begin // Data
                 if(instr[27:21] == 7'b0011001) begin // NOP
-                    opcode_reg = 7'b0000000; // WILL CHANGE LATER
+                    opcode_reg = 7'b0100000; 
                 end else if(instr[27:21] == 7'b0001000) begin // HALT
-                    opcode_reg = 7'b0000001; //WILL CHANGE LATER
+                    opcode_reg = 7'b0000001; // TODO: change later
                 end else if(instr[27:21] == 7'b0001001) begin // BX and BLX
                     if(instr[5] == 1'b0) begin // BX
                         opcode_reg = 7'b1001001;
