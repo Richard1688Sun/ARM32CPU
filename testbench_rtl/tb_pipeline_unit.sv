@@ -2,6 +2,7 @@ module tb_pipeline_unit();
 
 // DUT inputs
 reg clk;
+reg rst_n;
 reg [31:0] instr_in;
 reg branch_ref;
 reg branch_in;
@@ -27,6 +28,7 @@ wire branch_value;
 // DUT instance:
 pipeline_unit DUT(
     .clk(clk),
+    .rst_n(rst_n),
     .instr_in(instr_in),
     .branch_ref(branch_ref),
     .branch_in(branch_in),
@@ -50,6 +52,8 @@ pipeline_unit DUT(
 
 // test regs
 integer error_count = 0;
+localparam [31:0] NOP = 32'b1110_00110010_0000_11110000_00000000;
+
 
 // Tasks
 task check(input [31:0] expected, input [31:0] actual, integer test_num);
@@ -70,7 +74,44 @@ task clkR;
     end
 endtask: clkR
 
+task reset;
+    begin
+        #5;
+        clk = 1'b0;
+        rst_n = 1'b1;
+        #5;
+        rst_n = 1'b0;
+        #5;
+        rst_n = 1'b1;
+    end
+endtask: reset
+
 initial begin
+    // upon reset the instruction register should be NOP
+    branch_ref = 1'b0;
+    branch_in = 1'b0;
+    sel_stall = 1'b0;
+    reset;
+
+    check(NOP, DUT.instr_decoder_in, -29);
+    check(NOP, DUT.instr_reg, -30);
+    check(4'b1110, cond, -31);
+    check(7'b0100000, opcode, -32);
+    check(1'b0, en_status, -33);
+    check(4'b0000, rn, -34);
+    check(4'b1111, rd, -35);
+    check(4'b0000, rs, -36);
+    check(4'b0000, rm, -37);
+    check(2'b00, shift_op, -38);
+    check(5'b00000, imm5, -39);
+    check(12'b000000000000, imm12, -40);
+    check(24'b0010_0000_11110000_00000000, imm24, -41);
+    check(P, 1'b1, -42);
+    check(U, 1'b0, -43);
+    check(W, 1'b1, -44);
+    #5;
+
+
     // Make sure memory is stored and decoded correctly
     instr_in = 32'b0101_00010101_0101_01010101_01010101;
     branch_ref = 1'b0;
@@ -125,7 +166,7 @@ initial begin
     sel_stall = 1'b0;
     clkR;
 
-    check(32'b1110_00110010_0000_11110000_00000000, DUT.instr_decoder_in, 29);
+    check(NOP, DUT.instr_decoder_in, 29);
     check(32'b1010_11101010_1010_10101010_10101010, DUT.instr_reg, 30);
     check(4'b1110, cond, 31);
     check(7'b0100000, opcode, 32);

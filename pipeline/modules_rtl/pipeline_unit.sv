@@ -1,6 +1,7 @@
 module pipeline_unit(
     // inputs
     input clk,
+    input rst_n,
     input [31:0] instr_in,
     input branch_ref,
     input branch_in,
@@ -76,20 +77,28 @@ idecoder decoder(
 assign instr_decoder_in = (branch_ref == branch_value_reg) ? instr_reg : NOP;
 
 // instruction register
-always_ff @( posedge clk) begin
-    if (sel_stall == 1'b1) begin
-        instr_reg <= instr_reg;
+always_ff @( posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        instr_reg <= NOP;
     end else begin
-        instr_reg <= instr_in;
+        if (sel_stall == 1'b1) begin
+            instr_reg <= instr_reg;
+        end else begin
+            instr_reg <= instr_in;
+        end
     end
 end
 
 // branch register
-always_ff @( posedge clk) begin
-    if (sel_stall == 1'b1) begin
-        branch_value_reg <= branch_value_reg;
+always_ff @( posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        branch_value_reg <= 0;
     end else begin
-        branch_value_reg <= branch_in;
+        if (sel_stall == 1'b1) begin
+            branch_value_reg <= branch_value_reg;
+        end else begin
+            branch_value_reg <= branch_in;
+        end
     end
 end
 endmodule: pipeline_unit
