@@ -1,18 +1,17 @@
 module execute_unit(
     // pipeline_unit signals
     input clk,
-    input reset,
+    input rst_n,
     input [31:0] instr_in,
     input branch_ref,
     input branch_in,
     input sel_stall,
-    output branch_value,
     output [6:0] opcode,    // Opcode for the instruction
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
     output [3:0] rm,        // Rm 
-    output [1:0] shift_op,  // Shift operation
     output [4:0] imm5,      // Immediate value
+    output branch_value,
     // controller signals
     input [3:0] rd,         // from memory stage for forwarding
     output [1:0] sel_A_in,
@@ -24,20 +23,20 @@ module execute_unit(
     output en_S
 );
 
-// decoder ports
+// pipeline unit ports
 wire [3:0] cond_out;
 wire [6:0] opcode_out;
 wire [3:0] rn_out;
 wire [3:0] rs_out;
 wire [3:0] rm_out;
-wire [1:0] shift_op_out;
 wire [4:0] imm5_out;
+wire branch_value_out;
 assign opcode = opcode_out;
 assign rn = rn_out;
 assign rs = rs_out;
 assign rm = rm_out;
-assign shift_op = shift_op_out;
 assign imm5 = imm5_out;
+assign branch_value = branch_value_out;
 
 // controller ports
 reg [1:0] sel_A_in_reg;
@@ -56,8 +55,13 @@ assign en_B = en_B_reg;
 assign en_S = en_S_reg;
 
 // decoder module
-idecoder decoder(
-    .instr(instr_in),
+pipeline_unit pipeline_unit(
+    .clk(clk),
+    .rst_n(rst_n),
+    .instr_in(instr_in),
+    .branch_ref(branch_ref),
+    .branch_in(branch_in),
+    .sel_stall(sel_stall),
     .cond(cond_out),
     .opcode(opcode_out),
     .en_status(),
@@ -65,13 +69,14 @@ idecoder decoder(
     .rd(),
     .rs(rs_out),
     .rm(rm_out),
-    .shift_op(shift_op_out),
+    .shift_op(),
     .imm5(imm5_out),
     .imm12(),
     .imm24(),
     .P(),
     .U(),
-    .W()
+    .W(),
+    .branch_value(branch_value_out)
 );
 
 always_comb begin
@@ -96,7 +101,6 @@ always_comb begin
         end // else default from Rm
 
         //sel_shift and sel_shift_in
-        // TODO: note down what [4] means
         if (opcode_out[4] == 1'b1) begin
             //sel_shift
             sel_shift_reg = opcode_out[5];
@@ -118,7 +122,7 @@ always_comb begin
         end
 
         // en_S
-        en_S_reg = 1'b1;        //TODO: doesnt affect anything for MOV_I BUT should be changed -> right now too lazy to change tb
+        en_S_reg = 1'b1;
 
     end else if (opcode_out[6:5] == 2'b11 || opcode_out[6:3] == 4'b1000) begin //STR and LDR
         

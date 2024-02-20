@@ -71,7 +71,6 @@ module controller(input clk, input rst_n,
     reg sel_shift_reg;
     reg en_A_reg;
     reg en_B_reg;
-    reg en_C_reg;
     reg en_S_reg;
     reg sel_A_reg;
     reg sel_B_reg;
@@ -98,7 +97,6 @@ module controller(input clk, input rst_n,
     assign sel_shift = sel_shift_reg;
     assign en_A = en_A_reg;
     assign en_B = en_B_reg;
-    assign en_C = en_C_reg;
     assign en_S = en_S_reg;
     assign sel_A = sel_A_reg;
     assign sel_B = sel_B_reg;
@@ -167,7 +165,6 @@ module controller(input clk, input rst_n,
         sel_shift_reg = 1'b0;
         en_A_reg = 1'b0;
         en_B_reg = 1'b0;
-        en_C_reg = 1'b0;
         en_S_reg = 1'b0;
         sel_A_reg = 1'b0;
         sel_B_reg = 1'b0;
@@ -316,7 +313,6 @@ module controller(input clk, input rst_n,
             end
             memory_increment_pc: begin
                 waiting_reg = 1'b1;
-                en_C_reg = 1'b1;
 
                 //normal instructions
                 if (opcode[6] == 0 && cond != 4'b1111)  begin
@@ -436,10 +432,10 @@ module controller(input clk, input rst_n,
 
                         sel_pc_reg = 2'b11;
                         load_pc_reg = 1'b1;
-                        end else begin
-                            sel_pc_reg = 2'b00;
-                            load_pc_reg = 1'b1;
-                        end
+                    end else begin
+                        sel_pc_reg = 2'b00;
+                        load_pc_reg = 1'b1;
+                    end
 
                     //write to LR is applicable
                     if (opcode[2] == 1'b1) begin
