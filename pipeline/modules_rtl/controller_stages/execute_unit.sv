@@ -86,18 +86,25 @@ always_comb begin
     //normal instructions
     if (opcode_out[6] == 0 && cond_out != 4'b1111)  begin
         //sel_A_in
+        if (rn_out == rd) begin
+            sel_A_in_reg = 2'b01;    //forward from result of ALU
+        end // else default from Rn
+
         //sel_B_in
+        if (rm_out == rd) begin
+            sel_B_in_reg = 2'b01;    //forward from result of ALU
+        end // else default from Rm
 
         //sel_shift and sel_shift_in
         // TODO: note down what [4] means
         if (opcode_out[4] == 1'b1) begin
             //sel_shift
             sel_shift_reg = opcode_out[5];
-            //sel_shift_in TODO: change later when do forwarding
-            sel_shift_in_reg = 2'b00;
-        end else begin
-            //sel_shift
-            //sel_shift_in
+
+            //sel_shift_in 
+            if (rs_out == rd) begin
+                sel_shift_in_reg = 2'b01;   //forward from result of ALU
+            end // else default from Rs
         end
 
         //en_A
@@ -133,7 +140,15 @@ always_comb begin
             // en_S
         end else begin  //register
             //sel_A_in
+            if (rn_out == rd) begin
+                sel_A_in_reg = 2'b01;    //forward from result of ALU
+            end // else default from Rn
+
             //sel_B_in
+            if (rm_out == rd) begin
+                sel_B_in_reg = 2'b01;    //forward from result of ALU
+            end // else default from Rm
+
             //sel_shift
             //sel_shift_in
 
@@ -149,11 +164,14 @@ always_comb begin
     end else if (opcode_out[6:3] == 4'b1000) begin  //branching
         // sel_A_in
         // sel_B_in
+        if (rm_out == rd) begin
+            sel_B_in_reg = 2'b01;    //forward from result of ALU
+        end // else default from Rm
 
         // sel_shift
         sel_shift_reg = 1'b1;
 
-        // sel_shift_in TODO: change later when do forwarding
+        // sel_shift_in
         sel_shift_in_reg = 2'b11;
 
         // en_A
@@ -164,7 +182,7 @@ always_comb begin
         end
 
         // en_S
-        en_S_reg = 1'b1;        //TODO: doesnt affect anything for MOV_I BUT should be changed -> right now too lazy to change tb
+        en_S_reg = 1'b1;
     end
 end
 endmodule: execute_unit
