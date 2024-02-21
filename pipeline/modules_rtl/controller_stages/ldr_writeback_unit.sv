@@ -8,7 +8,7 @@ module ldr_writeback_unit(
     input sel_stall,
     output branch_value,
     // controller signals
-    output w_en_ldr;
+    output w_en_ldr
 );
 
 // pipeline unit ports
@@ -48,7 +48,7 @@ always_comb begin
     // default values
     w_en_ldr_reg = 1'b0;
 
-    if (opcode[6:4] == 3'b110 || opcode[6:3] == 4'b1000) begin
+    if (opcode_decoded[6:4] == 3'b110 || opcode_decoded[6:3] == 4'b1000) begin
         //w_en2
         w_en_ldr_reg = 1'b1;
     end

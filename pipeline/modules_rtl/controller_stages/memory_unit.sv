@@ -8,7 +8,6 @@ module memory_unit(
     input sel_stall,
     output [3:0] cond,      // Condition code               TODO: remove later if needed
     output [6:0] opcode,    // Opcode for the instruction   TODO: remove later if needed
-    output en_status,       // Enable status register
     output [3:0] rd,        // Rd (destination)
     output [1:0] shift_op,  // Shift operation
     output [11:0] imm12,    // Immediate value or second operand
