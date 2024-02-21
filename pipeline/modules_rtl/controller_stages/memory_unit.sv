@@ -6,8 +6,8 @@ module memory_unit(
     input branch_ref,
     input branch_in,
     input sel_stall,
-    output [3:0] cond,      // Condition code
-    output [6:0] opcode,    // Opcode for the instruction
+    output [3:0] cond,      // Condition code               TODO: remove later if needed
+    output [6:0] opcode,    // Opcode for the instruction   TODO: remove later if needed
     output en_status,       // Enable status register
     output [3:0] rd,        // Rd (destination)
     output [1:0] shift_op,  // Shift operation
@@ -23,15 +23,15 @@ module memory_unit(
     output sel_B,
     output [2:0] ALU_op,
     output sel_post_indexing,
-    output sel_w_addr1,
+    output en_status,
     output sel_load_LR,
     output w_en1,
     output mem_w_en
 );
 
 // pipeline unit ports
-wire [3:0] cond_out;
-wire [6:0] opcode_out;
+wire [3:0] cond_decoded;
+wire [6:0] opcode_decoded;
 wire en_status_decoded;
 wire [3:0] rd_out;
 wire [1:0] shift_op_out;
@@ -41,8 +41,8 @@ wire P;
 wire U;
 wire W;
 wire branch_value_out;
-assign cond = cond_out;
-assign opcode = opcode_out;
+assign cond = cond_decoded;
+assign opcode = opcode_decoded;
 assign rd = rd_out;
 assign shift_op = shift_op_out;
 assign imm12 = imm12_out;
@@ -58,7 +58,6 @@ reg sel_B_reg;
 reg [2:0] ALU_op_reg;
 reg en_status_reg;
 reg sel_post_indexing_reg;
-reg sel_w_addr1_reg;
 reg sel_load_LR_reg;
 reg w_en1_reg;
 reg mem_w_en_reg;
@@ -70,7 +69,6 @@ assign sel_B = sel_B_reg;
 assign ALU_op = ALU_op_reg;
 assign en_status = en_status_reg;
 assign sel_post_indexing = sel_post_indexing_reg;
-assign sel_w_addr1 = sel_w_addr1_reg;
 assign sel_load_LR = sel_load_LR_reg;
 assign w_en1 = w_en1_reg;
 assign mem_w_en = mem_w_en_reg;
@@ -103,8 +101,8 @@ pipeline_unit pipeline_unit(
     .branch_ref(branch_ref),
     .branch_in(branch_in),
     .sel_stall(sel_stall),
-    .cond(cond_out),
-    .opcode(opcode_out),
+    .cond(cond_decoded),
+    .opcode(opcode_decoded),
     .en_status(en_status_out),
     .rn(),
     .rd(rd_out),
@@ -129,7 +127,6 @@ always_comb begin
     sel_B_reg = 1'b0;
     ALU_op_reg = 3'b000;
     sel_post_indexing_reg = 1'b0;
-    sel_w_addr1_reg = 1'b0;
     en_status_reg = 1'b0;
     sel_load_LR_reg = 1'b0;
     w_en1_reg = 1'b0;
@@ -167,7 +164,6 @@ always_comb begin
         endcase
 
         // sel_post_indexing
-        // sel_w_addr1_reg
 
         // en_status -> in branching decodded result doesnt this work
         en_status_reg = en_status_decoded;
@@ -208,7 +204,6 @@ always_comb begin
         endcase
 
         // sel_post_indexing
-        // sel_w_addr1_reg
 
         //en_status
         en_status_reg = en_status_decoded;
@@ -227,21 +222,21 @@ always_comb begin
 
         // sel_pc_reg
         // load_pc_reg
-        if ((cond_out == 4'b0000 && Z) || 
-            (cond_out == 4'b0001 && ~Z) || 
-            (cond_out == 4'b0010 && C) || 
-            (cond_out == 4'b0011 && ~C) || 
-            (cond_out == 4'b0100 && N) || 
-            (cond_out == 4'b0101 && ~N) || 
-            (cond_out == 4'b0110 && V) || 
-            (cond_out == 4'b0111 && ~V) || 
-            (cond_out == 4'b1000 && C && ~Z) || 
-            (cond_out == 4'b1001 && ~C || Z) || 
-            (cond_out == 4'b1010 && N == V) || 
-            (cond_out == 4'b1011 && N != V) || 
-            (cond_out == 4'b1100 && (~Z && (N == V))) || 
-            (cond_out == 4'b1101 && (Z || (N != V))) || 
-            (cond_out == 4'b1110)) begin
+        if ((cond_decoded == 4'b0000 && Z) || 
+            (cond_decoded == 4'b0001 && ~Z) || 
+            (cond_decoded == 4'b0010 && C) || 
+            (cond_decoded == 4'b0011 && ~C) || 
+            (cond_decoded == 4'b0100 && N) || 
+            (cond_decoded == 4'b0101 && ~N) || 
+            (cond_decoded == 4'b0110 && V) || 
+            (cond_decoded == 4'b0111 && ~V) || 
+            (cond_decoded == 4'b1000 && C && ~Z) || 
+            (cond_decoded == 4'b1001 && ~C || Z) || 
+            (cond_decoded == 4'b1010 && N == V) || 
+            (cond_decoded == 4'b1011 && N != V) || 
+            (cond_decoded == 4'b1100 && (~Z && (N == V))) || 
+            (cond_decoded == 4'b1101 && (Z || (N != V))) || 
+            (cond_decoded == 4'b1110)) begin
             
             // take the new address
             sel_pc_reg = 2'b11;
@@ -264,7 +259,6 @@ always_comb begin
 
         // ALU_op
         // sel_post_indexing
-        // sel_w_addr1_reg
         // en_status
 
         // sel_load_LR

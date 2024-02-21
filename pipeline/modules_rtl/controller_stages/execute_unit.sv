@@ -6,7 +6,7 @@ module execute_unit(
     input branch_ref,
     input branch_in,
     input sel_stall,
-    output [6:0] opcode,    // Opcode for the instruction
+    output [6:0] opcode,    // Opcode for the instruction TODO: remove later if needed
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
     output [3:0] rm,        // Rm 
@@ -54,7 +54,7 @@ assign en_A = en_A_reg;
 assign en_B = en_B_reg;
 assign en_S = en_S_reg;
 
-// decoder module
+// pipeline unit module
 pipeline_unit pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
