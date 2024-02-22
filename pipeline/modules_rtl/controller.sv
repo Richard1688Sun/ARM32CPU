@@ -119,7 +119,6 @@ module controller(
 
     // *** Memory Wait Stage Unit ***
     // decoded signals
-    wire branch_value_wait_unit;
     wire [31:0] instr_memory_wait_unit;
     // controller signals
     // NOTHING
@@ -127,7 +126,6 @@ module controller(
 
     // *** LDR Write Back Stage Unit ***
     // decoded signals
-    wire branch_value_ldr_write_unit;
     wire [31:0] instr_ldr__write_unit;
     // controller signals
     wire w_en_ldr_out;
@@ -161,8 +159,8 @@ module controller(
         .en_S(en_S_out)
     );
 
-    // memory_pc_increment stage
-    memory_unit memory_pc_increment_unit(
+    // memory stage
+    memory_unit memory_unit(
         // pipeline_unit signals
         .clk(clk),
         .rst_n(rst_n),
@@ -191,6 +189,36 @@ module controller(
         .mem_w_en(mem_w_en_out)
     );
 
+    // memory_wait stage
+    memory_wait_unit memory_wait_unit(
+        // pipeline_unit signals
+        .clk(clk),
+        .rst_n(rst_n),
+        .instr_in(instr_memory_unit),
+        .branch_ref(branch_ref_memory_unit),
+        .branch_in(branch_ref_memory_unit),
+        .sel_stall(),   //TODO: TBD
+        .branch_value(),    //no squashing anymore
+        .instr_output(instr_memory_wait_unit),
+        // controller signals
+    );
+
+    // ldr_write stage
+    ldr_writeback_unit ldr_writeback_unit(
+        // pipeline_unit signals
+        .clk(clk),
+        .rst_n(rst_n),
+        .instr_in(instr_memory_wait_unit),
+        .branch_ref(branch_ref_memory_unit),
+        .branch_in(branch_ref_memory_unit),
+        .sel_stall(),   //TODO: TBD
+        .branch_value(),    //no squashing anymore
+        .instr_output(instr_ldr__write_unit),
+        // controller signals
+        .w_en_ldr(w_en_ldr_out)
+    );
+
+
     // internal signals
     reg [2:0] state;
     localparam load_pc_start = 3'b000;
@@ -214,14 +242,14 @@ module controller(
 
     // controller logic
     always_comb begin
-        case (state) begin
+        case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b00;
             end
             default: begin
                 sel_pc_out <= sel_pc_unit_out;
             end
-        end
+        endcase
     end
 
 endmodule: controller
