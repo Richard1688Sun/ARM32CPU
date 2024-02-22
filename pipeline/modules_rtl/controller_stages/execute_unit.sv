@@ -12,6 +12,7 @@ module execute_unit(
     output [3:0] rm,        // Rm 
     output [4:0] imm5,      // Immediate value
     output branch_value,
+    output [31:0] instr_output,
     // controller signals
     input [3:0] rd,         // from memory stage for forwarding
     output [1:0] sel_A_in,
@@ -31,12 +32,14 @@ wire [3:0] rs_out;
 wire [3:0] rm_out;
 wire [4:0] imm5_out;
 wire branch_value_out;
+wire [31:0] instr_out;
 assign opcode = opcode_out;
 assign rn = rn_out;
 assign rs = rs_out;
 assign rm = rm_out;
 assign imm5 = imm5_out;
 assign branch_value = branch_value_out;
+assign instr_output = instr_out;
 
 // controller ports
 reg [1:0] sel_A_in_reg;
@@ -76,7 +79,8 @@ pipeline_unit pipeline_unit(
     .P(),
     .U(),
     .W(),
-    .branch_value(branch_value_out)
+    .branch_value(branch_value_out),
+    .instr_output(instr_out)
 );
 
 always_comb begin

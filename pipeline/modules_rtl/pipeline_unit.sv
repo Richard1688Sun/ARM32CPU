@@ -7,6 +7,8 @@ module pipeline_unit(
     input branch_in,
     input sel_stall,
     // outputs
+    output branch_value
+    output [31:0] instr_output
     output [3:0] cond,      // Condition code
     output [6:0] opcode,    // Opcode for the instruction
     output en_status,       // Enable status register
@@ -21,7 +23,6 @@ module pipeline_unit(
     output P,
     output U,
     output W,
-    output branch_value
 );
 // internal signals
 localparam [31:0] NOP = 32'b1110_00110010_0000_11110000_00000000;
@@ -34,7 +35,7 @@ wire [1:0] shift_op_out;
 wire [4:0] imm5_out;
 wire [11:0] imm12_out;
 wire [23:0] imm24_out;
-wire P_out, U_out, W_out, branch_value_out;
+wire P_out, U_out, W_out;
 wire en_status_out;
 wire [6:0] opcode_out;
 wire [31:0] instr_decoder_in;
@@ -53,6 +54,7 @@ assign P = P_out;
 assign U = U_out;
 assign W = W_out;
 assign branch_value = branch_value_reg;
+assign instr_out = instr_decoder_in;
 
 // module instances
 idecoder decoder(

@@ -13,6 +13,7 @@ module memory_unit(
     output [11:0] imm12,    // Immediate value or second operand
     output [23:0] imm24,    // Address for branching
     output branch_value,
+    output [31:0] instr_output,
     // controller signals
     input [31:0] status_reg,
     output [1:0] sel_pc,
@@ -39,14 +40,19 @@ wire [23:0] imm24_out;
 wire P;
 wire U;
 wire W;
-wire branch_value_out;
+wire [31:0] instr_out;
 assign cond = cond_decoded;
 assign opcode = opcode_decoded;
 assign rd = rd_out;
 assign shift_op = shift_op_out;
 assign imm12 = imm12_out;
 assign imm24 = imm24_out;
-assign branch_value = branch_value_out;
+assign instr_output = instr_out;
+
+// brnach reference MUX
+reg branch_ref_value;   // output from pipeline unit used to select next branch_ref
+wire branch_value_out;
+assign branch_value = branch_value_out; //TODO: within controller logic we change branch_ref_reg to either branch_value or ~branch_value
 
 // controller ports
 reg [1:0] sel_pc_reg;
@@ -114,7 +120,8 @@ pipeline_unit pipeline_unit(
     .P(P),
     .U(U),
     .W(W),
-    .branch_value(branch_value_out)
+    .branch_value(branch_ref_value),
+    .instr_output(instr_out)
 );
 
 always_comb begin
@@ -130,6 +137,7 @@ always_comb begin
     sel_load_LR_reg = 1'b0;
     w_en1_reg = 1'b0;
     mem_w_en_reg = 1'b0;
+    branch_value_out = branch_ref_value;
 
     //normal instructions
     if (opcode[6] == 0 && cond != 4'b1111)  begin
@@ -240,6 +248,7 @@ always_comb begin
             // take the new address
             sel_pc_reg = 2'b11;
             load_pc_reg = 1'b1;
+            branch_value_out = ~branch_ref_value;
         end else begin
             sel_pc_reg = 2'b00;
             load_pc_reg = 1'b1;
