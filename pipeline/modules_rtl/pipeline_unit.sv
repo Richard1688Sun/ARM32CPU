@@ -54,7 +54,7 @@ assign P = P_out;
 assign U = U_out;
 assign W = W_out;
 assign branch_value = branch_value_reg;
-assign instr_out = instr_decoder_in;
+assign instr_output = instr_decoder_in;
 
 // module instances
 idecoder decoder(

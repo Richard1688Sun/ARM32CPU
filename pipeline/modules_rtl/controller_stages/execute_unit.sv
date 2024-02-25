@@ -90,7 +90,7 @@ always_comb begin
     sel_shift_reg = 1'b0;
     en_A_reg = 1'b0;
     en_B_reg = 1'b0;
-    en_S_reg = 1'b0;
+    en_S_reg = 1'b0;    // always 1 anyway
 
     //normal instructions
     if (opcode_out[6] == 0 && cond_out != 4'b1111)  begin

@@ -19,7 +19,7 @@ module controller(
     output sel_shift,
     output en_A,
     output en_B,
-    output en_S
+    output en_S,
 
     // *** Memory Stage Output ***
     // decoded signals
@@ -37,13 +37,14 @@ module controller(
     output sel_B,
     output [2:0] ALU_op,
     output sel_post_indexing,
+    output en_status,
     output sel_load_LR,
     output w_en1,
-    output mem_w_en
+    output mem_w_en,
 
     // *** Write Back Stage Output ***
     // controller signals
-    output w_en_ldr;
+    output w_en_ldr
 );
 
     // *** Execute Stage Unit ***
@@ -94,15 +95,16 @@ module controller(
     assign imm12_memory_unit = imm12_memory_unit_out;
     assign imm24_memory_unit = imm24_memory_unit_out;
     // controller signals
-    wire [1:0] sel_pc_out;
+    reg [1:0] sel_pc_out;
     wire [1:0] sel_pc_memory_unit_out;  // special case for memory stage
-    wire load_pc_out;
+    reg load_pc_out;
     wire load_pc_memory_unit_out;       // special case for memory stage
     wire sel_branch_imm_out;
     wire sel_A_out;
     wire sel_B_out;
     wire [2:0] ALU_op_out;
     wire sel_post_indexing_out;
+    wire en_status_out;
     wire sel_load_LR_out;
     wire w_en1_out;
     wire mem_w_en_out;
@@ -113,6 +115,7 @@ module controller(
     assign sel_B = sel_B_out;
     assign ALU_op = ALU_op_out;
     assign sel_post_indexing = sel_post_indexing_out;
+    assign en_status = en_status_out;
     assign sel_load_LR = sel_load_LR_out;
     assign w_en1 = w_en1_out;
     assign mem_w_en = mem_w_en_out;
@@ -149,6 +152,7 @@ module controller(
         .branch_value(branch_value_execute_unit),
         .instr_output(instr_execute_unit),
         // controller signals
+        .rd(rd_memory_unit_out),
         .sel_A_in(sel_A_in_out),
         .sel_B_in(sel_B_in_out),
         .sel_shift_in(sel_shift_in_out),
@@ -169,6 +173,7 @@ module controller(
         .sel_stall(),   //TODO: TBD
         .cond(cond_memory_unit_out),
         .opcode(opcode_memory_unit_out),
+        .rd(rd_memory_unit_out),
         .shift_op(shift_op_memory_unit_out),
         .imm12(imm12_memory_unit_out),
         .imm24(imm24_memory_unit_out),
@@ -183,6 +188,7 @@ module controller(
         .sel_B(sel_B_out),
         .ALU_op(ALU_op_out),
         .sel_post_indexing(sel_post_indexing_out),
+        .en_status(en_status_out),
         .sel_load_LR(sel_load_LR_out),
         .w_en1(w_en1_out),
         .mem_w_en(mem_w_en_out)
@@ -198,7 +204,7 @@ module controller(
         .branch_in(branch_ref_memory_unit),
         .sel_stall(),   //TODO: TBD
         .branch_value(),    //no squashing anymore
-        .instr_output(instr_memory_wait_unit),
+        .instr_output(instr_memory_wait_unit)
         // controller signals
     );
 
@@ -243,7 +249,7 @@ module controller(
     always_comb begin
         case (state)
             load_pc_start: begin
-                sel_pc_out <= 2'b00;
+                sel_pc_out <= 2'b01;
                 load_pc_out <= 1'b1;
             end
             default: begin

@@ -38,6 +38,7 @@ module tb_controller(output err);
     wire sel_B;
     wire [2:0] ALU_op;
     wire sel_post_indexing;
+    wire en_status;
     wire sel_load_LR;
     wire w_en1;
     wire mem_w_en;
@@ -85,6 +86,7 @@ module tb_controller(output err);
         .sel_B(sel_B),
         .ALU_op(ALU_op),
         .sel_post_indexing(sel_post_indexing),
+        .en_status(en_status),
         .sel_load_LR(sel_load_LR),
         .w_en1(w_en1),
         .mem_w_en(mem_w_en),
@@ -125,7 +127,7 @@ module tb_controller(output err);
 
     task  load_pc_start(input integer startTestNum);
         begin
-            reset;
+            #5;
             check(1, sel_pc, startTestNum); //first time you load from startpc
             check(1, load_pc, startTestNum + 1);
             test_num = startTestNum + 2;
@@ -147,7 +149,7 @@ module tb_controller(output err);
             check(0, sel_shift_in, startTestNum + 2);
             check(0, en_A, startTestNum + 3);
             check(0, en_B, startTestNum + 4);
-            check(0, en_S, startTestNum + 5);
+            check(1, en_S, startTestNum + 5);
             check(0, sel_shift, startTestNum + 6);
             test_num = startTestNum + 7;
         end
@@ -263,11 +265,13 @@ module tb_controller(output err);
             check(0, sel_shift_in, startTestNum + 2);
             check(0, en_A, startTestNum + 3);
             check(0, en_B, startTestNum + 4);
-            check(0, en_S, startTestNum + 5);
+            check(1, en_S, startTestNum + 5);
             check(0, sel_shift, startTestNum + 6);
             test_num = startTestNum + 7;
         end
     endtask: execute_NOP
+
+    // TODO: check en_status when doing branch tests
 
     task mem_writeback_MOV_I(input integer startTestNum, input [2:0] ALU_op_ans);
         begin
@@ -400,24 +404,28 @@ module tb_controller(output err);
         localparam [31:0] ADD_R_R9_R8_R1 = 32'b1110_00001000_1000_1001_00000_00_0_0001;
         localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
         reset;
+        $display("Starting Tests");
         load_pc_start(test_num);
         clkR; // load pc
         clkR; // fetch
         clkR; // fetch_wait
 
         // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        $display("1: Test Number %d", test_num);
         instr_in = MOV_I_R8_8;        // MOV_I r7, #8
         clkR;
         executeCycle_MOV_I(test_num);  //instruction 1
 
 
         // EX: NOP, MEM: 1, MEM_WAIT: n/a, WB: n/a  
+        $display("2: Test Number %d", test_num);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
         mem_writeback_MOV_I(test_num, 3'b000);
 
         // EX: 3, MEM: NOP, MEM_WAIT: 1, WB: n/a
+        $display("3: Test Number %d", test_num);
         instr_in = MOV_R_R1_R8_3;        // MOV_R R1 R8 >> 3
         clkR;
         executeCycle_MOV_R(test_num);  //instruction 3
@@ -425,6 +433,7 @@ module tb_controller(output err);
         mem_wait(test_num);
 
         // EX: NOP, MEM: 3, MEM_WAIT: NOP, WB: 1
+        $display("4: Test Number %d", test_num);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
@@ -433,6 +442,7 @@ module tb_controller(output err);
         write_back_NOP(test_num);
 
         // EX: 5, MEM: NOP, MEM_WAIT: 3, WB: NOP
+        $display("5: Test Number %d", test_num);
         instr_in = MOV_RS_R3_R1_R1_LSL_R1;        // MOV_RS R3 R1, R1 << R1
         clkR;
         executeCycle_MOV_RS(test_num);  //instruction 5
@@ -441,6 +451,7 @@ module tb_controller(output err);
         write_back_NOP(test_num);
 
         // EX: 6, MEM: 5, MEM_WAIT: NOP, WB: 3
+        $display("6: Test Number %d", test_num);
         instr_in = ADD_I_R2_R1_1;        // ADD_I R2 R1 #1
         clkR;
         executeCycle_I(test_num);  //instruction 6
@@ -449,6 +460,7 @@ module tb_controller(output err);
         write_back_NOP(test_num);
 
         // EX: 7, MEM: 6, MEM_WAIT: 5, WB: NOP
+        $display("7: Test Number %d", test_num);
         instr_in = ADD_R_R9_R8_R1;        // ADD_R R9 R8 R1      
         clkR;
         executeCycle_R(test_num);  //instruction 7\
@@ -457,6 +469,7 @@ module tb_controller(output err);
         write_back_NOP(test_num);
 
         // EX: 8, MEM: 7, MEM_WAIT: 6, WB: 5
+        $display("8: Test Number %d", test_num);
         instr_in = ADD_RS_R10_R8_R1_LSL_R1;        // ADD_RS R10 R8 R1 << R1
         clkR;
         executeCycle_RS(test_num);  //instruction 8
@@ -465,6 +478,7 @@ module tb_controller(output err);
         write_back_NOP(test_num);
 
         // EX: NOP, MEM: 8, MEM_WAIT: 7, WB: 6
+        $display("9: Test Number %d", test_num);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
@@ -473,6 +487,7 @@ module tb_controller(output err);
         write_back_NOP(test_num);     
 
         // EX: NOP, MEM: NOP, MEM_WAIT: 8, WB: 7
+        $display("10: Test Number %d", test_num);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
