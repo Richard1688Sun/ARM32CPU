@@ -245,7 +245,7 @@ module controller(
         end else begin
             case (state)
                 load_pc_start: begin
-                    state <= start_cpu;
+                    state <= fetch;
                 end
                 fetch: begin
                     state <= fetch_wait;
@@ -291,12 +291,22 @@ module controller(
             fetch_wait: begin
             end
             execute: begin
+                execute_unit_stall = 1'b0;
             end
             memory: begin
+                execute_unit_stall = 1'b0;
+                memory_unit_stall = 1'b0;
             end
             memory_wait: begin
+                execute_unit_stall = 1'b0;
+                memory_unit_stall = 1'b0;
+                memory_wait_unit_stall = 1'b0;
             end
             write_back: begin
+                execute_unit_stall = 1'b0;
+                memory_unit_stall = 1'b0;
+                memory_wait_unit_stall = 1'b0;
+                ldr_writeback_unit_stall = 1'b0;
             end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
