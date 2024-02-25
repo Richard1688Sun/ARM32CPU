@@ -83,9 +83,7 @@ always_ff @( posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         instr_reg <= NOP;
     end else begin
-        if (sel_stall == 1'b1) begin
-            instr_reg <= instr_reg;
-        end else begin
+        if (sel_stall == 1'b0) begin
             instr_reg <= instr_in;
         end
     end

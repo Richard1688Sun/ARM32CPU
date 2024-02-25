@@ -48,6 +48,7 @@ module controller(
 );
 
     // *** Execute Stage Unit ***
+    reg execute_unit_stall;
     // decoded signals
     wire [6:0] opcode_execute_unit_out;
     wire [3:0] rn_execute_unit_out;
@@ -79,6 +80,7 @@ module controller(
 
 
     // *** Memory Stage Unit ***
+    reg memory_unit_stall;
     // decoded signals
     wire [3:0] cond_memory_unit_out;
     wire [6:0] opcode_memory_unit_out;
@@ -122,6 +124,7 @@ module controller(
 
 
     // *** Memory Wait Stage Unit ***
+    reg memory_wait_unit_stall;
     // decoded signals
     wire [31:0] instr_memory_wait_unit;
     // controller signals
@@ -129,12 +132,12 @@ module controller(
 
 
     // *** LDR Write Back Stage Unit ***
+    reg ldr_writeback_unit_stall;
     // decoded signals
     wire [31:0] instr_ldr__write_unit;
     // controller signals
     wire w_en_ldr_out;
     assign w_en_ldr = w_en_ldr_out;
-
 
     execute_unit execute_unit(
         // pipeline_unit signals
@@ -143,7 +146,7 @@ module controller(
         .instr_in(instr_in),
         .branch_ref(branch_ref_memory_unit),
         .branch_in(branch_ref_memory_unit),
-        .sel_stall(), //TODO: TBD
+        .sel_stall(execute_unit_stall), //TODO: TBD
         .opcode(opcode_execute_unit_out),
         .rn(rn_execute_unit_out),
         .rs(rs_execute_unit_out),
@@ -170,7 +173,7 @@ module controller(
         .instr_in(instr_execute_unit),
         .branch_ref(branch_value_execute_unit),
         .branch_in(branch_value_execute_unit),
-        .sel_stall(),   //TODO: TBD
+        .sel_stall(memory_unit_stall),   //TODO: TBD
         .cond(cond_memory_unit_out),
         .opcode(opcode_memory_unit_out),
         .rd(rd_memory_unit_out),
@@ -202,7 +205,7 @@ module controller(
         .instr_in(instr_memory_unit),
         .branch_ref(branch_ref_memory_unit),
         .branch_in(branch_ref_memory_unit),
-        .sel_stall(),   //TODO: TBD
+        .sel_stall(memory_wait_unit_stall),   //TODO: TBD
         .branch_value(),    //no squashing anymore
         .instr_output(instr_memory_wait_unit)
         // controller signals
@@ -216,7 +219,7 @@ module controller(
         .instr_in(instr_memory_wait_unit),
         .branch_ref(branch_ref_memory_unit),
         .branch_in(branch_ref_memory_unit),
-        .sel_stall(),   //TODO: TBD
+        .sel_stall(ldr_writeback_unit_stall),   //TODO: TBD
         .branch_value(),    //no squashing anymore
         .instr_output(instr_ldr__write_unit),
         // controller signals
@@ -228,6 +231,12 @@ module controller(
     reg [2:0] state;
     localparam load_pc_start = 3'b000;
     localparam start_cpu = 3'b001;
+    localparam fetch = 3'b010;
+    localparam fetch_wait = 3'b011;
+    localparam execute = 3'b100;
+    localparam memory = 3'b101;
+    localparam memory_wait = 3'b110;
+    localparam write_back = 3'b111;
 
     // state machine
     always_ff @(posedge clk or negedge rst_n) begin
@@ -236,6 +245,24 @@ module controller(
         end else begin
             case (state)
                 load_pc_start: begin
+                    state <= start_cpu;
+                end
+                fetch: begin
+                    state <= fetch_wait;
+                end
+                fetch_wait: begin
+                    state <= execute;
+                end
+                execute: begin
+                    state <= memory;
+                end
+                memory: begin
+                    state <= memory_wait;
+                end
+                memory_wait: begin
+                    state <= write_back;
+                end
+                write_back: begin
                     state <= start_cpu;
                 end
                 default: begin
@@ -247,14 +274,38 @@ module controller(
 
     // controller logic
     always_comb begin
+        sel_pc_out <= sel_pc_memory_unit_out;
+        load_pc_out <= load_pc_memory_unit_out;
+
+        execute_unit_stall = 1'b1;
+        memory_unit_stall = 1'b1;
+        memory_wait_unit_stall = 1'b1;
+        ldr_writeback_unit_stall = 1'b1;
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b01;
                 load_pc_out <= 1'b1;
             end
+            fetch: begin
+            end
+            fetch_wait: begin
+            end
+            execute: begin
+            end
+            memory: begin
+            end
+            memory_wait: begin
+            end
+            write_back: begin
+            end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
                 load_pc_out <= load_pc_memory_unit_out;
+
+                execute_unit_stall = 1'b0;
+                memory_unit_stall = 1'b0;
+                memory_wait_unit_stall = 1'b0;
+                ldr_writeback_unit_stall = 1'b0;
             end
         endcase
     end

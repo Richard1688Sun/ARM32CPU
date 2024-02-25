@@ -149,7 +149,7 @@ module tb_controller(output err);
             check(0, sel_shift_in, startTestNum + 2);
             check(0, en_A, startTestNum + 3);
             check(0, en_B, startTestNum + 4);
-            check(1, en_S, startTestNum + 5);
+            check(0, en_S, startTestNum + 5);
             check(0, sel_shift, startTestNum + 6);
             test_num = startTestNum + 7;
         end
@@ -265,7 +265,7 @@ module tb_controller(output err);
             check(0, sel_shift_in, startTestNum + 2);
             check(0, en_A, startTestNum + 3);
             check(0, en_B, startTestNum + 4);
-            check(1, en_S, startTestNum + 5);
+            check(0, en_S, startTestNum + 5);
             check(0, sel_shift, startTestNum + 6);
             test_num = startTestNum + 7;
         end
@@ -300,8 +300,8 @@ module tb_controller(output err);
 
     task mem_writeback_I(input integer startTestNum, input [2:0] ALU_op_ans);
         begin
-            check(1, sel_A, startTestNum);
-            check(0, sel_B, startTestNum + 1);
+            check(0, sel_A, startTestNum);
+            check(1, sel_B, startTestNum + 1);
             check(0, sel_post_indexing, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
@@ -493,10 +493,16 @@ module tb_controller(output err);
         execute_NOP(test_num);
         mem_writeback_NOP(test_num);   
         mem_wait(test_num);
-        write_back_LDR(test_num); // LDR_LIT R8 R1 #1
+        write_back_NOP(test_num); // LDR_LIT R8 R1 #1
 
-
-        // EX: NOP, MEM: 3, MEM_WAIT: NOP, WB: 1
+        // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 8
+        $display("11: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num); // LDR_LIT R8 R1 #1
 
 
 

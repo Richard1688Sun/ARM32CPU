@@ -93,7 +93,7 @@ always_comb begin
     en_S_reg = 1'b0;    // always 1 anyway
 
     //normal instructions
-    if (opcode_out[6] == 0 && cond_out != 4'b1111)  begin
+    if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_out != 4'b1111)  begin
         //sel_A_in
         if (rn_out == rd) begin
             sel_A_in_reg = 2'b01;    //forward from result of ALU
@@ -126,7 +126,9 @@ always_comb begin
         end
 
         // en_S
-        en_S_reg = 1'b1;
+        if (opcode_out[4] == 1'b1) begin
+            en_S_reg = 1'b1;
+        end
 
     end else if (opcode_out[6:5] == 2'b11 || opcode_out[6:3] == 4'b1000) begin //STR and LDR
         

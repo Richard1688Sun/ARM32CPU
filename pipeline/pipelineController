@@ -1,0 +1,198 @@
+onerror {resume}
+quietly WaveActivateNextPane {} 0
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/clk
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rst_n
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/instr_in
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/branch_ref
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/branch_in
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_stall
+add wave -noupdate -expand -group execute -radix binary /tb_controller/DUT/execute_unit/opcode
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rn
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rs
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rm
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/imm5
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/branch_value
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/instr_output
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rd
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_A_in
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_B_in
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_shift_in
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_shift
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/en_A
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/en_B
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/en_S
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/cond_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/opcode_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rn_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rs_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/rm_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/imm5_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/branch_value_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/instr_out
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_A_in_reg
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_B_in_reg
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_shift_in_reg
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/sel_shift_reg
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/en_A_reg
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/en_B_reg
+add wave -noupdate -expand -group execute -radix unsigned /tb_controller/DUT/execute_unit/en_S_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/clk
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/rst_n
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/instr_in
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/branch_ref
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/branch_in
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_stall
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/cond
+add wave -noupdate -expand -group memory -radix binary /tb_controller/DUT/memory_unit/opcode
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/rd
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/shift_op
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/imm12
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/imm24
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/branch_value
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/instr_output
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/status_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_pc
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/load_pc
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_branch_imm
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_A
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_B
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/ALU_op
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_post_indexing
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/en_status
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_load_LR
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/w_en1
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/mem_w_en
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/cond_decoded
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/opcode_decoded
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/en_status_decoded
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/rd_out
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/shift_op_out
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/imm12_out
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/imm24_out
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/P
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/U
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/W
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/instr_out
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/branch_ref_value
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/branch_value_out
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_pc_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/load_pc_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_branch_imm_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_A_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_B_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/ALU_op_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/en_status_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_post_indexing_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_load_LR_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/w_en1_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/mem_w_en_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/N
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/Z
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/C
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/V
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/clk
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/rst_n
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/instr_in
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/branch_ref
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/branch_in
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/sel_stall
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/branch_value
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/instr_output
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/w_en_ldr
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/opcode_decoded
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/branch_value_out
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/instr_out
+add wave -noupdate -group ldr_write_back -radix unsigned /tb_controller/DUT/ldr_writeback_unit/w_en_ldr_reg
+add wave -noupdate -group dut /tb_controller/DUT/load_pc_start
+add wave -noupdate -group dut /tb_controller/DUT/start_cpu
+add wave -noupdate -group dut /tb_controller/DUT/clk
+add wave -noupdate -group dut /tb_controller/DUT/rst_n
+add wave -noupdate -group dut /tb_controller/DUT/instr_in
+add wave -noupdate -group dut /tb_controller/DUT/status_reg
+add wave -noupdate -group dut /tb_controller/DUT/opcode_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/rn_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/rs_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/rm_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/imm5_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/sel_A_in
+add wave -noupdate -group dut /tb_controller/DUT/sel_B_in
+add wave -noupdate -group dut /tb_controller/DUT/sel_shift_in
+add wave -noupdate -group dut /tb_controller/DUT/sel_shift
+add wave -noupdate -group dut /tb_controller/DUT/en_A
+add wave -noupdate -group dut /tb_controller/DUT/en_B
+add wave -noupdate -group dut /tb_controller/DUT/en_S
+add wave -noupdate -group dut /tb_controller/DUT/cond_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/opcode_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/rd_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/shift_op_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/imm12_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/imm24_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/sel_pc
+add wave -noupdate -group dut /tb_controller/DUT/load_pc
+add wave -noupdate -group dut /tb_controller/DUT/sel_branch_imm
+add wave -noupdate -group dut /tb_controller/DUT/sel_A
+add wave -noupdate -group dut /tb_controller/DUT/sel_B
+add wave -noupdate -group dut /tb_controller/DUT/ALU_op
+add wave -noupdate -group dut /tb_controller/DUT/sel_post_indexing
+add wave -noupdate -group dut /tb_controller/DUT/en_status
+add wave -noupdate -group dut /tb_controller/DUT/sel_load_LR
+add wave -noupdate -group dut /tb_controller/DUT/w_en1
+add wave -noupdate -group dut /tb_controller/DUT/mem_w_en
+add wave -noupdate -group dut /tb_controller/DUT/w_en_ldr
+add wave -noupdate -group dut /tb_controller/DUT/opcode_execute_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/rn_execute_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/rs_execute_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/rm_execute_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/imm5_execute_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/branch_value_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/instr_execute_unit
+add wave -noupdate -group dut /tb_controller/DUT/sel_A_in_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_B_in_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_shift_in_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_shift_out
+add wave -noupdate -group dut /tb_controller/DUT/en_A_out
+add wave -noupdate -group dut /tb_controller/DUT/en_B_out
+add wave -noupdate -group dut /tb_controller/DUT/en_S_out
+add wave -noupdate -group dut /tb_controller/DUT/cond_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/opcode_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/rd_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/shift_op_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/imm12_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/imm24_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/branch_ref_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/instr_memory_unit
+add wave -noupdate -group dut /tb_controller/DUT/sel_pc_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_pc_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/load_pc_out
+add wave -noupdate -group dut /tb_controller/DUT/load_pc_memory_unit_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_branch_imm_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_A_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_B_out
+add wave -noupdate -group dut /tb_controller/DUT/ALU_op_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_post_indexing_out
+add wave -noupdate -group dut /tb_controller/DUT/en_status_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_load_LR_out
+add wave -noupdate -group dut /tb_controller/DUT/w_en1_out
+add wave -noupdate -group dut /tb_controller/DUT/mem_w_en_out
+add wave -noupdate -group dut /tb_controller/DUT/instr_memory_wait_unit
+add wave -noupdate -group dut /tb_controller/DUT/instr_ldr__write_unit
+add wave -noupdate -group dut /tb_controller/DUT/w_en_ldr_out
+add wave -noupdate -group dut /tb_controller/DUT/state
+TreeUpdate [SetDefaultTree]
+WaveRestoreCursors {{Cursor 1} {72 ps} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 315
+configure wave -valuecolwidth 40
+configure wave -justifyvalue left
+configure wave -signalnamewidth 1
+configure wave -snapdistance 10
+configure wave -datasetprefix 0
+configure wave -rowmargin 4
+configure wave -childrowmargin 2
+configure wave -gridoffset 0
+configure wave -gridperiod 1
+configure wave -griddelta 40
+configure wave -timeline 0
+configure wave -timelineunits ps
+update
+WaveRestoreZoom {20 ps} {168 ps}

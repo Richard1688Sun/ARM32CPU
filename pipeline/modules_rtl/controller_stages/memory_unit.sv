@@ -108,7 +108,7 @@ pipeline_unit pipeline_unit(
     .sel_stall(sel_stall),
     .cond(cond_decoded),
     .opcode(opcode_decoded),
-    .en_status(en_status_out),
+    .en_status(en_status_decoded),
     .rn(),
     .rd(rd_out),
     .rs(),
@@ -140,7 +140,7 @@ always_comb begin
     branch_value_out = branch_ref_value;
 
     //normal instructions
-    if (opcode[6] == 0 && cond != 4'b1111)  begin
+    if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_decoded != 4'b1111)  begin
 
         // sel_pc_reg
 

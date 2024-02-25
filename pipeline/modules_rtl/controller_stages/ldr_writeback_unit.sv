@@ -21,6 +21,7 @@ assign instr_output = instr_out;
 
 // controller ports
 reg w_en_ldr_reg;
+assign w_en_ldr = w_en_ldr_reg;
 
 // pipeline unit module
 pipeline_unit pipeline_unit(
