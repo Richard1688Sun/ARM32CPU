@@ -7,8 +7,8 @@ module pipeline_unit(
     input branch_in,
     input sel_stall,
     // outputs
-    output branch_value
-    output [31:0] instr_output
+    output branch_value,
+    output [31:0] instr_output,
     output [3:0] cond,      // Condition code
     output [6:0] opcode,    // Opcode for the instruction
     output en_status,       // Enable status register
@@ -22,7 +22,7 @@ module pipeline_unit(
     output [23:0] imm24,    // Address for branching
     output P,
     output U,
-    output W,
+    output W
 );
 // internal signals
 localparam [31:0] NOP = 32'b1110_00110010_0000_11110000_00000000;

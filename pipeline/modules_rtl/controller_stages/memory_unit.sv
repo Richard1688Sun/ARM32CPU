@@ -51,7 +51,7 @@ assign instr_output = instr_out;
 
 // brnach reference MUX
 reg branch_ref_value;   // output from pipeline unit used to select next branch_ref
-wire branch_value_out;
+reg branch_value_out;
 assign branch_value = branch_value_out; //TODO: within controller logic we change branch_ref_reg to either branch_value or ~branch_value
 
 // controller ports

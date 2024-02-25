@@ -95,8 +95,9 @@ module controller(
     assign imm24_memory_unit = imm24_memory_unit_out;
     // controller signals
     wire [1:0] sel_pc_out;
-    wire [1:0] sel_pc_unit_out;
+    wire [1:0] sel_pc_memory_unit_out;  // special case for memory stage
     wire load_pc_out;
+    wire load_pc_memory_unit_out;       // special case for memory stage
     wire sel_branch_imm_out;
     wire sel_A_out;
     wire sel_B_out;
@@ -132,8 +133,6 @@ module controller(
     assign w_en_ldr = w_en_ldr_out;
 
 
-    // controller stages
-    // execute stage
     execute_unit execute_unit(
         // pipeline_unit signals
         .clk(clk),
@@ -177,8 +176,8 @@ module controller(
         .instr_output(instr_memory_unit),
         // controller signals
         .status_reg(status_reg),
-        .sel_pc(sel_pc_unit_out),
-        .load_pc(load_pc_out),
+        .sel_pc(sel_pc_memory_unit_out),
+        .load_pc(load_pc_memory_unit_out),
         .sel_branch_imm(sel_branch_imm_out),
         .sel_A(sel_A_out),
         .sel_B(sel_B_out),
@@ -245,9 +244,11 @@ module controller(
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b00;
+                load_pc_out <= 1'b1;
             end
             default: begin
-                sel_pc_out <= sel_pc_unit_out;
+                sel_pc_out <= sel_pc_memory_unit_out;
+                load_pc_out <= load_pc_memory_unit_out;
             end
         endcase
     end

@@ -6,8 +6,8 @@ module memory_wait_unit(
     input branch_ref,
     input branch_in,
     input sel_stall,
-    output branch_value
-    output [31:0] instr_output,
+    output branch_value,
+    output [31:0] instr_output
     // controller signals
     // NOTHING for now
 );
@@ -44,7 +44,7 @@ pipeline_unit pipeline_unit(
     .P(),
     .U(),
     .W(),
-    .branch_value(branch_value_out)
+    .branch_value(branch_value_out),
     .instr_output(instr_out)
 );
 
