@@ -404,7 +404,7 @@ module tb_controller(output err);
         localparam [31:0] ADD_R_R9_R8_R1 = 32'b1110_00001000_1000_1001_00000_00_0_0001;
         localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
         reset;
-        $display("Starting Tests");
+        $display("Starting Normal Tests");
         load_pc_start(test_num);
         clkR; // load pc
         clkR; // fetch
@@ -467,7 +467,6 @@ module tb_controller(output err);
         mem_writeback_I(test_num, 3'b000);
         mem_wait(test_num);
         write_back_NOP(test_num);
-
         // EX: 8, MEM: 7, MEM_WAIT: 6, WB: 5
         $display("8: Test Number %d", test_num);
         instr_in = ADD_RS_R10_R8_R1_LSL_R1;        // ADD_RS R10 R8 R1 << R1
@@ -508,21 +507,112 @@ module tb_controller(output err);
 
         // Stage 2 Testing: Memory + ZERO hazards
         /*
-        1. MOV_I R8 #8
-        2. NOP
-        3. MOV_R R1 R8 >> 3
+        1. STR_I R8 R1 #1 - PUW = 100
+        2. LDR_LIT R8 #1 - PUW = 110
+        3. NOP
         4. NOP
-        9. STR_I R8 R1 #1
-        10. LDR_LIT R8 R1 #1
-        11. NOP
-        12. NOP
-        13. LDR_I R8 R1 #1
-        14. STR_R R8 R1 << R1
-        15. LDR_R R8 R1 << R1
+        5. LDR_I R8 R1 #1 - PUW = 101
+        6. STR_R R8 R1 << R1 - PUW = 000
+        7. LDR_R R8 R1 << R1 - PUW = 010
         */
 
+        localparam [31:0] STR_I_R8_R1_1 = 32'b1110_01010000_0001_1000_000000000001;
+        localparam [31:0] LDR_LIT_R8_R1_1 = 32'b1110_01011001_1111_1000_000000000001;
+        localparam [31:0] LDR_I_R8_R1_1 = 32'b1110_01010011_0001_1000_000000000001;
+        localparam [31:0] STR_R_R8_R1_LSL_R1 = 32'b1110_01100000_0001_1000_00001_00_0_0001;
+        localparam [31:0] LDR_R_R8_R1_LSL_R1 = 32'b1110_01101001_0001_1000_00001_00_0_0001;
+        reset;
+        $display("Starting Memory Tests");
+        load_pc_start(test_num);
+        clkR; // load pc
+        clkR; // fetch
+        clkR; // fetch_wait
+
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        $display("12: Test Number %d", test_num);
+        instr_in = STR_I_R8_R1_1;        // STR_I R8 R1 #1
+        clkR;
+        executeCycle_LDR_STR(test_num, 2'b00);  //instruction 1
+
+        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        $display("13: Test Number %d", test_num);
+        instr_in = LDR_LIT_R8_R1_1;        // LDR_LIT R8 #1
+        clkR;
+        executeCycle_LDR_STR(test_num, 2'b01);  //instruction 2
+        mem_writeback_STR_LDR(test_num, 1, 0, 2'b00, 1);
+
+        // EX: NOP, MEM: 2, MEM_WAIT: 1, WB: n/a
+        $display("14: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_STR_LDR(test_num, 1, 1, 2'b01, 0);
+        mem_wait(test_num);
+
+        // EX: NOP, MEM: NOP, MEM_WAIT: 2, WB: 1
+        $display("15: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: 5, MEM: NOP, MEM_WAIT: NOP, WB: 2
+        $display("16: Test Number %d", test_num);
+        instr_in = LDR_I_R8_R1_1;        // LDR_I R8 R1 #1
+        clkR;
+        executeCycle_LDR_STR(test_num, 2'b00);  //instruction 5
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_LDR(test_num);
+
+        // EX: 6, MEM: 5, MEM_WAIT: NOP, WB: NOP
+        $display("17: Test Number %d", test_num);
+        instr_in = STR_R_R8_R1_LSL_R1;        // STR_R R8 R1 << R1
+        clkR;
+        executeCycle_LDR_STR(test_num, 2'b10);  //instruction 6
+        mem_writeback_STR_LDR(test_num, 1, 0, 2'b00, 0);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: 7, MEM: 6, MEM_WAIT: 5, WB: NOP
+        $display("18: Test Number %d", test_num);
+        instr_in = LDR_R_R8_R1_LSL_R1;        // LDR_R R8 R1 << R1
+        clkR;
+        executeCycle_LDR_STR(test_num, 2'b10);  //instruction 7
+        mem_writeback_STR_LDR(test_num, 0, 0, 2'b00, 1);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: 7, MEM_WAIT: 6, WB: 5
+        $display("19: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_STR_LDR(test_num, 0, 1, 2'b01, 0);
+        mem_wait(test_num);
+        write_back_LDR(test_num);
+
+        // EX: NOP, MEM: NOP, MEM_WAIT: 7, WB: 6
+        $display("20: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 7
+        $display("21: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
         // Stage 3 Testing: Branching + ZERO hazards TODO: TBD
-        // Test 1: MOV_I R8 #8
 
         //print test summary
         if (error_count == 0) begin
