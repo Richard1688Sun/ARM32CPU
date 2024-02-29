@@ -1,5 +1,5 @@
 module datapath(input clk, input [31:0] LR_in, input sel_load_LR,
-                input [3:0] w_addr1, input w_en1, input [3:0] w_addr2, input w_en2, input [3:0] w_addr_ldr, input w_en_ldr,                           //regfile write inputs
+                input [3:0] w_addr1, input w_en1, input [3:0] w_addr_ldr, input w_en_ldr,                           //regfile write inputs
                 input [31:0] w_data_ldr, input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,                     //end of regfile inputs
                 input [1:0] sel_pc, input load_pc, input [10:0] start_pc,                                                                       //pc inputs
                 input [1:0] sel_A_in, input [1:0] sel_B_in, input [1:0] sel_shift_in,    //inputs for forwarding muxes
@@ -33,8 +33,8 @@ module datapath(input clk, input [31:0] LR_in, input sel_load_LR,
     assign status_out = status_out_reg;
 
     //internal modules
-    regfile regfile(.clk(clk), .w_data1(w_data1), .w_addr1(w_addr1_in), .w_en1(w_en1), .w_data2(ALU_out),
-                    .w_addr2(w_addr2), .w_en2(w_en2), .w_data_ldr(w_data_ldr), .w_addr_ldr(w_addr_ldr), .w_en_ldr(w_en_ldr), 
+    regfile regfile(.clk(clk), .w_data1(w_data1), .w_addr1(w_addr1_in), .w_en1(w_en1),
+                    .w_data_ldr(w_data_ldr), .w_addr_ldr(w_addr_ldr), .w_en_ldr(w_en_ldr), 
                     .sel_pc(sel_pc), .load_pc(load_pc), .start_pc(start_pc), .dp_pc(ALU_out[10:0]),
                     .A_addr(A_addr), .B_addr(B_addr), .shift_addr(shift_addr), .str_addr(str_addr),
                     .A_data(A_data), .B_data(B_data), .shift_data(shift_data), .str_data(str_data), .pc_out(pc_out),

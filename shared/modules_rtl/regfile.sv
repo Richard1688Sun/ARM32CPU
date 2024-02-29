@@ -1,5 +1,4 @@
 module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1,
-            input [31:0] w_data2, input [3:0] w_addr2, input w_en2,
             input [31:0] w_data_ldr, input [3:0] w_addr_ldr, input w_en_ldr,
             input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,
             input [1:0] sel_pc, input load_pc, input [10:0] start_pc, input [10:0] dp_pc,
@@ -8,7 +7,7 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
 
     /*
     *** About ***
-    - 17 regsiteres 32 bits each
+    - 16 regsiteres 32 bits each
     - 4 bits for address
     - 32 bits for data
     - read is combinational
@@ -52,10 +51,6 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
     always_ff @(posedge clk) begin
         if (w_en1 == 1'b1) begin
             registeres[w_addr1] = w_data1;
-        end
-
-        if (w_en2 == 1'b1) begin
-            registeres[w_addr2] = w_data2;
         end
 
         if (w_en_ldr == 1'b1) begin

@@ -2,7 +2,7 @@ module controller(input clk, input rst_n,
                 input [6:0] opcode, input [31:0] status_reg, input [3:0] cond,
                 input P, input U, input W, input en_status_decode,
                 output waiting,                                                                                 //no use yet
-                output w_en1, output w_en2, output w_en_ldr, output sel_load_LR,                            //regfile
+                output w_en1, output w_en2, output w_en_ldr, output sel_load_LR,                                //regfile
                 output [1:0] sel_A_in, output [1:0] sel_B_in, output [1:0] sel_shift_in, output sel_shift,      //forwarding muxes
                 output en_A, output en_B, output en_C, output en_S,                                             //load regs stage
                 output sel_A, output sel_B, output sel_branch_imme, output sel_pre_indexed, output [2:0] ALU_op,                         //execute stage
@@ -62,7 +62,6 @@ module controller(input clk, input rst_n,
     // reg for output
     reg waiting_reg;
     reg w_en1_reg;
-    reg w_en2_reg;
     reg w_en_ldr_reg;
     reg sel_load_LR_reg;
     reg [1:0] sel_A_in_reg;
@@ -88,7 +87,6 @@ module controller(input clk, input rst_n,
     // assign output
     assign waiting = waiting_reg;
     assign w_en1 = w_en1_reg;
-    assign w_en2 = w_en2_reg;
     assign w_en_ldr = w_en_ldr_reg;
     assign sel_load_LR = sel_load_LR_reg;
     assign sel_A_in = sel_A_in_reg;
@@ -156,7 +154,6 @@ module controller(input clk, input rst_n,
         //default set all output to 0        
         waiting_reg = 1'b0;
         w_en1_reg = 1'b0;
-        w_en2_reg = 1'b0;
         w_en_ldr_reg = 1'b0;
         sel_load_LR_reg = 1'b0;
         sel_A_in_reg = 2'b00;
@@ -400,11 +397,8 @@ module controller(input clk, input rst_n,
                     //en_status
                     en_status_reg = en_status_decode;
 
-                    //en_w1 write back
-                    w_en1_reg = 1'b0;
-
-                    //w_en2
-                    w_en2_reg =  ~P | W;
+                    // w_en1
+                    w_en1_reg = P && W;
 
                     //ram memory
                     if (opcode[4] == 1'b1) begin //STR
