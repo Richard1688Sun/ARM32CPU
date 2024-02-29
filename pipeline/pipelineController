@@ -57,7 +57,7 @@ add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memo
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_A
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_B
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/ALU_op
-add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_post_indexing
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_pre_indexed
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/en_status
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_load_LR
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/w_en1
@@ -82,7 +82,7 @@ add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memo
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_B_reg
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/ALU_op_reg
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/en_status_reg
-add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_post_indexing_reg
+add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_pre_indexed_reg
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/sel_load_LR_reg
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/w_en1_reg
 add wave -noupdate -expand -group memory -radix unsigned /tb_controller/DUT/memory_unit/mem_w_en_reg
@@ -133,7 +133,7 @@ add wave -noupdate -group dut /tb_controller/DUT/sel_branch_imm
 add wave -noupdate -group dut /tb_controller/DUT/sel_A
 add wave -noupdate -group dut /tb_controller/DUT/sel_B
 add wave -noupdate -group dut /tb_controller/DUT/ALU_op
-add wave -noupdate -group dut /tb_controller/DUT/sel_post_indexing
+add wave -noupdate -group dut /tb_controller/DUT/sel_pre_indexed
 add wave -noupdate -group dut /tb_controller/DUT/en_status
 add wave -noupdate -group dut /tb_controller/DUT/sel_load_LR
 add wave -noupdate -group dut /tb_controller/DUT/w_en1
@@ -169,7 +169,7 @@ add wave -noupdate -group dut /tb_controller/DUT/sel_branch_imm_out
 add wave -noupdate -group dut /tb_controller/DUT/sel_A_out
 add wave -noupdate -group dut /tb_controller/DUT/sel_B_out
 add wave -noupdate -group dut /tb_controller/DUT/ALU_op_out
-add wave -noupdate -group dut /tb_controller/DUT/sel_post_indexing_out
+add wave -noupdate -group dut /tb_controller/DUT/sel_pre_indexed_out
 add wave -noupdate -group dut /tb_controller/DUT/en_status_out
 add wave -noupdate -group dut /tb_controller/DUT/sel_load_LR_out
 add wave -noupdate -group dut /tb_controller/DUT/w_en1_out

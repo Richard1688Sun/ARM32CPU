@@ -36,7 +36,7 @@ module controller(
     output sel_A,
     output sel_B,
     output [2:0] ALU_op,
-    output sel_post_indexing,
+    output sel_pre_indexed,
     output en_status,
     output sel_load_LR,
     output w_en1,
@@ -105,7 +105,7 @@ module controller(
     wire sel_A_out;
     wire sel_B_out;
     wire [2:0] ALU_op_out;
-    wire sel_post_indexing_out;
+    wire sel_pre_indexed_out;
     wire en_status_out;
     wire sel_load_LR_out;
     wire w_en1_out;
@@ -116,7 +116,7 @@ module controller(
     assign sel_A = sel_A_out;
     assign sel_B = sel_B_out;
     assign ALU_op = ALU_op_out;
-    assign sel_post_indexing = sel_post_indexing_out;
+    assign sel_pre_indexed = sel_pre_indexed_out;
     assign en_status = en_status_out;
     assign sel_load_LR = sel_load_LR_out;
     assign w_en1 = w_en1_out;
@@ -190,7 +190,7 @@ module controller(
         .sel_A(sel_A_out),
         .sel_B(sel_B_out),
         .ALU_op(ALU_op_out),
-        .sel_post_indexing(sel_post_indexing_out),
+        .sel_pre_indexed(sel_pre_indexed_out),
         .en_status(en_status_out),
         .sel_load_LR(sel_load_LR_out),
         .w_en1(w_en1_out),

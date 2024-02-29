@@ -37,7 +37,7 @@ module tb_controller(output err);
     wire sel_A;
     wire sel_B;
     wire [2:0] ALU_op;
-    wire sel_post_indexing;
+    wire sel_pre_indexed;
     wire en_status;
     wire sel_load_LR;
     wire w_en1;
@@ -85,7 +85,7 @@ module tb_controller(output err);
         .sel_A(sel_A),
         .sel_B(sel_B),
         .ALU_op(ALU_op),
-        .sel_post_indexing(sel_post_indexing),
+        .sel_pre_indexed(sel_pre_indexed),
         .en_status(en_status),
         .sel_load_LR(sel_load_LR),
         .w_en1(w_en1),
@@ -277,7 +277,7 @@ module tb_controller(output err);
         begin
             check(1, sel_A, startTestNum);
             check(1, sel_B, startTestNum + 1);
-            check(0, sel_post_indexing, startTestNum + 2);
+            check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
@@ -290,7 +290,7 @@ module tb_controller(output err);
         
             check(1, sel_A, startTestNum);
             check(0, sel_B, startTestNum + 1);
-            check(0, sel_post_indexing, startTestNum + 2);
+            check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
@@ -302,7 +302,7 @@ module tb_controller(output err);
         begin
             check(0, sel_A, startTestNum);
             check(1, sel_B, startTestNum + 1);
-            check(0, sel_post_indexing, startTestNum + 2);
+            check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
@@ -314,7 +314,7 @@ module tb_controller(output err);
         begin
             check(0, sel_A, startTestNum);
             check(0, sel_B, startTestNum + 1);
-            check(0, sel_post_indexing, startTestNum + 2);
+            check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
@@ -322,7 +322,7 @@ module tb_controller(output err);
         end
     endtask: mem_writeback_R_RS
 
-    task mem_writeback_STR_LDR(input integer startTestNum, input P, input U, input [1:0] mode, input is_STR);
+    task mem_writeback_STR_LDR(input integer startTestNum, input P, input U, input W, input [1:0] mode, input is_STR);
         begin
             check(0, sel_A, startTestNum);
 
@@ -333,9 +333,9 @@ module tb_controller(output err);
             end
 
             if (P == 1) begin //preindex -> change address first before memory access
-                check(0, sel_post_indexing, startTestNum + 2);
+                check(0, sel_pre_indexed, startTestNum + 2);
             end else begin
-                check(1, sel_post_indexing, startTestNum + 2);
+                check(1, sel_pre_indexed, startTestNum + 2);
             end
 
             if (U == 1) begin //UP -> add
@@ -345,7 +345,13 @@ module tb_controller(output err);
             end
 
             check(0, sel_load_LR, startTestNum + 4);
-            check(0, w_en1, startTestNum + 5);
+
+            if (W == 1 && P == 1) begin
+                check(1, w_en1, startTestNum + 5);
+            end else begin
+                check(0, w_en1, startTestNum + 5);
+            end
+
             //RAM STUFF
             if (is_STR == 1) begin
                 check(1, mem_w_en, startTestNum + 6);
@@ -360,11 +366,12 @@ module tb_controller(output err);
         begin
             check(0, sel_A, startTestNum);
             check(0, sel_B, startTestNum + 1);
-            check(0, sel_post_indexing, startTestNum + 2);
+            check(0, sel_pre_indexed, startTestNum + 2);
             check(0, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(0, w_en1, startTestNum + 5);
-            test_num = startTestNum + 6;
+            check(0, mem_w_en, startTestNum + 6);
+            test_num = startTestNum + 7;
         end
     endtask: mem_writeback_NOP
 
@@ -385,6 +392,19 @@ module tb_controller(output err);
         end
     endtask: write_back_NOP
 
+    localparam [31:0] MOV_I_R8_8 = 32'b1110_00111010_0000_1000_000000001000;
+    localparam [31:0] MOV_R_R1_R8_3 = 32'b1110_00011010_0000_0001_00011_00_0_1000;
+    localparam [31:0] MOV_RS_R3_R1_R1_LSL_R1 = 32'b1110_00011010_0000_0011_0001_0_00_1_0001;
+    localparam [31:0] ADD_I_R2_R1_1 = 32'b1110_00101000_0001_0010_000000000001;
+    localparam [31:0] ADD_R_R9_R8_R1 = 32'b1110_00001000_1000_1001_00000_00_0_0001;
+    localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
+
+    localparam [31:0] STR_I_R8_R1_1 = 32'b1110_01010000_0001_1000_000000000001;
+    localparam [31:0] LDR_LIT_R8_R1_1 = 32'b1110_01011001_1111_1000_000000000001;
+    localparam [31:0] LDR_I_R8_R1_1 = 32'b1110_01010011_0001_1000_000000000001;
+    localparam [31:0] STR_R_R8_R1_LSL_R1 = 32'b1110_01100000_0001_1000_00001_00_0_0001;
+    localparam [31:0] LDR_R_R8_R1_LSL_R1 = 32'b1110_01101001_0001_1000_00001_00_0_0001;
+
     initial begin
         // Stage 1 Testing: Normal  + ZERO hazards
         /*
@@ -397,12 +417,6 @@ module tb_controller(output err);
         7. ADD_R R9 R8 R1
         8. ADD_RS R10 R8 R1 << R1
         */
-        localparam [31:0] MOV_I_R8_8 = 32'b1110_00111010_0000_1000_000000001000;
-        localparam [31:0] MOV_R_R1_R8_3 = 32'b1110_00011010_0000_0001_00011_00_0_1000;
-        localparam [31:0] MOV_RS_R3_R1_R1_LSL_R1 = 32'b1110_00011010_0000_0011_0001_0_00_1_0001;
-        localparam [31:0] ADD_I_R2_R1_1 = 32'b1110_00101000_0001_0010_000000000001;
-        localparam [31:0] ADD_R_R9_R8_R1 = 32'b1110_00001000_1000_1001_00000_00_0_0001;
-        localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
         reset;
         $display("Starting Normal Tests");
         load_pc_start(test_num);
@@ -515,12 +529,6 @@ module tb_controller(output err);
         6. STR_R R8 R1 << R1 - PUW = 000
         7. LDR_R R8 R1 << R1 - PUW = 010
         */
-
-        localparam [31:0] STR_I_R8_R1_1 = 32'b1110_01010000_0001_1000_000000000001;
-        localparam [31:0] LDR_LIT_R8_R1_1 = 32'b1110_01011001_1111_1000_000000000001;
-        localparam [31:0] LDR_I_R8_R1_1 = 32'b1110_01010011_0001_1000_000000000001;
-        localparam [31:0] STR_R_R8_R1_LSL_R1 = 32'b1110_01100000_0001_1000_00001_00_0_0001;
-        localparam [31:0] LDR_R_R8_R1_LSL_R1 = 32'b1110_01101001_0001_1000_00001_00_0_0001;
         reset;
         $display("Starting Memory Tests");
         load_pc_start(test_num);
@@ -539,14 +547,14 @@ module tb_controller(output err);
         instr_in = LDR_LIT_R8_R1_1;        // LDR_LIT R8 #1
         clkR;
         executeCycle_LDR_STR(test_num, 2'b01);  //instruction 2
-        mem_writeback_STR_LDR(test_num, 1, 0, 2'b00, 1);
+        mem_writeback_STR_LDR(test_num, 1, 0, 0, 2'b00, 1);
 
         // EX: NOP, MEM: 2, MEM_WAIT: 1, WB: n/a
         $display("14: Test Number %d", test_num);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
-        mem_writeback_STR_LDR(test_num, 1, 1, 2'b01, 0);
+        mem_writeback_STR_LDR(test_num, 1, 1, 0, 2'b01, 0);
         mem_wait(test_num);
 
         // EX: NOP, MEM: NOP, MEM_WAIT: 2, WB: 1
@@ -572,7 +580,7 @@ module tb_controller(output err);
         instr_in = STR_R_R8_R1_LSL_R1;        // STR_R R8 R1 << R1
         clkR;
         executeCycle_LDR_STR(test_num, 2'b10);  //instruction 6
-        mem_writeback_STR_LDR(test_num, 1, 0, 2'b00, 0);
+        mem_writeback_STR_LDR(test_num, 1, 0, 1, 2'b00, 0);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
@@ -581,7 +589,7 @@ module tb_controller(output err);
         instr_in = LDR_R_R8_R1_LSL_R1;        // LDR_R R8 R1 << R1
         clkR;
         executeCycle_LDR_STR(test_num, 2'b10);  //instruction 7
-        mem_writeback_STR_LDR(test_num, 0, 0, 2'b00, 1);
+        mem_writeback_STR_LDR(test_num, 0, 0, 0, 2'b10, 1);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
@@ -590,7 +598,7 @@ module tb_controller(output err);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
-        mem_writeback_STR_LDR(test_num, 0, 1, 2'b01, 0);
+        mem_writeback_STR_LDR(test_num, 0, 1, 0, 2'b10, 0);
         mem_wait(test_num);
         write_back_LDR(test_num);
 
@@ -610,7 +618,7 @@ module tb_controller(output err);
         execute_NOP(test_num);
         mem_writeback_NOP(test_num);
         mem_wait(test_num);
-        write_back_NOP(test_num);
+        write_back_LDR(test_num);
 
         // Stage 3 Testing: Branching + ZERO hazards TODO: TBD
 

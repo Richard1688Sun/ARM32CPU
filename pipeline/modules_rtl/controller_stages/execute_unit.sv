@@ -140,7 +140,7 @@ always_comb begin
             end //otherwise from Rn
 
             // sel_B_in
-            // load shift - value of 0
+            // sel_shift
             // sel_shift_in
 
             // en_A
@@ -160,6 +160,8 @@ always_comb begin
             end // else default from Rm
 
             //sel_shift
+            sel_shift_reg = 1'b1;
+
             //sel_shift_in
 
             //en_A - always from Rn
@@ -171,7 +173,7 @@ always_comb begin
             //en_S
             en_S_reg = 1'b1;
         end
-    end else if (opcode_out[6:3] == 4'b1000) begin  //branching
+    end else if (opcode_out[6:3] == 4'b1001) begin  //branching
         // sel_A_in
         // sel_B_in
         if (rm_out == rd) begin

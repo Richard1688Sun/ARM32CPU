@@ -41,7 +41,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire sel_shift;
     wire wb_sel;
     wire en_A, en_B, en_C, en_S;
-    wire sel_A, sel_B, sel_post_indexing;
+    wire sel_A, sel_B, sel_pre_indexed;
     wire [2:0] ALU_op;
     wire en_status, status_rdy_ctrl;
     wire load_ir, load_pc_ctrl;
@@ -101,7 +101,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .en_S(en_S),
         .sel_A(sel_A),
         .sel_B(sel_B),
-        .sel_post_indexing(sel_post_indexing),
+        .sel_pre_indexed(sel_pre_indexed),
         .imme_data({20'd0, imm12}),
         .ALU_op(ALU_op),
         .en_status(en_status),
@@ -139,7 +139,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .en_S(en_S),
         .sel_A(sel_A),
         .sel_B(sel_B),
-        .sel_post_indexing(sel_post_indexing),
+        .sel_pre_indexed(sel_pre_indexed),
         .ALU_op(ALU_op),
         .en_status(en_status),
         .status_rdy(status_rdy_ctrl),

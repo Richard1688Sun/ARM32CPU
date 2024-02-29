@@ -32,7 +32,7 @@ pipeline_unit pipeline_unit(
     .branch_in(branch_in),
     .sel_stall(sel_stall),
     .cond(),
-    .opcode(),
+    .opcode(opcode_decoded),
     .en_status(),
     .rn(),
     .rd(),

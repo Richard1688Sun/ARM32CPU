@@ -5,7 +5,7 @@ module controller(input clk, input rst_n,
                 output w_en1, output w_en2, output w_en_ldr, output sel_load_LR,                            //regfile
                 output [1:0] sel_A_in, output [1:0] sel_B_in, output [1:0] sel_shift_in, output sel_shift,      //forwarding muxes
                 output en_A, output en_B, output en_C, output en_S,                                             //load regs stage
-                output sel_A, output sel_B, output sel_branch_imme, output sel_post_indexing, output [2:0] ALU_op,                         //execute stage
+                output sel_A, output sel_B, output sel_branch_imme, output sel_pre_indexed, output [2:0] ALU_op,                         //execute stage
                 output en_status, output status_rdy,                                                                             //status reg
                 output load_ir,                                                                                 //instruction register
                 output load_pc, output [1:0] sel_pc,                                                            //program counter
@@ -75,7 +75,7 @@ module controller(input clk, input rst_n,
     reg sel_A_reg;
     reg sel_B_reg;
     reg sel_branch_imme_reg;
-    reg sel_post_indexing_reg;
+    reg sel_pre_indexed_reg;
     reg [2:0] ALU_op_reg;
     reg en_status_reg;
     reg status_rdy_reg;
@@ -101,7 +101,7 @@ module controller(input clk, input rst_n,
     assign sel_A = sel_A_reg;
     assign sel_B = sel_B_reg;
     assign sel_branch_imme = sel_branch_imme_reg;
-    assign sel_post_indexing = sel_post_indexing_reg;
+    assign sel_pre_indexed = sel_pre_indexed_reg;
     assign ALU_op = ALU_op_reg;
     assign en_status = en_status_reg;
     assign status_rdy = status_rdy_reg;
@@ -169,7 +169,7 @@ module controller(input clk, input rst_n,
         sel_A_reg = 1'b0;
         sel_B_reg = 1'b0;
         sel_branch_imme_reg = 1'b0;
-        sel_post_indexing_reg = 1'b0;
+        sel_pre_indexed_reg = 1'b0;
         ALU_op_reg = 3'b000;
         en_status_reg = 1'b0;
         status_rdy_reg = 1'b0;
@@ -285,7 +285,7 @@ module controller(input clk, input rst_n,
                         en_S_reg = 1'b1;
 
                         //sel_shift
-                        sel_shift_reg = 1'b0;
+                        sel_shift_reg = 1'b1;
 
                         //sel_shift_in
                         sel_shift_in_reg = 2'b00;       //load from Rm
@@ -342,8 +342,8 @@ module controller(input clk, input rst_n,
                         sel_B_reg = 1'b1;
                     end
 
-                    //sel_post_indexing
-                    sel_post_indexing_reg = 1'b0;
+                    //sel_pre_indexed
+                    sel_pre_indexed_reg = 1'b0;
 
                     //sel_w_data
                     sel_load_LR_reg = 1'b0;
@@ -366,7 +366,7 @@ module controller(input clk, input rst_n,
                     ALU_op
                     sel_A
                     sel_B
-                    sel_post_indexing
+                    sel_pre_indexed
                     en_status
                     ram_memory
                     */
@@ -384,8 +384,8 @@ module controller(input clk, input rst_n,
                     //sel_A - always from Rn
                     sel_A_reg = 1'b0;
 
-                    //sel_B & sel_post_indexing
-                    sel_post_indexing_reg = ~P;
+                    //sel_B & sel_pre_indexed
+                    sel_pre_indexed_reg = ~P;
                     if (opcode[3] == 1'b1) begin
                         //register - load from regB
                         sel_B_reg = 1'b0;
@@ -458,8 +458,8 @@ module controller(input clk, input rst_n,
                         sel_branch_imme_reg = 1'b1;
                     end
 
-                    //sel_post_indexing
-                    sel_post_indexing_reg = 1'b0;
+                    //sel_pre_indexed
+                    sel_pre_indexed_reg = 1'b0;
 
                     //en_status
                     en_status_reg = 1'b0;

@@ -22,7 +22,7 @@ module memory_unit(
     output sel_A,
     output sel_B,
     output [2:0] ALU_op,
-    output sel_post_indexing,
+    output sel_pre_indexed,
     output en_status,
     output sel_load_LR,
     output w_en1,
@@ -62,7 +62,7 @@ reg sel_A_reg;
 reg sel_B_reg;
 reg [2:0] ALU_op_reg;
 reg en_status_reg;
-reg sel_post_indexing_reg;
+reg sel_pre_indexed_reg;
 reg sel_load_LR_reg;
 reg w_en1_reg;
 reg mem_w_en_reg;
@@ -73,7 +73,7 @@ assign sel_A = sel_A_reg;
 assign sel_B = sel_B_reg;
 assign ALU_op = ALU_op_reg;
 assign en_status = en_status_reg;
-assign sel_post_indexing = sel_post_indexing_reg;
+assign sel_pre_indexed = sel_pre_indexed_reg;
 assign sel_load_LR = sel_load_LR_reg;
 assign w_en1 = w_en1_reg;
 assign mem_w_en = mem_w_en_reg;
@@ -132,7 +132,7 @@ always_comb begin
     sel_A_reg = 1'b0;
     sel_B_reg = 1'b0;
     ALU_op_reg = 3'b000;
-    sel_post_indexing_reg = 1'b0;
+    sel_pre_indexed_reg = 1'b0;
     en_status_reg = 1'b0;
     sel_load_LR_reg = 1'b0;
     w_en1_reg = 1'b0;
@@ -170,7 +170,7 @@ always_comb begin
             default: ALU_op_reg = ADD;
         endcase
 
-        // sel_post_indexing
+        // sel_pre_indexed
 
         // en_status -> in branching decodded result doesnt this work
         en_status_reg = en_status_decoded;
@@ -194,8 +194,8 @@ always_comb begin
         // sel_A - always from Rn
         sel_A_reg = 1'b0;
 
-        // sel_B & sel_post_indexing
-        sel_post_indexing_reg = ~P;
+        // sel_B & sel_pre_indexed
+        sel_pre_indexed_reg = ~P;
         if (opcode[3] == 1'b1) begin
             // register - load from regB
             sel_B_reg = 1'b0;
@@ -210,7 +210,7 @@ always_comb begin
         default: ALU_op_reg = ADD;
         endcase
 
-        // sel_post_indexing
+        // sel_pre_indexed
 
         //en_status
         en_status_reg = en_status_decoded;
@@ -218,7 +218,7 @@ always_comb begin
         // sel_load_LR
 
         // w_en1
-        w_en1_reg = ~P | W;
+        w_en1_reg = P && W;
 
         // mem_w_en
         if (opcode[4] == 1'b1) begin    //STR
@@ -266,7 +266,7 @@ always_comb begin
         end
 
         // ALU_op
-        // sel_post_indexing
+        // sel_pre_indexed
         // en_status
 
         // sel_load_LR
