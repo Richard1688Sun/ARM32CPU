@@ -258,6 +258,25 @@ module tb_controller(output err);
 
     endtask: executeCycle_LDR_STR
 
+    task executeCycle_Branch(input integer startTestNum, input is_R);
+        begin
+            check(2'b00, sel_A_in, startTestNum);
+            check(2'b00, sel_B_in, startTestNum + 1);
+            check(2'b11, sel_shift_in, startTestNum + 2);
+            check(1'b0, en_A, startTestNum + 3);
+
+            if (is_R == 1'b1) begin
+                check(1'b1, en_B, startTestNum + 4);
+            end else begin
+                check(1'b0, en_B, startTestNum + 4);
+            end
+
+            check(1'b1, en_S, startTestNum + 5);
+            check(1'b1, sel_shift, startTestNum + 6);
+            test_num = startTestNum + 7;
+        end
+    endtask: executeCycle_Branch
+
     task execute_NOP(input integer startTestNum);
         begin
             check(0, sel_A_in, startTestNum);
@@ -281,7 +300,10 @@ module tb_controller(output err);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
-            test_num = startTestNum + 6;
+            check(0, mem_w_en, startTestNum + 6);
+            check(2'b00, sel_pc, startTestNum + 7);
+            check(1, load_pc, startTestNum + 8);
+            test_num = startTestNum + 9;
         end
     endtask: mem_writeback_MOV_I
 
@@ -294,7 +316,10 @@ module tb_controller(output err);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
-            test_num = startTestNum + 6;
+            check(0, mem_w_en, startTestNum + 6);
+            check(2'b00, sel_pc, startTestNum + 7);
+            check(1, load_pc, startTestNum + 8);
+            test_num = startTestNum + 9;
         end
     endtask: mem_writeback_MOV_R_RS
 
@@ -306,7 +331,10 @@ module tb_controller(output err);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
-            test_num = startTestNum + 6;
+            check(0, mem_w_en, startTestNum + 6);
+            check(2'b00, sel_pc, startTestNum + 7);
+            check(1, load_pc, startTestNum + 8);
+            test_num = startTestNum + 9;
         end
     endtask: mem_writeback_I
 
@@ -318,7 +346,10 @@ module tb_controller(output err);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
-            test_num = startTestNum + 6;
+            check(0, mem_w_en, startTestNum + 6);
+            check(2'b00, sel_pc, startTestNum + 7);
+            check(1, load_pc, startTestNum + 8);
+            test_num = startTestNum + 9;
         end
     endtask: mem_writeback_R_RS
 
@@ -358,9 +389,53 @@ module tb_controller(output err);
             end else begin
                 check(0, mem_w_en, startTestNum + 6);
             end
-            test_num = startTestNum + 7;
+
+            check(2'b00, sel_pc, startTestNum + 7);
+            check(1, load_pc, startTestNum + 8);
+            test_num = startTestNum + 9;
         end
     endtask: mem_writeback_STR_LDR
+
+    task mem_writeback_Branch (input integer startTestNum, input load_LR, input [3:0] cond, input [3:0] ZCNV) 
+        begin
+            check(0, sel_A, startTestNum);
+            check(0, sel_B, startTestNum + 1);
+            check(0, sel_pre_indexed, startTestNum + 2);
+            check(0, ALU_op, startTestNum + 3);
+            check(0, sel_load_LR, startTestNum + 4);
+            check(0, w_en1, startTestNum + 5);
+            check(0, mem_w_en, startTestNum + 6);
+            reg Z = ZCNV[3];
+            reg C = ZCNV[2];
+            reg N = ZCNV[1];
+            reg V = ZCNV[0];
+            if ((cond == 4'b0000 && Z) || 
+                (cond == 4'b0001 && ~Z) || 
+                (cond == 4'b0010 && C) || 
+                (cond == 4'b0011 && ~C) || 
+                (cond == 4'b0100 && N) || 
+                (cond == 4'b0101 && ~N) || 
+                (cond == 4'b0110 && V) || 
+                (cond == 4'b0111 && ~V) || 
+                (cond == 4'b1000 && C && ~Z) || 
+                (cond == 4'b1001 && ~C || Z) || 
+                (cond == 4'b1010 && N == V) || 
+                (cond == 4'b1011 && N != V) || 
+                (cond == 4'b1100 && (~Z && (N == V))) || 
+                (cond == 4'b1101 && (Z || (N != V))) || 
+                (cond == 4'b1110)) begin
+            
+                // take the new address
+                check(2'b11, sel_pc, startTestNum + 7);
+                check(1, load_pc, startTestNum + 8;
+            end else begin
+                check(2'b00, sel_pc, startTestNum + 7);
+                check(1, load_pc, startTestNum + 8);
+            end
+            check(0, en_status, startTestNum + 9);
+            test_num = startTestNum + 10;
+        end
+    endtask: mem_writeback_Branch
 
     task mem_writeback_NOP(input integer startTestNum);
         begin
@@ -370,6 +445,8 @@ module tb_controller(output err);
             check(0, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(0, w_en1, startTestNum + 5);
+            check(0, sel_pc, startTestNum + 6);
+            check()
             check(0, mem_w_en, startTestNum + 6);
             test_num = startTestNum + 7;
         end

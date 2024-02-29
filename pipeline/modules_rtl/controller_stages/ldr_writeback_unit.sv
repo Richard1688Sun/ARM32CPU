@@ -55,7 +55,7 @@ always_comb begin
     w_en_ldr_reg = 1'b0;
 
     if (opcode_decoded[6:4] == 3'b110 || opcode_decoded[6:3] == 4'b1000) begin
-        //w_en2
+        //w_en_ldr_reg
         w_en_ldr_reg = 1'b1;
     end
 end
