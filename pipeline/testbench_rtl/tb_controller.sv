@@ -482,6 +482,11 @@ module tb_controller(output err);
     localparam [31:0] STR_R_R8_R1_LSL_R1 = 32'b1110_01100000_0001_1000_00001_00_0_0001;
     localparam [31:0] LDR_R_R8_R1_LSL_R1 = 32'b1110_01101001_0001_1000_00001_00_0_0001;
 
+    localparam [31:0] B_1 = 32'b0000_1010_000000000000000000000001;
+    localparam [31:0] BL_2 = 32'b0000_1011_000000000000000000000010;  
+    localparam [31:0] BX_R1 = 32'b0000_00010010_111111111111_0001_0001;
+    localparam [31:0] BLX_R2 = 32'b0000_00010010_111111111111_0011_0010;
+
     initial begin
         // Stage 1 Testing: Normal  + ZERO hazards
         /*
@@ -698,6 +703,85 @@ module tb_controller(output err);
         write_back_LDR(test_num);
 
         // Stage 3 Testing: Branching + ZERO hazards TODO: TBD
+        /*
+        1. B #1 -> equals 0000
+        2. BL #2 -> not equal 0001
+        3. BX R1 -> greater than 1100
+        4. BLX R2 -> less than 1011
+        5. B #1 -> equals 0000 BUT FAILS
+        */
+        reset;
+        $display("Starting Branch Tests");
+        load_pc_start(test_num);
+        clkR; // load pc
+        clkR; // fetch
+        clkR; // fetch_wait
+
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        $display("22: Test Number %d", test_num);
+        instr_in = B_1;        // B #1
+        clkR;
+        executeCycle_Branch(test_num, 0);  //instruction 1
+
+        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        $display("23: Test Number %d", test_num);
+        instr_in = BL_2;        // BL #2
+        clkR;
+        executeCycle_Branch(test_num, 0);  //instruction 2
+        mem_writeback_Branch(test_num, 0, 4'b0000, 4'b1000);
+
+        // EX: 3, MEM: 2, MEM_WAIT: 1, WB: n/a
+        $display("24: Test Number %d", test_num);
+        instr_in = BX_R1;        // BX R1
+        clkR;
+        executeCycle_Branch(test_num, 1);  //instruction 3
+        mem_writeback_Branch(test_num, 1, 4'b0001, 4'b0111);
+        mem_wait(test_num);
+
+        // EX: 4, MEM: 3, MEM_WAIT: 2, WB: 1
+        $display("25: Test Number %d", test_num);
+        instr_in = BLX_R2;        // BLX R2
+        clkR;
+        executeCycle_Branch(test_num, 1);  //instruction 4
+        mem_writeback_Branch(test_num, 0, 4'b1100, 4'b0010);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: 5, MEM: 4, MEM_WAIT: 3, WB: 2
+        $display("26: Test Number %d", test_num);
+        instr_in = B_1;        // B #1
+        clkR;
+        executeCycle_Branch(test_num, 0);  //instruction 5
+        mem_writeback_Branch(test_num, 1, 4'b1011, 4'b1000);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: 5, MEM_WAIT: 4, WB: 3
+        $display("27: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_Branch(test_num, 0, 4'b0000, 4'b0001);    //this one should fail
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: NOP, MEM_WAIT: 5, WB: 4
+        $display("28: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 5
+        $display("29: Test Number %d", test_num);
+        instr_in = NOP;
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
 
         //print test summary
         if (error_count == 0) begin
