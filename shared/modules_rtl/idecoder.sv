@@ -22,7 +22,7 @@ module idecoder(
     reg [6:0] opcode_reg;
     reg [4:0] imm5_reg;
     reg [11:0] imm12_reg;
-    signed reg [31:0] imm_branch_reg;
+    reg signed [31:0] imm_branch_reg;
 
     assign en_status = en_status_reg;
     assign shift_op = shift_op_reg;
@@ -52,7 +52,7 @@ module idecoder(
         shift_op_reg = instr[6:5];
         imm5_reg = instr[11:7];
         imm12_reg = instr[11:0];
-        imm_branch_reg = {8{instr[23]}, instr[23:0]};    // sign extended HOWEVER we dont multiply by 4 here
+        imm_branch_reg = {{8{instr[23]}}, instr[23:0]};    // sign extended HOWEVER we dont multiply by 4 here
         en_status_reg = instr[20];
 
         case (instr[27:26])
