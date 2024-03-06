@@ -255,7 +255,10 @@ always_comb begin
         end
 
         //sel_A
-        sel_A_reg = 1'b1;
+        if (opcode[1] == 1'b1) begin
+            // type X is direct laod PC from register
+            sel_A_reg = 1'b1;
+        end
 
         //sel_B
         if (opcode[1] == 1'b1) begin

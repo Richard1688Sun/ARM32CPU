@@ -175,6 +175,11 @@ always_comb begin
         end
     end else if (opcode_out[6:3] == 4'b1001) begin  //branching
         // sel_A_in
+        if (opcode[1] == 1'b0) begin
+            // pc realtive for imm branch
+            sel_A_in_reg = 2'b11;
+        end 
+        
         // sel_B_in
         if (rm_out == rd) begin
             sel_B_in_reg = 2'b01;    //forward from result of ALU

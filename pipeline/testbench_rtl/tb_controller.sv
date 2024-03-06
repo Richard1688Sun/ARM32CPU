@@ -260,7 +260,11 @@ module tb_controller(output err);
 
     task executeCycle_Branch(input integer startTestNum, input is_R);
         begin
-            check(2'b00, sel_A_in, startTestNum);
+            if (is_R == 1'b1) begin
+                check(2'b00, sel_A_in, startTestNum);
+            end else begin
+                check(2'b11, sel_A_in, startTestNum);
+            end
             check(2'b00, sel_B_in, startTestNum + 1);
             check(2'b11, sel_shift_in, startTestNum + 2);
             check(1'b0, en_A, startTestNum + 3);
