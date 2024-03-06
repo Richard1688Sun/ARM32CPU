@@ -11,7 +11,7 @@ module memory_unit(
     output [3:0] rd,        // Rd (destination)
     output [1:0] shift_op,  // Shift operation
     output [11:0] imm12,    // Immediate value or second operand
-    output [23:0] imm24,    // Address for branching
+    output [31:0] imm_branch,    // Address for branching
     output branch_value,
     output [31:0] instr_output,
     // controller signals
@@ -36,7 +36,7 @@ wire en_status_decoded;
 wire [3:0] rd_out;
 wire [1:0] shift_op_out;
 wire [11:0] imm12_out;
-wire [23:0] imm24_out;
+wire [31:0] imm_branch_out;
 wire P;
 wire U;
 wire W;
@@ -46,7 +46,7 @@ assign opcode = opcode_decoded;
 assign rd = rd_out;
 assign shift_op = shift_op_out;
 assign imm12 = imm12_out;
-assign imm24 = imm24_out;
+assign imm_branch = imm_branch_out;
 assign instr_output = instr_out;
 
 // brnach reference MUX
@@ -116,7 +116,7 @@ pipeline_unit pipeline_unit(
     .shift_op(shift_op_out),
     .imm5(),
     .imm12(imm12_out),
-    .imm24(imm24_out),
+    .imm_branch(imm_branch_out),
     .P(P),
     .U(U),
     .W(W),

@@ -10,7 +10,7 @@ module idecoder(
     output [1:0] shift_op,  // Shift operation
     output [4:0] imm5,      // Immediate value
     output [11:0] imm12,    // Immediate value or second operand
-    output [23:0] imm24,    // Address for branching
+    output [32:0] imm_branch,    // Address for branching
     output P,
     output U,
     output W
@@ -22,7 +22,7 @@ module idecoder(
     reg [6:0] opcode_reg;
     reg [4:0] imm5_reg;
     reg [11:0] imm12_reg;
-    reg [23:0] imm24_reg;
+    signed reg [31:0] imm_branch_reg;
 
     assign en_status = en_status_reg;
     assign shift_op = shift_op_reg;
@@ -34,7 +34,7 @@ module idecoder(
     assign opcode = opcode_reg;
     assign imm5 = imm5_reg;
     assign imm12 = imm12_reg;
-    assign imm24 = imm24_reg;
+    assign imm_branch = imm_branch_reg;
 
     assign type_I = instr[25];
     assign type_RS = instr[4];
@@ -52,7 +52,7 @@ module idecoder(
         shift_op_reg = instr[6:5];
         imm5_reg = instr[11:7];
         imm12_reg = instr[11:0];
-        imm24_reg = instr[23:0];
+        imm_branch_reg = {8{instr[23]}, instr[23:0]};    // sign extended HOWEVER we dont multiply by 4 here
         en_status_reg = instr[20];
 
         case (instr[27:26])

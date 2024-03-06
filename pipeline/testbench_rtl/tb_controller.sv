@@ -29,7 +29,7 @@ module tb_controller(output err);
     wire [3:0] rd_memory_unit;
     wire [1:0] shift_op_memory_unit;
     wire [11:0] imm12_memory_unit;
-    wire [23:0] imm24_memory_unit;
+    wire [31:0] imm_branch_memory_unit;
     // controller signals
     wire [1:0] sel_pc;
     wire load_pc;
@@ -78,7 +78,7 @@ module tb_controller(output err);
         .rd_memory_unit(rd_memory_unit),
         .shift_op_memory_unit(shift_op_memory_unit),
         .imm12_memory_unit(imm12_memory_unit),
-        .imm24_memory_unit(imm24_memory_unit),
+        .imm_branch_memory_unit(imm_branch_memory_unit),
         .sel_pc(sel_pc),
         .load_pc(load_pc),
         .sel_branch_imm(sel_branch_imm),
@@ -396,7 +396,7 @@ module tb_controller(output err);
         end
     endtask: mem_writeback_STR_LDR
 
-    task mem_writeback_Branch (input integer startTestNum, input load_LR, input [3:0] cond, input [3:0] ZCNV) 
+    task mem_writeback_Branch (input integer startTestNum, input load_LR, input [3:0] cond, input [3:0] ZCNV); 
         begin
             check(0, sel_A, startTestNum);
             check(0, sel_B, startTestNum + 1);
@@ -405,29 +405,25 @@ module tb_controller(output err);
             check(0, sel_load_LR, startTestNum + 4);
             check(0, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
-            reg Z = ZCNV[3];
-            reg C = ZCNV[2];
-            reg N = ZCNV[1];
-            reg V = ZCNV[0];
-            if ((cond == 4'b0000 && Z) || 
-                (cond == 4'b0001 && ~Z) || 
-                (cond == 4'b0010 && C) || 
-                (cond == 4'b0011 && ~C) || 
-                (cond == 4'b0100 && N) || 
-                (cond == 4'b0101 && ~N) || 
-                (cond == 4'b0110 && V) || 
-                (cond == 4'b0111 && ~V) || 
-                (cond == 4'b1000 && C && ~Z) || 
-                (cond == 4'b1001 && ~C || Z) || 
-                (cond == 4'b1010 && N == V) || 
-                (cond == 4'b1011 && N != V) || 
-                (cond == 4'b1100 && (~Z && (N == V))) || 
-                (cond == 4'b1101 && (Z || (N != V))) || 
+            if ((cond == 4'b0000 && ZCNV[3]) || 
+                (cond == 4'b0001 && ~ZCNV[3]) || 
+                (cond == 4'b0010 && ZCNV[2]) || 
+                (cond == 4'b0011 && ~ZCNV[2]) || 
+                (cond == 4'b0100 && ZCNV[1]) || 
+                (cond == 4'b0101 && ~ZCNV[1]) || 
+                (cond == 4'b0110 && ZCNV[0]) || 
+                (cond == 4'b0111 && ~ZCNV[0]) || 
+                (cond == 4'b1000 && ZCNV[2] && ~ZCNV[3]) || 
+                (cond == 4'b1001 && ~ZCNV[2] || ZCNV[3]) || 
+                (cond == 4'b1010 && ZCNV[1] == ZCNV[0]) || 
+                (cond == 4'b1011 && ZCNV[1] != ZCNV[0]) || 
+                (cond == 4'b1100 && (~ZCNV[3] && (ZCNV[1] == ZCNV[0]))) || 
+                (cond == 4'b1101 && (ZCNV[3] || (ZCNV[1] != ZCNV[0]))) || 
                 (cond == 4'b1110)) begin
             
                 // take the new address
                 check(2'b11, sel_pc, startTestNum + 7);
-                check(1, load_pc, startTestNum + 8;
+                check(1, load_pc, startTestNum + 8);
             end else begin
                 check(2'b00, sel_pc, startTestNum + 7);
                 check(1, load_pc, startTestNum + 8);
@@ -446,7 +442,6 @@ module tb_controller(output err);
             check(0, sel_load_LR, startTestNum + 4);
             check(0, w_en1, startTestNum + 5);
             check(0, sel_pc, startTestNum + 6);
-            check()
             check(0, mem_w_en, startTestNum + 6);
             test_num = startTestNum + 7;
         end

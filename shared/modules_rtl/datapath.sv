@@ -5,7 +5,7 @@ module datapath(input clk, input [31:0] LR_in, input sel_load_LR,
                 input [1:0] sel_A_in, input [1:0] sel_B_in, input [1:0] sel_shift_in,    //inputs for forwarding muxes
                 input en_A, input en_B, input [31:0] shift_imme, input sel_shift,
                 input [1:0] shift_op, input en_S,
-                input sel_A, input sel_B, input sel_branch_imme, input sel_pre_indexed, input [31:0] imm12, input [31:0] imm24,
+                input sel_A, input sel_B, input sel_branch_imme, input sel_pre_indexed, input [31:0] imm12, input [31:0] imm_branch,
                 input [2:0] ALU_op, input en_status, input status_rdy,                                                //datapath inputs
                 output [31:0] datapath_out, output [31:0] status_out, output [31:0] str_data, output [10:0] PC,     //datapath outputs
                 output [31:0] reg_output, input [3:0] reg_addr);    //TODO: remove later, this is only for testing  
@@ -49,7 +49,7 @@ module datapath(input clk, input [31:0] LR_in, input sel_load_LR,
     assign w_addr1_in = (sel_load_LR == 1'b1) ? 4'd14 : w_addr1;
     assign val_A = (sel_A == 1'b1) ? 31'b0 : A_reg;
     assign val_B = (sel_B == 1'b1) ? imme_data : shift_out; 
-    assign imme_data = (sel_branch_imme == 1'b1) ? imm24 : imm12;
+    assign imme_data = (sel_branch_imme == 1'b1) ? imm_branch : imm12;
     assign shift_amt = (sel_shift == 1'b1) ? shift_in: shift_imme;
     //A_mux
     always_comb begin

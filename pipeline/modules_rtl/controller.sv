@@ -28,7 +28,7 @@ module controller(
     output [3:0] rd_memory_unit,
     output [1:0] shift_op_memory_unit,
     output [11:0] imm12_memory_unit,
-    output [23:0] imm24_memory_unit,
+    output [31:0] imm_branch_memory_unit,
     // controller signals
     output [1:0] sel_pc,
     output load_pc,
@@ -87,7 +87,7 @@ module controller(
     wire [3:0] rd_memory_unit_out;
     wire [1:0] shift_op_memory_unit_out;
     wire [11:0] imm12_memory_unit_out;
-    wire [23:0] imm24_memory_unit_out;
+    wire [31:0] imm_branch_memory_unit_out;
     wire branch_ref_memory_unit;
     wire [31:0] instr_memory_unit;
     assign cond_memory_unit = cond_memory_unit_out;
@@ -95,7 +95,7 @@ module controller(
     assign rd_memory_unit = rd_memory_unit_out;
     assign shift_op_memory_unit = shift_op_memory_unit_out;
     assign imm12_memory_unit = imm12_memory_unit_out;
-    assign imm24_memory_unit = imm24_memory_unit_out;
+    assign imm_branch_memory_unit = imm_branch_memory_unit_out;
     // controller signals
     reg [1:0] sel_pc_out;
     wire [1:0] sel_pc_memory_unit_out;  // special case for memory stage
@@ -179,7 +179,7 @@ module controller(
         .rd(rd_memory_unit_out),
         .shift_op(shift_op_memory_unit_out),
         .imm12(imm12_memory_unit_out),
-        .imm24(imm24_memory_unit_out),
+        .imm_branch(imm_branch_memory_unit_out),
         .branch_value(branch_ref_memory_unit),
         .instr_output(instr_memory_unit),
         // controller signals

@@ -11,7 +11,7 @@ module tb_idecoder(output err);
     wire [1:0] shift_op;
     wire [4:0] imm5;
     wire [11:0] imm12;
-    wire [23:0] imm24;
+    wire [31:0] imm_branch;
     wire P, U, W;
 
     integer error_count = 0;
@@ -32,7 +32,7 @@ module tb_idecoder(output err);
         .shift_op(shift_op),
         .imm5(imm5),
         .imm12(imm12),
-        .imm24(imm24),
+        .imm_branch(imm_branch),
         .P(P),
         .U(U),
         .W(W)
@@ -113,8 +113,8 @@ module tb_idecoder(output err);
         end else begin
             $display("Test 1 passed.");
         end
-        if(imm24 !== 24'b010101010101010101010101) begin
-            $error("Test 1 failed. Expected: %b, Actual: %b", 24'b010101010101010101010101, imm24);
+        if(imm_branch !== 32'b00000000_010101010101010101010101) begin
+            $error("Test 1 failed. Expected: %b, Actual: %b", 24'b010101010101010101010101, imm_branch);
             error_count = error_count + 1;
         end else begin
             $display("Test 1 passed.");

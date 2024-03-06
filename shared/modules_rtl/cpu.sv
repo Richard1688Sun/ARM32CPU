@@ -17,7 +17,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire [1:0] shift_op;
     wire [4:0] imm5;
     wire [11:0] imm12;
-    wire [23:0] imm24;
+    wire [31:0] imm_branch;
     wire P,U,W;
     assign rt = rd;
 
@@ -65,7 +65,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .shift_op(shift_op),
         .imm5(imm5),
         .imm12(imm12),
-        .imm24(imm24),
+        .imm_branch(imm_branch),
         .P(P),
         .U(U),
         .W(W)
@@ -102,7 +102,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .sel_branch_imme(sel_branch_imme),
         .sel_pre_indexed(sel_pre_indexed),
         .imm12({20'd0, imm12}),
-        .imme24({8'd0, imm24}),
+        .imm_branch(imm_branch),
         .ALU_op(ALU_op),
         .en_status(en_status),
         .status_rdy(status_rdy_ctrl),

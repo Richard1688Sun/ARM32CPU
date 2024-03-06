@@ -19,7 +19,7 @@ wire [3:0] rm;
 wire [1:0] shift_op;
 wire [4:0] imm5;
 wire [11:0] imm12;
-wire [23:0] imm24;
+wire [31:0] imm_branch;
 wire P;
 wire U;
 wire W;
@@ -43,7 +43,7 @@ pipeline_unit DUT(
     .shift_op(shift_op),
     .imm5(imm5),
     .imm12(imm12),
-    .imm24(imm24),
+    .imm_branch(imm_branch),
     .P(P),
     .U(U),
     .W(W),
@@ -105,7 +105,7 @@ initial begin
     check(2'b00, shift_op, -38);
     check(5'b00000, imm5, -39);
     check(12'b000000000000, imm12, -40);
-    check(24'b0010_0000_11110000_00000000, imm24, -41);
+    check(31'b00000000_0010_0000_11110000_00000000, imm_branch, -41);
     check(P, 1'b1, -42);
     check(U, 1'b0, -43);
     check(W, 1'b1, -44);
@@ -129,7 +129,7 @@ initial begin
     check(2'b10, shift_op, 8);
     check(5'b01010, imm5, 9);
     check(12'b010101010101, imm12, 10);
-    check(24'b010101010101010101010101, imm24, 11);
+    check(32'b00000000_010101010101010101010101, imm_branch, 11);
     check(P, 1'b1, 12);
     check(U, 1'b0, 13);
     check(W, 1'b0, 14);
@@ -154,7 +154,7 @@ initial begin
     check(2'b10, shift_op, 22);
     check(5'b01010, imm5, 23);
     check(12'b010101010101, imm12, 24);
-    check(24'b010101010101010101010101, imm24, 25);
+    check(32'b00000000_010101010101010101010101, imm_branch, 25);
     check(P, 1'b1, 26);
     check(U, 1'b0, 27);
     check(W, 1'b0, 28);
@@ -178,7 +178,7 @@ initial begin
     check(2'b00, shift_op, 38);
     check(5'b00000, imm5, 39);
     check(12'b000000000000, imm12, 40);
-    check(24'b0010_0000_11110000_00000000, imm24, 41);
+    check(24'b0010_0000_11110000_00000000, imm_branch, 41);
     check(P, 1'b1, 42);
     check(U, 1'b0, 43);
     check(W, 1'b1, 44);

@@ -40,7 +40,7 @@ pipeline_unit pipeline_unit(
     .shift_op(),
     .imm5(),
     .imm12(),
-    .imm24(),
+    .imm_branch(),
     .P(),
     .U(),
     .W(),

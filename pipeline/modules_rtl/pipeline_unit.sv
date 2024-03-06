@@ -19,7 +19,7 @@ module pipeline_unit(
     output [1:0] shift_op,  // Shift operation
     output [4:0] imm5,      // Immediate value
     output [11:0] imm12,    // Immediate value or second operand
-    output [23:0] imm24,    // Address for branching
+    output [31:0] imm_branch,    // Address for branching
     output P,
     output U,
     output W
@@ -34,7 +34,7 @@ wire [3:0] cond_out, rn_out, rd_out, rs_out, rm_out;
 wire [1:0] shift_op_out;
 wire [4:0] imm5_out;
 wire [11:0] imm12_out;
-wire [23:0] imm24_out;
+wire [31:0] imm_branch_out;
 wire P_out, U_out, W_out;
 wire en_status_out;
 wire [6:0] opcode_out;
@@ -49,7 +49,7 @@ assign rm = rm_out;
 assign shift_op = shift_op_out;
 assign imm5 = imm5_out;
 assign imm12 = imm12_out;
-assign imm24 = imm24_out;
+assign imm_branch = imm_branch_out;
 assign P = P_out;
 assign U = U_out;
 assign W = W_out;
@@ -69,7 +69,7 @@ idecoder decoder(
     .shift_op(shift_op_out),
     .imm5(imm5_out),
     .imm12(imm12_out),
-    .imm24(imm24_out),
+    .imm_branch(imm_branch_out),
     .P(P_out),
     .U(U_out),
     .W(W_out)
