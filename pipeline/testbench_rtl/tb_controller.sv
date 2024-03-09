@@ -400,29 +400,33 @@ module tb_controller(output err);
         end
     endtask: mem_writeback_STR_LDR
 
-    task mem_writeback_Branch (input integer startTestNum, input load_LR, input [3:0] cond, input [3:0] ZCNV); 
+    task mem_writeback_Branch (input integer startTestNum, input load_LR, input is_R, input [3:0] cond, input [3:0] NZCV); 
         begin
             check(0, sel_A, startTestNum);
-            check(0, sel_B, startTestNum + 1);
+            if (is_R == 1) begin
+                check(1'b0, sel_B, startTestNum + 1);
+            end else begin
+                check(1'b1, sel_B, startTestNum + 1);
+            end
             check(0, sel_pre_indexed, startTestNum + 2);
             check(0, ALU_op, startTestNum + 3);
             check(0, sel_load_LR, startTestNum + 4);
             check(0, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
-            if ((cond == 4'b0000 && ZCNV[3]) || 
-                (cond == 4'b0001 && ~ZCNV[3]) || 
-                (cond == 4'b0010 && ZCNV[2]) || 
-                (cond == 4'b0011 && ~ZCNV[2]) || 
-                (cond == 4'b0100 && ZCNV[1]) || 
-                (cond == 4'b0101 && ~ZCNV[1]) || 
-                (cond == 4'b0110 && ZCNV[0]) || 
-                (cond == 4'b0111 && ~ZCNV[0]) || 
-                (cond == 4'b1000 && ZCNV[2] && ~ZCNV[3]) || 
-                (cond == 4'b1001 && ~ZCNV[2] || ZCNV[3]) || 
-                (cond == 4'b1010 && ZCNV[1] == ZCNV[0]) || 
-                (cond == 4'b1011 && ZCNV[1] != ZCNV[0]) || 
-                (cond == 4'b1100 && (~ZCNV[3] && (ZCNV[1] == ZCNV[0]))) || 
-                (cond == 4'b1101 && (ZCNV[3] || (ZCNV[1] != ZCNV[0]))) || 
+            if ((cond == 4'b0000 && NZCV[1]) || 
+                (cond == 4'b0001 && ~NZCV[1]) || 
+                (cond == 4'b0010 && NZCV[2]) || 
+                (cond == 4'b0011 && ~NZCV[2]) || 
+                (cond == 4'b0100 && NZCV[0]) || 
+                (cond == 4'b0101 && ~NZCV[0]) || 
+                (cond == 4'b0110 && NZCV[3]) || 
+                (cond == 4'b0111 && ~NZCV[3]) || 
+                (cond == 4'b1000 && NZCV[2] && ~NZCV[1]) || 
+                (cond == 4'b1001 && ~NZCV[2] || NZCV[1]) || 
+                (cond == 4'b1010 && NZCV[0] == NZCV[3]) || 
+                (cond == 4'b1011 && NZCV[0] != NZCV[3]) || 
+                (cond == 4'b1100 && (~NZCV[1] && (NZCV[0] == NZCV[3]))) || 
+                (cond == 4'b1101 && (NZCV[1] || (NZCV[0] != NZCV[3]))) || 
                 (cond == 4'b1110)) begin
             
                 // take the new address
@@ -482,9 +486,9 @@ module tb_controller(output err);
     localparam [31:0] LDR_R_R8_R1_LSL_R1 = 32'b1110_01101001_0001_1000_00001_00_0_0001;
 
     localparam [31:0] B_1 = 32'b0000_1010_000000000000000000000001;
-    localparam [31:0] BL_2 = 32'b0000_1011_000000000000000000000010;  
-    localparam [31:0] BX_R1 = 32'b0000_00010010_111111111111_0001_0001;
-    localparam [31:0] BLX_R2 = 32'b0000_00010010_111111111111_0011_0010;
+    localparam [31:0] BL_2 = 32'b0001_1011_000000000000000000000010;  
+    localparam [31:0] BX_R1 = 32'b1100_00010010_111111111111_0001_0001;
+    localparam [31:0] BLX_R2 = 32'b1011_00010010_111111111111_0011_0010;
 
     initial begin
         // Stage 1 Testing: Normal  + ZERO hazards
@@ -721,46 +725,53 @@ module tb_controller(output err);
         instr_in = B_1;        // B #1
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 1
+        clkR;
+        clkR;
 
         // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
         $display("23: Test Number %d", test_num);
         instr_in = BL_2;        // BL #2
+        status_reg = 32'b1000_0000000000000000000000000000;
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 2
-        mem_writeback_Branch(test_num, 0, 4'b0000, 4'b1000);
+        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);
 
         // EX: 3, MEM: 2, MEM_WAIT: 1, WB: n/a
         $display("24: Test Number %d", test_num);
         instr_in = BX_R1;        // BX R1
+        status_reg = 32'b0111_0000000000000000000000000000;
         clkR;
         executeCycle_Branch(test_num, 1);  //instruction 3
-        mem_writeback_Branch(test_num, 1, 4'b0001, 4'b0111);
+        mem_writeback_Branch(test_num, 1, 0, 4'b0001, status_reg[31:28]);
         mem_wait(test_num);
 
         // EX: 4, MEM: 3, MEM_WAIT: 2, WB: 1
         $display("25: Test Number %d", test_num);
         instr_in = BLX_R2;        // BLX R2
+        status_reg = 32'b0010_0000000000000000000000000000;
         clkR;
         executeCycle_Branch(test_num, 1);  //instruction 4
-        mem_writeback_Branch(test_num, 0, 4'b1100, 4'b0010);
+        mem_writeback_Branch(test_num, 0, 1, 4'b1100, status_reg[31:28]);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
         // EX: 5, MEM: 4, MEM_WAIT: 3, WB: 2
         $display("26: Test Number %d", test_num);
         instr_in = B_1;        // B #1
+        status_reg = 32'b1000_0000000000000000000000000000;
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 5
-        mem_writeback_Branch(test_num, 1, 4'b1011, 4'b1000);
+        mem_writeback_Branch(test_num, 1, 1, 4'b1011, status_reg[31:28]);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
         // EX: NOP, MEM: 5, MEM_WAIT: 4, WB: 3
         $display("27: Test Number %d", test_num);
         instr_in = NOP;
+        status_reg = 32'b0001_0000000000000000000000000000;
         clkR;
         execute_NOP(test_num);
-        mem_writeback_Branch(test_num, 0, 4'b0000, 4'b0001);    //this one should fail
+        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should fail
         mem_wait(test_num);
         write_back_NOP(test_num);
 
