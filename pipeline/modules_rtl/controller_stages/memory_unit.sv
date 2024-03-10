@@ -26,7 +26,9 @@ module memory_unit(
     output en_status,
     output sel_load_LR,
     output w_en1,
-    output mem_w_en
+    output mem_w_en,
+    // global branch reference
+    output branch_ref_global,
 );
 
 // pipeline unit ports
@@ -78,6 +80,10 @@ assign sel_load_LR = sel_load_LR_reg;
 assign w_en1 = w_en1_reg;
 assign mem_w_en = mem_w_en_reg;
 
+// branch reference global
+reg branch_ref_global_reg;
+assign branch_ref_global = branch_ref_global_reg;
+
 // status bits
 wire N;
 wire Z;
@@ -123,6 +129,14 @@ pipeline_unit pipeline_unit(
     .branch_value(branch_ref_value),
     .instr_output(instr_out)
 );
+
+always_ff @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        branch_ref_global_reg <= 1'b0;
+    end else begin
+        branch_ref_global_reg <= branch_ref;
+    end
+end
 
 always_comb begin
     // default values

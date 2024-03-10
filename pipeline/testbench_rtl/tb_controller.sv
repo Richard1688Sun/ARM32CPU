@@ -725,8 +725,7 @@ module tb_controller(output err);
         instr_in = B_1;        // B #1
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 1
-        clkR;
-        clkR;
+        // clkR;   // need to wait for the branch to be taken
 
         // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
         $display("23: Test Number %d", test_num);
