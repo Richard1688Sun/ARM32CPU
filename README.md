@@ -115,6 +115,11 @@ The mastermind behind this CPU. Controls datapath and how it operates through si
 
 ### Stages
 
+### Pipeline Unit:
+The basic building for each stage of the pipeline. This modules holds the instructions for each stage and also decodes it as output. Also can be used to stall the pipeline if necessary through `sel_stall` signal.
+
+For memory stage, it has an extra part used for squashing instructions if `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction.
+
 ## IDecoder
 Combinational logic that decodes the 32-bit ARM instruction into their respective fields. Also translates instructions into custom 7-bit opcode
 ### IDecoder Ports

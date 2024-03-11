@@ -1,8 +1,9 @@
-module pipeline_unit(
+module memory_pipeline_unit(
     // inputs
     input clk,
     input rst_n,
     input [31:0] instr_in,
+    input branch_ref,
     input branch_in,
     input sel_stall,
     // outputs
@@ -75,7 +76,7 @@ idecoder decoder(
 );
 
 // mux
-assign instr_decoder_in = instr_reg;
+assign instr_decoder_in = (branch_ref == branch_value_reg) ? instr_reg : NOP;
 
 // instruction register
 always_ff @( posedge clk or negedge rst_n) begin
@@ -100,4 +101,4 @@ always_ff @( posedge clk or negedge rst_n) begin
         end
     end
 end
-endmodule: pipeline_unit
+endmodule: memory_pipeline_unit

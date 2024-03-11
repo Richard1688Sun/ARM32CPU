@@ -130,6 +130,7 @@ pipeline_unit pipeline_unit(
     .instr_output(instr_out)
 );
 
+// branch reference register
 always_ff @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         branch_ref_global_reg <= 1'b0;
