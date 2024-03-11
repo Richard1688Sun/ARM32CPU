@@ -165,21 +165,21 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">0</td>
       <td align="center">0</td>
       <td align="center">0</td>
-      <td colspan=4> Instruction Dependant</td>
+      <td align="center"colspan=4> Instruction Dependant</td>
     </tr>
     <tr>
       <td align="center">Register (2nd operand is a rm, shift is immeidate value)</td>
       <td align="center">0</td>
       <td align="center">0</td>
       <td align="center">1</td>
-      <td colspan=4> Instruction Dependant</td>
+      <td align="center"colspan=4> Instruction Dependant</td>
     </tr>
     <tr>
       <td align="center">Immediate (2nd operand is a immediate value)</td>
       <td align="center">0</td>
       <td align="center">1</td>
       <td align="center">1</td>
-      <td colspan=4> Instruction Dependant</td>
+      <td align="center"colspan=4> Instruction Dependant</td>
     </tr>
   </tbody>
 </table>
@@ -205,7 +205,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
   <tbody>
     <tr>
       <td align="center">ADD</td>
-      <td colspan=3>Type Dependant</td>
+      <td align="center"colspan=3>Type Dependant</td>
       <td align="center">1</td>
       <td align="center">0</td>
       <td align="center">0</td>
@@ -213,7 +213,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
     </tr>
     <tr>
       <td align="center">SUB</td>
-      <td colspan=3>Type Dependant</td>
+      <td align="center"colspan=3>Type Dependant</td>
       <td align="center">1</td>
       <td align="center">0</td>
       <td align="center">0</td>
@@ -221,7 +221,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
     </tr>
     <tr>
       <td align="center">CMP</td>
-      <td colspan=3>Type Dependant</td>
+      <td align="center"colspan=3>Type Dependant</td>
       <td align="center">1</td>
       <td align="center">0</td>
       <td align="center">1</td>
@@ -237,7 +237,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
     </tr>
     <tr>
       <td align="center">ORR</td>
-      <td colspan=3>Type Dependant</td>
+      <td align="center"colspan=3>Type Dependant</td>
       <td align="center">1</td>
       <td align="center">1</td>
       <td align="center">0</td>
@@ -245,7 +245,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
     </tr>
     <tr>
       <td align="center">EOR</td>
-      <td colspan=3>Type Dependant</td>
+      <td align="center" colspan=3>Type Dependant</td>
       <td align="center">1</td>
       <td align="center">1</td>
       <td align="center">0</td>
@@ -253,7 +253,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
     </tr>
     <tr>
       <td align="center">MOV, LSL, LSR, ASR, ROR</td>
-      <td colspan=3>Type Dependant</td>
+      <td align="center" colspan=3>Type Dependant</td>
       <td align="center">0</td>
       <td align="center">0</td>
       <td align="center">0</td>
@@ -293,7 +293,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">1</td>
       <td align="center">0</td>
       <td align="center">0</td>
-      <td colspan=3>Instruction Dependant</td>
+      <td align="center" colspan=3>Instruction Dependant</td>
     </tr>
     <tr>
       <td align="center">LDR_R</td>
@@ -301,7 +301,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">1</td>
       <td align="center">0</td>
       <td align="center">1</td>
-      <td colspan=3>Instruction Dependant</td>
+      <td align="center" colspan=3>Instruction Dependant</td>
     </tr>
     <tr>
       <td align="center">LDR_Literal</td>
@@ -309,7 +309,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">0</td>
       <td align="center">0</td>
       <td align="center">0</td>
-      <td colspan=3>Instruction Dependant</td>
+      <td align="center" colspan=3>Instruction Dependant</td>
     </tr>
     <tr>
       <td align="center">STR_I</td>
@@ -317,7 +317,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">1</td>
       <td align="center">1</td>
       <td align="center">0</td>
-      <td colspan=3>Instruction Dependant</td>
+      <td align="center" colspan=3>Instruction Dependant</td>
     </tr>
     <tr>
       <td align="center">STR_R</td>
@@ -325,7 +325,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">1</td>
       <td align="center">1</td>
       <td align="center">1</td>
-      <td colspan=3>Instruction Dependant</td>
+      <td align="center" colspan=3>Instruction Dependant</td>
     </tr>
   </tbody>
 </table>
