@@ -16,6 +16,7 @@
 ## Datapath
 
 ### Datapath Ports
+Where all the actual computation happens within the CPU. Operational registers are A, B, and Shift. Those operational registers are then fed into the ALU for computation. This module is controlled by the `controller` module
 **Inputs**
 
 |         Name         | Origin     | Purpose                                                      |
@@ -68,6 +69,8 @@
 ## Controller
 
 ### Controller Ports
+The mastermind behind this CPU. Controls datapath and how it operates through signals. This module is fed the decoded instruction from the `IDecoder` module and then outputs the necessary control signals to the `Datapath` module as well as the memory unit. 
+
 **Inputs**
 |        Name         |  Origin  |         Purpose         |
 |:-------------------:|:--------:|:-----------------------:|
