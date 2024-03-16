@@ -12,7 +12,6 @@ module memory_unit(
     output [1:0] shift_op,  // Shift operation
     output [11:0] imm12,    // Immediate value or second operand
     output [31:0] imm_branch,    // Address for branching
-    output branch_value,
     output [31:0] instr_output,
     // controller signals
     input [31:0] status_reg,
@@ -28,7 +27,7 @@ module memory_unit(
     output w_en1,
     output mem_w_en,
     // global branch reference
-    output branch_ref_global,
+    output branch_ref_global
 );
 
 // pipeline unit ports
@@ -52,9 +51,10 @@ assign imm_branch = imm_branch_out;
 assign instr_output = instr_out;
 
 // brnach reference MUX
-reg branch_ref_value;   // output from pipeline unit used to select next branch_ref
-reg branch_value_out;
-assign branch_value = branch_value_out; //TODO: within controller logic we change branch_ref_reg to either branch_value or ~branch_value
+reg branch_ref_new;
+// branch reference global
+reg branch_ref_global_reg;
+assign branch_ref_global = branch_ref_global_reg;
 
 // controller ports
 reg [1:0] sel_pc_reg;
@@ -80,10 +80,6 @@ assign sel_load_LR = sel_load_LR_reg;
 assign w_en1 = w_en1_reg;
 assign mem_w_en = mem_w_en_reg;
 
-// branch reference global
-reg branch_ref_global_reg;
-assign branch_ref_global = branch_ref_global_reg;
-
 // status bits
 wire N;
 wire Z;
@@ -105,11 +101,11 @@ localparam [2:0] XOR = 3'b111;
 localparam [3:0] CMP = 4'b1010; //some overlap with none but should be fine
 
 // pipeline unit module
-pipeline_unit pipeline_unit(
+memory_pipeline_unit memory_pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
     .instr_in(instr_in),
-    .branch_ref(branch_ref),
+    .branch_ref(branch_ref_global_reg),
     .branch_in(branch_in),
     .sel_stall(sel_stall),
     .cond(cond_decoded),
@@ -126,7 +122,7 @@ pipeline_unit pipeline_unit(
     .P(P),
     .U(U),
     .W(W),
-    .branch_value(branch_ref_value),
+    .branch_value(),        // not used -> no longer passed to next stage
     .instr_output(instr_out)
 );
 
@@ -152,7 +148,7 @@ always_comb begin
     sel_load_LR_reg = 1'b0;
     w_en1_reg = 1'b0;
     mem_w_en_reg = 1'b0;
-    branch_value_out = branch_ref_value;
+    brnach_ref_new = branch_ref_global_reg;
 
     //normal instructions
     if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_decoded != 4'b1111)  begin
@@ -263,7 +259,7 @@ always_comb begin
             // take the new address
             sel_pc_reg = 2'b11;
             load_pc_reg = 1'b1;
-            branch_value_out = ~branch_ref_value;
+            brnach_ref_new = ~branch_ref_global_reg;
         end else begin
             sel_pc_reg = 2'b00;
             load_pc_reg = 1'b1;
