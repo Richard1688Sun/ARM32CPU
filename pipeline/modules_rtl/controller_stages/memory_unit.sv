@@ -3,7 +3,6 @@ module memory_unit(
     input clk,
     input rst_n,
     input [31:0] instr_in,
-    input branch_ref,
     input branch_in,
     input sel_stall,
     output [3:0] cond,      // Condition code               TODO: remove later if needed

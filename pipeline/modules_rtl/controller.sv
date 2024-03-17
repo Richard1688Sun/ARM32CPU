@@ -46,6 +46,13 @@ module controller(
     // controller signals
     output w_en_ldr
 );
+    // *** Fetch Stage Unit ***
+    // branch value signals
+    wire branch_value_fetch_unit;
+
+    // *** Fetch Wait Stage Unit ***
+    // branch value signals
+    wire branch_value_fetch_wait_unit;
 
     // *** Execute Stage Unit ***
     reg execute_unit_stall;
@@ -88,7 +95,7 @@ module controller(
     wire [1:0] shift_op_memory_unit_out;
     wire [11:0] imm12_memory_unit_out;
     wire [31:0] imm_branch_memory_unit_out;
-    wire branch_ref_memory_unit;
+    wire branch_value_memory_unit;
     wire [31:0] instr_memory_unit;
     assign cond_memory_unit = cond_memory_unit_out;
     assign opcode_memory_unit = opcode_memory_unit_out;
@@ -121,6 +128,8 @@ module controller(
     assign sel_load_LR = sel_load_LR_out;
     assign w_en1 = w_en1_out;
     assign mem_w_en = mem_w_en_out;
+    // global branch reference
+    reg branch_ref_global;
 
 
     // *** Memory Wait Stage Unit ***
@@ -139,13 +148,28 @@ module controller(
     wire w_en_ldr_out;
     assign w_en_ldr = w_en_ldr_out;
 
+    fetch_unit fetch_unit(
+        // pipeline_unit signals
+        .clk(clk),
+        .rst_n(rst_n),
+        .branch_in(branch_ref_global),
+        .branch_value(branch_value_fetch_unit),
+        // controller signals
+    );
+
+    fetch_wait_unit fetch_wait_unit(
+        // pipeline_unit signals
+        .clk(clk),
+        .rst_n(rst_n),
+        .branch_in(branch_value_fetch_unit),
+        .branch_value(branch_value_fetch_wait_unit),
+    );
     execute_unit execute_unit(
         // pipeline_unit signals
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_in),
-        .branch_ref(branch_ref_memory_unit),
-        .branch_in(branch_ref_memory_unit),
+        .branch_in(branch_value_fetch_wait_unit),
         .sel_stall(execute_unit_stall), //TODO: TBD
         .opcode(opcode_execute_unit_out),
         .rn(rn_execute_unit_out),
@@ -171,7 +195,6 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_execute_unit),
-        .branch_ref(branch_value_execute_unit),
         .branch_in(branch_value_execute_unit),
         .sel_stall(memory_unit_stall),   //TODO: TBD
         .cond(cond_memory_unit_out),
@@ -180,7 +203,7 @@ module controller(
         .shift_op(shift_op_memory_unit_out),
         .imm12(imm12_memory_unit_out),
         .imm_branch(imm_branch_memory_unit_out),
-        .branch_value(branch_ref_memory_unit),
+        .branch_value(branch_ref_global),
         .instr_output(instr_memory_unit),
         // controller signals
         .status_reg(status_reg),
@@ -195,6 +218,8 @@ module controller(
         .sel_load_LR(sel_load_LR_out),
         .w_en1(w_en1_out),
         .mem_w_en(mem_w_en_out)
+        // global branch reference
+        .branch_ref_global(branch_ref_global)
     );
 
     // memory_wait stage
@@ -203,8 +228,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_unit),
-        .branch_ref(branch_ref_memory_unit),
-        .branch_in(branch_ref_memory_unit),
+        .branch_in(branch_ref_global),
         .sel_stall(memory_wait_unit_stall),   //TODO: TBD
         .branch_value(),    //no squashing anymore
         .instr_output(instr_memory_wait_unit)
@@ -217,8 +241,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
-        .branch_ref(branch_ref_memory_unit),
-        .branch_in(branch_ref_memory_unit),
+        .branch_in(branch_ref_global),
         .sel_stall(ldr_writeback_unit_stall),   //TODO: TBD
         .branch_value(),    //no squashing anymore
         .instr_output(instr_ldr__write_unit),

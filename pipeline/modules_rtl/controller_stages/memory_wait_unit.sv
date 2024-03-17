@@ -3,18 +3,14 @@ module memory_wait_unit(
     input clk,
     input rst_n,
     input [31:0] instr_in,
-    input branch_in,
     input sel_stall,
-    output branch_value,
     output [31:0] instr_output
     // controller signals
     // NOTHING for now
 );
 
 // pipeline unit ports
-wire branch_value_out;
 wire [31:0] instr_out;
-assign branch_value = branch_value_out;
 assign instr_output = instr_out;
 
 // controller ports
@@ -26,7 +22,7 @@ pipeline_unit pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
     .instr_in(instr_in),
-    .branch_in(branch_in),
+    .branch_in(),
     .sel_stall(sel_stall),
     .cond(),
     .opcode(),
@@ -42,7 +38,7 @@ pipeline_unit pipeline_unit(
     .P(),
     .U(),
     .W(),
-    .branch_value(branch_value_out),
+    .branch_value(),
     .instr_output(instr_out)
 );
 
