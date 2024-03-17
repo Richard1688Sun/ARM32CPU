@@ -1,15 +1,19 @@
 # Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Modules](#modules)
   - [Datapath](#datapath)
-    - [Ports](#datapath-ports)
+    - [Datapath Ports](#datapath-ports)
   - [Controller](#controller)
-    - [Ports](#controller-ports)
-    - [Stages](#stages)
+    - [Controller Ports](#controller-ports)
+  - [Stages](#stages)
+    - [Pipeline Unit:](#pipeline-unit)
+    - [Memory Stage:](#memory-stage)
   - [IDecoder](#idecoder)
-    - [Ports](#idecoder-ports)
+    - [IDecoder Ports](#idecoder-ports)
     - [Opcode Table](#opcode-table)
     - [Notes](#notes)
+  - [Branching](#branching)
 
 # Modules
 
@@ -118,7 +122,11 @@ The mastermind behind this CPU. Controls datapath and how it operates through si
 ### Pipeline Unit:
 The basic building for each stage of the pipeline. This modules holds the instructions for each stage and also decodes it as output. Also can be used to stall the pipeline if necessary through `sel_stall` signal. It also holds a designated `branch_val` for when the instruction was created.
 
-For memory stage, it has an extra part used for squashing instructions if `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction.
+For **fetch stage**, this has not instruction register portion
+
+For **memory stage**, it has an extra part used for squashing instructions if `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction.
+
+For **memory_wait stage and ldr_writeback stage**, it has no branch register portion. NOTE: this uses `pipeline unit`, just doesn't use the ports
 
 ### Memory Stage:
 **Control Hazards**: Handles control hazards by squashing instructions when `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction. `branch_ref_global` is stored within this unit. It's next value(`branch_ref_next`) with either be `~branch_ref_global` if the current instruction is a branch and that branch is taken or `branch_ref_global` otherwise. `branch_ref_next` will be loaded into `branch_ref_global` the following clock cycle.
