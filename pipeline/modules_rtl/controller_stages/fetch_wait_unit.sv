@@ -2,7 +2,7 @@ module fetch_wait_unit(
     input clk,
     input rst_n,
     input branch_in,
-    output branch_value,
+    output branch_value
 );
 
 // pipeline module

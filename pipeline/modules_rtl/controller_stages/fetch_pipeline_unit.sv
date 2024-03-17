@@ -3,7 +3,7 @@ module fetch_pipeline_unit(
     input clk,
     input rst_n,
     input branch_in,
-    output branch_value,
+    output branch_value
     // controller signals
     // NOTHING for now
 );

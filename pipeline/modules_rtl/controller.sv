@@ -131,7 +131,6 @@ module controller(
     // global branch reference
     reg branch_ref_global;
 
-
     // *** Memory Wait Stage Unit ***
     reg memory_wait_unit_stall;
     // decoded signals
@@ -153,7 +152,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .branch_in(branch_ref_global),
-        .branch_value(branch_value_fetch_unit),
+        .branch_value(branch_value_fetch_unit)
         // controller signals
     );
 
@@ -162,7 +161,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .branch_in(branch_value_fetch_unit),
-        .branch_value(branch_value_fetch_wait_unit),
+        .branch_value(branch_value_fetch_wait_unit)
     );
     execute_unit execute_unit(
         // pipeline_unit signals
@@ -217,7 +216,7 @@ module controller(
         .en_status(en_status_out),
         .sel_load_LR(sel_load_LR_out),
         .w_en1(w_en1_out),
-        .mem_w_en(mem_w_en_out)
+        .mem_w_en(mem_w_en_out),
         // global branch reference
         .branch_ref_global(branch_ref_global)
     );
