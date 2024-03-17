@@ -202,7 +202,6 @@ module controller(
         .shift_op(shift_op_memory_unit_out),
         .imm12(imm12_memory_unit_out),
         .imm_branch(imm_branch_memory_unit_out),
-        .branch_value(branch_ref_global),
         .instr_output(instr_memory_unit),
         // controller signals
         .status_reg(status_reg),
@@ -227,9 +226,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_unit),
-        .branch_in(branch_ref_global),
         .sel_stall(memory_wait_unit_stall),   //TODO: TBD
-        .branch_value(),    //no squashing anymore
         .instr_output(instr_memory_wait_unit)
         // controller signals
     );
@@ -241,7 +238,6 @@ module controller(
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
         .sel_stall(ldr_writeback_unit_stall),   //TODO: TBD
-        .branch_value(),    //no squashing anymore
         .instr_output(instr_ldr__write_unit),
         // controller signals
         .w_en_ldr(w_en_ldr_out)
