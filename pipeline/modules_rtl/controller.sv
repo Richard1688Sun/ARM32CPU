@@ -241,7 +241,6 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
-        .branch_in(branch_ref_global),
         .sel_stall(ldr_writeback_unit_stall),   //TODO: TBD
         .branch_value(),    //no squashing anymore
         .instr_output(instr_ldr__write_unit),

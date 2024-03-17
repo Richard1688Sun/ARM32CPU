@@ -121,7 +121,7 @@ The basic building for each stage of the pipeline. This modules holds the instru
 For memory stage, it has an extra part used for squashing instructions if `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction.
 
 ### Memory Stage:
-**Control Hazards**: Handles control hazards by squashing instructions when `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction. `branch_ref_global` is stored within this unit. It's next value(`branch_ref_next`) with either be `~branch_ref_global` if the current instrction is a branch and that branch is taken or `branch_ref_global` otherwise. `branch_ref_next` will be loaded into `branch_ref_global` the following clock cycle.
+**Control Hazards**: Handles control hazards by squashing instructions when `branch_val != branch_ref`. In such case, the instruction fed into the decoder will be NOP effectively squashing the instruction. `branch_ref_global` is stored within this unit. It's next value(`branch_ref_next`) with either be `~branch_ref_global` if the current instruction is a branch and that branch is taken or `branch_ref_global` otherwise. `branch_ref_next` will be loaded into `branch_ref_global` the following clock cycle.
 
 ## IDecoder
 Combinational logic that decodes the 32-bit ARM instruction into their respective fields. Also translates instructions into custom 7-bit opcode
