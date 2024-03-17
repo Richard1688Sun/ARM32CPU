@@ -148,7 +148,7 @@ always_comb begin
     sel_load_LR_reg = 1'b0;
     w_en1_reg = 1'b0;
     mem_w_en_reg = 1'b0;
-    brnach_ref_new = branch_ref_global_reg;
+    branch_ref_new = branch_ref_global_reg;
 
     //normal instructions
     if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_decoded != 4'b1111)  begin
@@ -259,7 +259,7 @@ always_comb begin
             // take the new address
             sel_pc_reg = 2'b11;
             load_pc_reg = 1'b1;
-            brnach_ref_new = ~branch_ref_global_reg;
+            branch_ref_new = ~branch_ref_global_reg;
         end else begin
             sel_pc_reg = 2'b00;
             load_pc_reg = 1'b1;
