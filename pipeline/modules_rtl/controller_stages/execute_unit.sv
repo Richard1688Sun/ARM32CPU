@@ -173,7 +173,7 @@ always_comb begin
         end
     end else if (opcode_out[6:3] == 4'b1001) begin  //branching
         // sel_A_in
-        if (opcode[1] == 1'b0) begin
+        if (opcode[0] == 1'b0) begin
             // pc realtive for imm branch
             sel_A_in_reg = 2'b11;
         end 
@@ -192,7 +192,7 @@ always_comb begin
         // en_A
 
         // en_B
-        if (opcode_out[1] == 1'b1) begin
+        if (opcode_out[0] == 1'b1) begin
             en_B_reg = 1'b1;
         end
 

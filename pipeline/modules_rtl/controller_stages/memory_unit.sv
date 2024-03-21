@@ -265,13 +265,13 @@ always_comb begin
         end
 
         //sel_A
-        if (opcode[1] == 1'b1) begin
+        if (opcode[0] == 1'b1) begin
             // type X is direct laod PC from register
             sel_A_reg = 1'b1;
         end
 
         //sel_B
-        if (opcode[1] == 1'b1) begin
+        if (opcode[0] == 1'b1) begin
             sel_B_reg = 1'b0;
         end else begin
             sel_B_reg = 1'b1;
@@ -284,7 +284,7 @@ always_comb begin
 
         // sel_load_LR
         // w_en1
-        if (opcode[2] == 1'b1) begin
+        if (opcode[1] == 1'b1) begin
             sel_load_LR_reg = 1'b0;
             w_en1_reg = 1'b1;
         end

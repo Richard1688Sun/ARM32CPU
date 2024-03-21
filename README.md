@@ -367,9 +367,9 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <th>5</th>
       <th>4</th>
       <th>3</th>
-      <th>2 (<code>sel_load_LR</code>)</th>
-      <th>1 (<code>~sel_B</code>)</th>
-      <th>0</th>
+      <th>2</th>
+      <th>1 (<code>sel_load_LR</code>)</th>
+      <th>0 (<code>~sel_B</code>)</th>
     </tr>
   </thead>
   <tbody>
@@ -389,8 +389,8 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">0</td>
       <td align="center">0</td>
       <td align="center">1</td>
-      <td align="center">1</td>
       <td align="center">0</td>
+      <td align="center">1</td>
       <td align="center">0</td>
     </tr>
     <tr>
@@ -400,8 +400,8 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">0</td>
       <td align="center">1</td>
       <td align="center">0</td>
-      <td align="center">1</td>
       <td align="center">0</td>
+      <td align="center">1</td>
     </tr>    
     <tr>
       <td align="center">BLX</td>
@@ -409,9 +409,9 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">0</td>
       <td align="center">0</td>
       <td align="center">1</td>
-      <td align="center">1</td>
-      <td align="center">1</td>
       <td align="center">0</td>
+      <td align="center">1</td>
+      <td align="center">1</td>
     </tr>
   </tbody>
 </table>
