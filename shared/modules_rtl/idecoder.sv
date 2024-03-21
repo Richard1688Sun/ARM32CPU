@@ -10,7 +10,7 @@ module idecoder(
     output [1:0] shift_op,  // Shift operation
     output [4:0] imm5,      // Immediate value
     output [11:0] imm12,    // Immediate value or second operand
-    output [32:0] imm_branch,    // Address for branching
+    output [31:0] imm_branch,    // Address for branching
     output P,
     output U,
     output W
