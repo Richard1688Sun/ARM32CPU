@@ -418,6 +418,41 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
 
 > Note: `opcode[6:3] == 1001` means this instruction is a branch instruction
 
+<br/>
+
+**Special Instructions**
+
+<table style="text-align: center;">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan=7>Opcode</th>
+    </tr>
+    <tr>
+      <th>Instruction</th>
+      <th>6</th>
+      <th>5</th>
+      <th>4</th>
+      <th>3</th>
+      <th>2</th>
+      <th>1</th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">NOP</td>
+      <td align="center">0</td>
+      <td align="center">1</td>
+      <td align="center">0</td>
+      <td align="center">0</td>
+      <td align="center">0</td>
+      <td align="center">0</td>
+      <td align="center">0</td>
+    </tr>
+  </tbody>
+</table>
+
 ### Notes
 
 - Memory is by index -> each index is 4 bytes

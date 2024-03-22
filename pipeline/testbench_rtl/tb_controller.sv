@@ -725,70 +725,95 @@ module tb_controller(output err);
         instr_in = B_1;        // B #1
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 1
-        // clkR;   // need to wait for the branch to be taken
 
-        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        // EX: NOP, MEM: 1, MEM_WAIT: n/a, WB: n/a
         $display("23: Test Number %d", test_num);
-        instr_in = BL_2;        // BL #2
+        instr_in = NOP;        
         status_reg = 32'b1000_0000000000000000000000000000;
         clkR;
-        executeCycle_Branch(test_num, 0);  //instruction 2
+        execute_NOP(test_num);
         mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);
 
-        // EX: 3, MEM: 2, MEM_WAIT: 1, WB: n/a
+        // EX: 2, MEM: NOP, MEM_WAIT: 1, WB: n/a
         $display("24: Test Number %d", test_num);
-        instr_in = BX_R1;        // BX R1
+        instr_in = BL_2;        // BL #2
+        clkR;
+        executeCycle_Branch(test_num, 0);  //instruction 2
+        mem_writeback_NOP(test_num);
+
+        // EX: NOP, MEM: 2, MEM_WAIT: NOP, WB: 1
+        $display("25: Test Number %d", test_num);
+        instr_in = NOP;        // BX R1
         status_reg = 32'b0111_0000000000000000000000000000;
         clkR;
-        executeCycle_Branch(test_num, 1);  //instruction 3
+        execute_NOP(test_num);
         mem_writeback_Branch(test_num, 1, 0, 4'b0001, status_reg[31:28]);
         mem_wait(test_num);
+        write_back_NOP(test_num);
 
-        // EX: 4, MEM: 3, MEM_WAIT: 2, WB: 1
-        $display("25: Test Number %d", test_num);
-        instr_in = BLX_R2;        // BLX R2
+        // EX: 3, MEM: NOP, MEM_WAIT: 2, WB: NOP
+        $display("26: Test Number %d", test_num);
+        instr_in = BX_R1;        // BLX R2
+        clkR;
+        executeCycle_Branch(test_num, 1);  //instruction 3
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: 3, MEM_WAIT: NOP, WB: 2
+        $display("27: Test Number %d", test_num);
+        instr_in = NOP;        // B #1
         status_reg = 32'b0010_0000000000000000000000000000;
         clkR;
-        executeCycle_Branch(test_num, 1);  //instruction 4
+        execute_NOP(test_num);
         mem_writeback_Branch(test_num, 0, 1, 4'b1100, status_reg[31:28]);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
-        // EX: 5, MEM: 4, MEM_WAIT: 3, WB: 2
-        $display("26: Test Number %d", test_num);
-        instr_in = B_1;        // B #1
+        // EX: 4, MEM: NOP, MEM_WAIT: 3, WB: 1
+        $display("28: Test Number %d", test_num);
+        instr_in = BLX_R2;        // B #1
+        clkR;
+        executeCycle_Branch(test_num, 1);  //instruction 4
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: NOP, MEM: 4, MEM_WAIT: NOP, WB: 3
+        $display("29: Test Number %d", test_num);
+        instr_in = NOP;        // B #1
         status_reg = 32'b1000_0000000000000000000000000000;
         clkR;
-        executeCycle_Branch(test_num, 0);  //instruction 5
+        execute_NOP(test_num);
         mem_writeback_Branch(test_num, 1, 1, 4'b1011, status_reg[31:28]);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
-        // EX: NOP, MEM: 5, MEM_WAIT: 4, WB: 3
-        $display("27: Test Number %d", test_num);
-        instr_in = NOP;
+        // EX: 5, MEM: NOP, MEM_WAIT: 4, WB: NOP
+        $display("30: Test Number %d", test_num);
+        instr_in = B_1;        // B #1
+        clkR;
+        executeCycle_Branch(test_num, 0);  //instruction 5
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        // EX: 1, MEM: 5, MEM_WAIT: NOP, WB: 4
+        $display("31: Test Number %d", test_num);
+        instr_in = B_1;        // B #1
         status_reg = 32'b0001_0000000000000000000000000000;
         clkR;
-        execute_NOP(test_num);
-        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should fail
+        executeCycle_Branch(test_num, 0);  //instruction 1
+        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should due to wrong status
         mem_wait(test_num);
         write_back_NOP(test_num);
 
-        // EX: NOP, MEM: NOP, MEM_WAIT: 5, WB: 4
-        $display("28: Test Number %d", test_num);
+        // EX: NOP, MEM: 1 -> NOP, MEM_WAIT: 5, WB: NOP
+        $display("32: Test Number %d", test_num);
         instr_in = NOP;
         clkR;
         execute_NOP(test_num);
-        mem_writeback_NOP(test_num);
-        mem_wait(test_num);
-        write_back_NOP(test_num);
-
-        // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 5
-        $display("29: Test Number %d", test_num);
-        instr_in = NOP;
-        clkR;
-        execute_NOP(test_num);
-        mem_writeback_NOP(test_num);
+        mem_writeback_NOP(test_num); // this one becomes NOP due to branch value being wrong
         mem_wait(test_num);
         write_back_NOP(test_num);
 
@@ -798,5 +823,78 @@ module tb_controller(output err);
         end else begin
             $display("Failed %d tests", error_count);
         end
+
+
+        // // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        // $display("23: Test Number %d", test_num);
+        // instr_in = BL_2;        // BL #2
+        // status_reg = 32'b1000_0000000000000000000000000000;
+        // clkR;
+        // executeCycle_Branch(test_num, 0);  //instruction 2
+        // mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);
+
+        // // EX: 3, MEM: 2, MEM_WAIT: 1, WB: n/a
+        // $display("24: Test Number %d", test_num);
+        // instr_in = BX_R1;        // BX R1
+        // status_reg = 32'b0111_0000000000000000000000000000;
+        // clkR;
+        // executeCycle_Branch(test_num, 1);  //instruction 3
+        // mem_writeback_Branch(test_num, 1, 0, 4'b0001, status_reg[31:28]);
+        // mem_wait(test_num);
+
+        // // EX: 4, MEM: 3, MEM_WAIT: 2, WB: 1
+        // $display("25: Test Number %d", test_num);
+        // instr_in = BLX_R2;        // BLX R2
+        // status_reg = 32'b0010_0000000000000000000000000000;
+        // clkR;
+        // executeCycle_Branch(test_num, 1);  //instruction 4
+        // mem_writeback_Branch(test_num, 0, 1, 4'b1100, status_reg[31:28]);
+        // mem_wait(test_num);
+        // write_back_NOP(test_num);
+
+        // // EX: 5, MEM: 4, MEM_WAIT: 3, WB: 2
+        // $display("26: Test Number %d", test_num);
+        // instr_in = B_1;        // B #1
+        // status_reg = 32'b1000_0000000000000000000000000000;
+        // clkR;
+        // executeCycle_Branch(test_num, 0);  //instruction 5
+        // mem_writeback_Branch(test_num, 1, 1, 4'b1011, status_reg[31:28]);
+        // mem_wait(test_num);
+        // write_back_NOP(test_num);
+
+        // // EX: NOP, MEM: 5, MEM_WAIT: 4, WB: 3
+        // $display("27: Test Number %d", test_num);
+        // instr_in = NOP;
+        // status_reg = 32'b0001_0000000000000000000000000000;
+        // clkR;
+        // execute_NOP(test_num);
+        // mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should fail
+        // mem_wait(test_num);
+        // write_back_NOP(test_num);
+
+        // // EX: NOP, MEM: NOP, MEM_WAIT: 5, WB: 4
+        // $display("28: Test Number %d", test_num);
+        // instr_in = NOP;
+        // clkR;
+        // execute_NOP(test_num);
+        // mem_writeback_NOP(test_num);
+        // mem_wait(test_num);
+        // write_back_NOP(test_num);
+
+        // // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 5
+        // $display("29: Test Number %d", test_num);
+        // instr_in = NOP;
+        // clkR;
+        // execute_NOP(test_num);
+        // mem_writeback_NOP(test_num);
+        // mem_wait(test_num);
+        // write_back_NOP(test_num);
+
+        // //print test summary
+        // if (error_count == 0) begin
+        //     $display("All tests passed!");
+        // end else begin
+        //     $display("Failed %d tests", error_count);
+        // end
     end
 endmodule: tb_controller
