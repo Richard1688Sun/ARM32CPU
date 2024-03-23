@@ -285,7 +285,7 @@ always_comb begin
         // sel_load_LR
         // w_en1
         if (opcode[1] == 1'b1) begin
-            sel_load_LR_reg = 1'b0;
+            sel_load_LR_reg = 1'b1;
             w_en1_reg = 1'b1;
         end
 

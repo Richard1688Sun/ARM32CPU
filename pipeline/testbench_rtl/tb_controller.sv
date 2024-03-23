@@ -410,8 +410,13 @@ module tb_controller(output err);
             end
             check(0, sel_pre_indexed, startTestNum + 2);
             check(0, ALU_op, startTestNum + 3);
-            check(0, sel_load_LR, startTestNum + 4);
-            check(0, w_en1, startTestNum + 5);
+            if (load_LR == 1) begin
+                check(1, sel_load_LR, startTestNum + 4);
+                check(1, w_en1, startTestNum + 5);
+            end else begin
+                check(0, sel_load_LR, startTestNum + 4);
+                check(0, w_en1, startTestNum + 5);
+            end
             check(0, mem_w_en, startTestNum + 6);
             if ((cond == 4'b0000 && NZCV[1]) || 
                 (cond == 4'b0001 && ~NZCV[1]) || 
