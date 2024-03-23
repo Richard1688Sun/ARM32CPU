@@ -418,20 +418,20 @@ module tb_controller(output err);
                 check(0, w_en1, startTestNum + 5);
             end
             check(0, mem_w_en, startTestNum + 6);
-            if ((cond == 4'b0000 && NZCV[1]) || 
-                (cond == 4'b0001 && ~NZCV[1]) || 
-                (cond == 4'b0010 && NZCV[2]) || 
-                (cond == 4'b0011 && ~NZCV[2]) || 
-                (cond == 4'b0100 && NZCV[0]) || 
-                (cond == 4'b0101 && ~NZCV[0]) || 
-                (cond == 4'b0110 && NZCV[3]) || 
-                (cond == 4'b0111 && ~NZCV[3]) || 
-                (cond == 4'b1000 && NZCV[2] && ~NZCV[1]) || 
-                (cond == 4'b1001 && ~NZCV[2] || NZCV[1]) || 
-                (cond == 4'b1010 && NZCV[0] == NZCV[3]) || 
-                (cond == 4'b1011 && NZCV[0] != NZCV[3]) || 
-                (cond == 4'b1100 && (~NZCV[1] && (NZCV[0] == NZCV[3]))) || 
-                (cond == 4'b1101 && (NZCV[1] || (NZCV[0] != NZCV[3]))) || 
+            if ((cond == 4'b0000 && NZCV[2]) || 
+                (cond == 4'b0001 && ~NZCV[2]) || 
+                (cond == 4'b0010 && NZCV[1]) || 
+                (cond == 4'b0011 && ~NZCV[1]) || 
+                (cond == 4'b0100 && NZCV[3]) || 
+                (cond == 4'b0101 && ~NZCV[3]) || 
+                (cond == 4'b0110 && NZCV[0]) || 
+                (cond == 4'b0111 && ~NZCV[0]) || 
+                (cond == 4'b1000 && NZCV[1] && ~NZCV[2]) || 
+                (cond == 4'b1001 && ~NZCV[1] || NZCV[2]) || 
+                (cond == 4'b1010 && NZCV[3] == NZCV[0]) || 
+                (cond == 4'b1011 && NZCV[3] != NZCV[0]) || 
+                (cond == 4'b1100 && (~NZCV[2] && (NZCV[3] == NZCV[0]))) || 
+                (cond == 4'b1101 && (NZCV[2] || (NZCV[3] != NZCV[0]))) || 
                 (cond == 4'b1110)) begin
             
                 // take the new address
@@ -734,7 +734,7 @@ module tb_controller(output err);
         // EX: NOP, MEM: 1, MEM_WAIT: n/a, WB: n/a
         $display("23: Test Number %d", test_num);
         instr_in = NOP;        
-        status_reg = 32'b1000_0000000000000000000000000000;
+        status_reg = 32'b0100_0000000000000000000000000000;
         clkR;
         execute_NOP(test_num);
         mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);
@@ -748,8 +748,8 @@ module tb_controller(output err);
 
         // EX: NOP, MEM: 2, MEM_WAIT: NOP, WB: 1
         $display("25: Test Number %d", test_num);
-        instr_in = NOP;        // BX R1
-        status_reg = 32'b0111_0000000000000000000000000000;
+        instr_in = NOP;       
+        status_reg = 32'b1011_0000000000000000000000000000;
         clkR;
         execute_NOP(test_num);
         mem_writeback_Branch(test_num, 1, 0, 4'b0001, status_reg[31:28]);
@@ -758,7 +758,7 @@ module tb_controller(output err);
 
         // EX: 3, MEM: NOP, MEM_WAIT: 2, WB: NOP
         $display("26: Test Number %d", test_num);
-        instr_in = BX_R1;        // BLX R2
+        instr_in = BX_R1;        // BX R1
         clkR;
         executeCycle_Branch(test_num, 1);  //instruction 3
         mem_writeback_NOP(test_num);
@@ -767,7 +767,7 @@ module tb_controller(output err);
 
         // EX: NOP, MEM: 3, MEM_WAIT: NOP, WB: 2
         $display("27: Test Number %d", test_num);
-        instr_in = NOP;        // B #1
+        instr_in = NOP;       
         status_reg = 32'b0010_0000000000000000000000000000;
         clkR;
         execute_NOP(test_num);
@@ -777,7 +777,7 @@ module tb_controller(output err);
 
         // EX: 4, MEM: NOP, MEM_WAIT: 3, WB: 1
         $display("28: Test Number %d", test_num);
-        instr_in = BLX_R2;        // B #1
+        instr_in = BLX_R2;        // BLX R2
         clkR;
         executeCycle_Branch(test_num, 1);  //instruction 4
         mem_writeback_NOP(test_num);
@@ -787,7 +787,7 @@ module tb_controller(output err);
         // EX: NOP, MEM: 4, MEM_WAIT: NOP, WB: 3
         $display("29: Test Number %d", test_num);
         instr_in = NOP;        // B #1
-        status_reg = 32'b1000_0000000000000000000000000000;
+        status_reg = 32'b1000_0000000000000000000000000000; // N != V
         clkR;
         execute_NOP(test_num);
         mem_writeback_Branch(test_num, 1, 1, 4'b1011, status_reg[31:28]);
@@ -806,10 +806,10 @@ module tb_controller(output err);
         // EX: 1, MEM: 5, MEM_WAIT: NOP, WB: 4
         $display("31: Test Number %d", test_num);
         instr_in = B_1;        // B #1
-        status_reg = 32'b0001_0000000000000000000000000000;
+        status_reg = 32'b1011_0000000000000000000000000000;
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 1
-        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should due to wrong status
+        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should not be taken due to wrong status
         mem_wait(test_num);
         write_back_NOP(test_num);
 
