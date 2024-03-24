@@ -402,10 +402,11 @@ module tb_controller(output err);
 
     task mem_writeback_Branch (input integer startTestNum, input load_LR, input is_R, input [3:0] cond, input [3:0] NZCV); 
         begin
-            check(0, sel_A, startTestNum);
             if (is_R == 1) begin
+                check(1'b1, sel_A, startTestNum);
                 check(1'b0, sel_B, startTestNum + 1);
             end else begin
+                check(1'b0, sel_A, startTestNum);
                 check(1'b1, sel_B, startTestNum + 1);
             end
             check(0, sel_pre_indexed, startTestNum + 2);
@@ -571,6 +572,7 @@ module tb_controller(output err);
         mem_writeback_I(test_num, 3'b000);
         mem_wait(test_num);
         write_back_NOP(test_num);
+
         // EX: 8, MEM: 7, MEM_WAIT: 6, WB: 5
         $display("8: Test Number %d", test_num);
         instr_in = ADD_RS_R10_R8_R1_LSL_R1;        // ADD_RS R10 R8 R1 << R1
@@ -716,7 +718,8 @@ module tb_controller(output err);
         2. BL #2 -> not equal 0001
         3. BX R1 -> greater than 1100
         4. BLX R2 -> less than 1011
-        5. B #1 -> equals 0000 BUT FAILS
+        5. B #1 -> equals 0000 BUT FAILS due to wrong status
+        6. B #1 -> equals 0000 BUT FAILS due to wrong branch value
         */
         reset;
         $display("Starting Branch Tests");
@@ -738,6 +741,9 @@ module tb_controller(output err);
         clkR;
         execute_NOP(test_num);
         mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);
+        // reload the fetch stages with new branch value
+        clkR;
+        clkR;
 
         // EX: 2, MEM: NOP, MEM_WAIT: 1, WB: n/a
         $display("24: Test Number %d", test_num);
@@ -755,6 +761,9 @@ module tb_controller(output err);
         mem_writeback_Branch(test_num, 1, 0, 4'b0001, status_reg[31:28]);
         mem_wait(test_num);
         write_back_NOP(test_num);
+        // reload the fetch stages with new branch value
+        clkR;
+        clkR;
 
         // EX: 3, MEM: NOP, MEM_WAIT: 2, WB: NOP
         $display("26: Test Number %d", test_num);
@@ -774,6 +783,9 @@ module tb_controller(output err);
         mem_writeback_Branch(test_num, 0, 1, 4'b1100, status_reg[31:28]);
         mem_wait(test_num);
         write_back_NOP(test_num);
+        // reload the fetch stages with new branch value
+        clkR;
+        clkR;
 
         // EX: 4, MEM: NOP, MEM_WAIT: 3, WB: 1
         $display("28: Test Number %d", test_num);
@@ -802,23 +814,26 @@ module tb_controller(output err);
         mem_writeback_NOP(test_num);
         mem_wait(test_num);
         write_back_NOP(test_num);
-
-        // EX: 1, MEM: 5, MEM_WAIT: NOP, WB: 4
+        // reload the fetch stages with new branch value
+        clkR;
+        
+        // EX: 6, MEM: 5 -> NOP, MEM_WAIT: NOP, WB: 4
         $display("31: Test Number %d", test_num);
-        instr_in = B_1;        // B #1
-        status_reg = 32'b1011_0000000000000000000000000000;
+        instr_in = B_1;
+        status_reg = 32'b0100_0000000000000000000000000000;
         clkR;
         executeCycle_Branch(test_num, 0);  //instruction 1
-        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should not be taken due to wrong status
+        mem_writeback_NOP(test_num); // this one becomes NOP due to branch value being wrong
         mem_wait(test_num);
         write_back_NOP(test_num);
 
-        // EX: NOP, MEM: 1 -> NOP, MEM_WAIT: 5, WB: NOP
+        // EX: NOP, MEM: 6, MEM_WAIT: 5, WB: NOP
         $display("32: Test Number %d", test_num);
         instr_in = NOP;
+        status_reg = 32'b1011_0000000000000000000000000000;
         clkR;
         execute_NOP(test_num);
-        mem_writeback_NOP(test_num); // this one becomes NOP due to branch value being wrong
+        mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should not be taken due to wrong status
         mem_wait(test_num);
         write_back_NOP(test_num);
 

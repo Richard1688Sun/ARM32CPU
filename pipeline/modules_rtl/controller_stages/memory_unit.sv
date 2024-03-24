@@ -51,9 +51,10 @@ assign instr_output = instr_out;
 
 // brnach reference MUX
 reg branch_ref_new;
+// we expose the new value because the next clk, newly fetched instruction should have the new value
+assign branch_ref_global = branch_ref_new;
 // branch reference global
 reg branch_ref_global_reg;
-assign branch_ref_global = branch_ref_global_reg;
 
 // controller ports
 reg [1:0] sel_pc_reg;
@@ -266,7 +267,7 @@ always_comb begin
 
         //sel_A
         if (opcode[0] == 1'b1) begin
-            // type X is direct laod PC from register
+            // type X is PC relative
             sel_A_reg = 1'b1;
         end
 
