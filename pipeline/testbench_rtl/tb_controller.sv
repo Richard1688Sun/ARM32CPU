@@ -150,7 +150,15 @@ module tb_controller(output err);
         end
     endtask: load_pc_normal
 
-    task executeCycle_MOV_I(input integer startTestNum);
+    task check_forwarding(input logic is_forwarding, input logic [1:0] sel, input integer startTestNum);
+        if (is_forwarding == 1'b1) begin
+            check(2'b01, sel, startTestNum);
+        end else begin
+            check(2'b00, sel, startTestNum);
+        end
+    endtask: check_forwarding
+
+    task executeCycle_MOV_I(input integer startTestNum, input [2:0] forwarding_IRS = 3'b000);
         begin
             check(0, sel_A_in, startTestNum);
             check(0, sel_B_in, startTestNum + 1);
@@ -163,9 +171,10 @@ module tb_controller(output err);
         end
     endtask: executeCycle_MOV_I
 
-    task executeCycle_MOV_R(input integer startTestNum);
+    task executeCycle_MOV_R(input integer startTestNum, input [2:0] forwarding_IRS = 3'b000);
         begin
             check(0, sel_A_in, startTestNum);
+            check_forwarding(forwarding_IRS[1], sel_B_in, startTestNum + 1);
             check(0, sel_B_in, startTestNum + 1);
             check(0, sel_shift_in, startTestNum + 2);
             check(0, en_A, startTestNum + 3);
@@ -176,11 +185,11 @@ module tb_controller(output err);
         end
     endtask: executeCycle_MOV_R
 
-    task executeCycle_MOV_RS(input integer startTestNum);
+    task executeCycle_MOV_RS(input integer startTestNum, input [2:0] forwarding_IRS = 3'b000);
         begin
             check(0, sel_A_in, startTestNum);
-            check(0, sel_B_in, startTestNum + 1);
-            check(0, sel_shift_in, startTestNum + 2);
+            check_forwarding(forwarding_IRS[1], sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_IRS[0], sel_shift_in, startTestNum + 2);
             check(0, en_A, startTestNum + 3);
             check(1, en_B, startTestNum + 4);
             check(1, en_S, startTestNum + 5);
@@ -189,8 +198,9 @@ module tb_controller(output err);
         end
     endtask: executeCycle_MOV_RS
 
-    task executeCycle_I(input integer startTestNum);
+    task executeCycle_I(input integer startTestNum, input [2:0] forwarding_IRS = 3'b000);
         begin
+            check_forwarding(forwarding_IRS[2], sel_A_in, startTestNum);
             check(0, sel_A_in, startTestNum);
             check(0, sel_B_in, startTestNum + 1);
             check(0, sel_shift_in, startTestNum + 2);
@@ -202,10 +212,11 @@ module tb_controller(output err);
         end
     endtask: executeCycle_I
 
-    task executeCycle_R(input integer startTestNum);
+    task executeCycle_R(input integer startTestNum, input [2:0] forwarding_IRS = 3'b000);
         begin
-            check(0, sel_A_in, startTestNum);
-            check(0, sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_IRS[2], sel_A_in, startTestNum);
+            check_forwarding(forwarding_IRS[1], sel_B_in, startTestNum + 1);
+            check(2'b00, sel_shift_in, startTestNum + 2);
             check(0, sel_shift_in, startTestNum + 2);
             check(1, en_A, startTestNum + 3);
             check(1, en_B, startTestNum + 4);
@@ -215,11 +226,11 @@ module tb_controller(output err);
         end
     endtask: executeCycle_R
 
-    task executeCycle_RS(input integer startTestNum);
+    task executeCycle_RS(input integer startTestNum, input [2:0] forwarding_IRS = 3'b000);
         begin
-            check(0, sel_A_in, startTestNum);
-            check(0, sel_B_in, startTestNum + 1);
-            check(0, sel_shift_in, startTestNum + 2);
+            check_forwarding(forwarding_IRS[2], sel_A_in, startTestNum);
+            check_forwarding(forwarding_IRS[1], sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_IRS[0], sel_shift_in, startTestNum + 2);
             check(1, en_A, startTestNum + 3);
             check(1, en_B, startTestNum + 4);
             check(1, en_S, startTestNum + 5);
@@ -229,15 +240,15 @@ module tb_controller(output err);
     endtask: executeCycle_RS
 
     //mode 0 = I, mode 1 = Lit, mode 2 = R
-    task executeCycle_LDR_STR(input integer startTestNum, input [2:0] mode);
+    task executeCycle_LDR_STR(input integer startTestNum, input [2:0] mode, input [2:0] forwarding_IRS = 3'b000);
         begin
             if (mode == 1) begin    //LIT
                 check(2'b11, sel_A_in, startTestNum);
             end else begin
-                check(0, sel_A_in, startTestNum);
+                check_forwarding(forwarding_IRS[2], sel_A_in, startTestNum);
             end
 
-            check(0, sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_IRS[1], sel_B_in, startTestNum + 1);
 
             check(0, sel_shift_in, startTestNum + 2);
 
@@ -266,14 +277,14 @@ module tb_controller(output err);
 
     endtask: executeCycle_LDR_STR
 
-    task executeCycle_Branch(input integer startTestNum, input is_R);
+    task executeCycle_Branch(input integer startTestNum, input is_R, input [2:0] forwarding_IRS = 3'b000);
         begin
             if (is_R == 1'b1) begin
                 check(2'b00, sel_A_in, startTestNum);
             end else begin
                 check(2'b11, sel_A_in, startTestNum);
             end
-            check(2'b00, sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_IRS[1], sel_B_in, startTestNum + 1);
             check(2'b11, sel_shift_in, startTestNum + 2);
             check(1'b0, en_A, startTestNum + 3);
 
@@ -833,6 +844,25 @@ module tb_controller(output err);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
+        // Start forwarding tests
+        $display("Starting Forwarding Tests");
+        start_pc(test_num);
+
+        /*
+        Description: Write-Read register forwarding on for R8 at A register
+        1. MOV_I R8 #8
+        2. ADD_R R9 R8 R1
+        */
+        $display("33: Test Number %d", test_num);
+        start_pc(test_num);
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        instr_in = MOV_I_R8_8;        // MOV_I r7, #8
+        clkR;
+        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        instr_in = ADD_R_R9_R8_R1;        // ADD_R R9 R8 R1
+        clkR;
+        executeCycle_R(test_num);  //instruction 2
+
         //print test summary
         if (error_count == 0) begin
             $display("All tests passed!");
@@ -840,77 +870,5 @@ module tb_controller(output err);
             $display("Failed %d tests", error_count);
         end
 
-
-        // // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
-        // $display("23: Test Number %d", test_num);
-        // instr_in = BL_2;        // BL #2
-        // status_reg = 32'b1000_0000000000000000000000000000;
-        // clkR;
-        // executeCycle_Branch(test_num, 0);  //instruction 2
-        // mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);
-
-        // // EX: 3, MEM: 2, MEM_WAIT: 1, WB: n/a
-        // $display("24: Test Number %d", test_num);
-        // instr_in = BX_R1;        // BX R1
-        // status_reg = 32'b0111_0000000000000000000000000000;
-        // clkR;
-        // executeCycle_Branch(test_num, 1);  //instruction 3
-        // mem_writeback_Branch(test_num, 1, 0, 4'b0001, status_reg[31:28]);
-        // mem_wait(test_num);
-
-        // // EX: 4, MEM: 3, MEM_WAIT: 2, WB: 1
-        // $display("25: Test Number %d", test_num);
-        // instr_in = BLX_R2;        // BLX R2
-        // status_reg = 32'b0010_0000000000000000000000000000;
-        // clkR;
-        // executeCycle_Branch(test_num, 1);  //instruction 4
-        // mem_writeback_Branch(test_num, 0, 1, 4'b1100, status_reg[31:28]);
-        // mem_wait(test_num);
-        // write_back_NOP(test_num);
-
-        // // EX: 5, MEM: 4, MEM_WAIT: 3, WB: 2
-        // $display("26: Test Number %d", test_num);
-        // instr_in = B_1;        // B #1
-        // status_reg = 32'b1000_0000000000000000000000000000;
-        // clkR;
-        // executeCycle_Branch(test_num, 0);  //instruction 5
-        // mem_writeback_Branch(test_num, 1, 1, 4'b1011, status_reg[31:28]);
-        // mem_wait(test_num);
-        // write_back_NOP(test_num);
-
-        // // EX: NOP, MEM: 5, MEM_WAIT: 4, WB: 3
-        // $display("27: Test Number %d", test_num);
-        // instr_in = NOP;
-        // status_reg = 32'b0001_0000000000000000000000000000;
-        // clkR;
-        // execute_NOP(test_num);
-        // mem_writeback_Branch(test_num, 0, 0, 4'b0000, status_reg[31:28]);    //this one should fail
-        // mem_wait(test_num);
-        // write_back_NOP(test_num);
-
-        // // EX: NOP, MEM: NOP, MEM_WAIT: 5, WB: 4
-        // $display("28: Test Number %d", test_num);
-        // instr_in = NOP;
-        // clkR;
-        // execute_NOP(test_num);
-        // mem_writeback_NOP(test_num);
-        // mem_wait(test_num);
-        // write_back_NOP(test_num);
-
-        // // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 5
-        // $display("29: Test Number %d", test_num);
-        // instr_in = NOP;
-        // clkR;
-        // execute_NOP(test_num);
-        // mem_writeback_NOP(test_num);
-        // mem_wait(test_num);
-        // write_back_NOP(test_num);
-
-        // //print test summary
-        // if (error_count == 0) begin
-        //     $display("All tests passed!");
-        // end else begin
-        //     $display("Failed %d tests", error_count);
-        // end
     end
 endmodule: tb_controller
