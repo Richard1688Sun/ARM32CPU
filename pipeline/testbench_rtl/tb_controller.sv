@@ -125,7 +125,15 @@ module tb_controller(output err);
         end
     endtask: reset
 
-    task  load_pc_start(input integer startTestNum);
+    task start_pc(input integer test_num);
+        reset;
+        load_pc_start(test_num);
+        clkR; // load pc
+        clkR; // fetch
+        clkR; // fetch_wait
+    endtask: start_pc
+
+    task load_pc_start(input integer startTestNum);
         begin
             #5;
             check(1, sel_pc, startTestNum); //first time you load from startpc
@@ -508,12 +516,8 @@ module tb_controller(output err);
         7. ADD_R R9 R8 R1
         8. ADD_RS R10 R8 R1 << R1
         */
-        reset;
         $display("Starting Normal Tests");
-        load_pc_start(test_num);
-        clkR; // load pc
-        clkR; // fetch
-        clkR; // fetch_wait
+        start_pc(test_num);
 
         // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
         $display("1: Test Number %d", test_num);
@@ -621,12 +625,8 @@ module tb_controller(output err);
         6. STR_R R8 R1 << R1 - PUW = 000
         7. LDR_R R8 R1 << R1 - PUW = 010
         */
-        reset;
         $display("Starting Memory Tests");
-        load_pc_start(test_num);
-        clkR; // load pc
-        clkR; // fetch
-        clkR; // fetch_wait
+        start_pc(test_num);
 
         // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
         $display("12: Test Number %d", test_num);
@@ -721,12 +721,8 @@ module tb_controller(output err);
         5. B #1 -> equals 0000 BUT FAILS due to wrong status
         6. B #1 -> equals 0000 BUT FAILS due to wrong branch value
         */
-        reset;
         $display("Starting Branch Tests");
-        load_pc_start(test_num);
-        clkR; // load pc
-        clkR; // fetch
-        clkR; // fetch_wait
+        start_pc(test_num);
 
         // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
         $display("22: Test Number %d", test_num);
