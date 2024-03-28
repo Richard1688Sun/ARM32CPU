@@ -877,7 +877,38 @@ module tb_controller(output err);
         executeCycle_RS(test_num, 3'b011);  //instruction 2
 
         /*
-        
+        Descriptiopn: Write-Read register forwarding for memory writeback(pre-indexed), for A register
+        1. LDR_I R8 R1 #1 PUW = 101
+        2. ADD_I R2 R1 #1
+        */
+        $display("35: Test Number %d", test_num);
+        start_pc(test_num);
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        instr_in = LDR_I_R8_R1_1;        // LDR_I R8 R1 #1
+        clkR;
+        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        instr_in = ADD_I_R2_R1_1;        // MOV_R R1 R8 >> 3
+        clkR;
+        executeCycle_R(test_num, 3'b100);  //instruction 2
+
+        /*
+        Description: Write-Read register forwarding for memory writeback(pre-indexed), for B register & Shift register
+        1. LDR_I R8 R1 #1 PUW = 101
+        2. ADD_R R10 R8 R1 << R1
+        */
+        $display("36: Test Number %d", test_num);
+        start_pc(test_num);
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        instr_in = LDR_I_R8_R1_1;        // LDR_I R8 R1 #1
+        clkR;
+        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        instr_in = ADD_RS_R10_R8_R1_LSL_R1;        // ADD_RS R10 R8 R1 << R1
+        clkR;
+        executeCycle_RS(test_num, 3'b011);  //instruction 2
+
+        /*
+        Desscription: Write-Read register stalling + forwarding for memory LDR instruction, for A register
+        */
 
         //print test summary
         if (error_count == 0) begin
