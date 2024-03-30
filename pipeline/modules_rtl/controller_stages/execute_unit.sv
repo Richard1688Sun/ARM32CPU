@@ -13,7 +13,8 @@ module execute_unit(
     output branch_value,
     output [31:0] instr_output,
     // controller signals
-    input [3:0] rd,         // from memory stage for forwarding
+    input [3:0] rd_memory,             // from memory stage for forwarding
+    input [6:0] opcode_memory,    // from memory stage for forwarding
     output [1:0] sel_A_in,
     output [1:0] sel_B_in,
     output [1:0] sel_shift_in,
@@ -56,6 +57,9 @@ assign en_A = en_A_reg;
 assign en_B = en_B_reg;
 assign en_S = en_S_reg;
 
+// constants
+localparam [31:0] opcode_NOP = 7'b0100000;
+
 // pipeline unit module
 pipeline_unit pipeline_unit(
     .clk(clk),
@@ -82,20 +86,28 @@ pipeline_unit pipeline_unit(
 );
 
 always_comb begin
-    if (rn_out == rd) begin
-        sel_A_in_reg = 2'b01;    //forward from result of ALU
+    if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
+        sel_A_in_reg = 2'b00;    // default when instruction is NOP
+    end else if (rn_out == rd_memory)begin
+        sel_A_in_reg = 2'b01;    // forward from result of ALU
     end else begin
-        sel_A_in_reg = 2'b00;    //default from Rn
+        sel_A_in_reg = 2'b00;    // default from Rn
     end
-    if (rm_out == rd) begin
-        sel_B_in_reg = 2'b01;    //forward from result of ALU
+
+    if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
+        sel_B_in_reg = 2'b00;    // default when instruction is NOP
+    end else if (rm_out == rd_memory) begin
+        sel_B_in_reg = 2'b01;    // forward from result of ALU
     end else begin
-        sel_B_in_reg = 2'b00;    //default from Rm
+        sel_B_in_reg = 2'b00;    // default from Rm
     end
-    if (rs_out == rd) begin
-        sel_shift_in_reg = 2'b01;   //forward from result of ALU
+
+    if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
+        sel_shift_in_reg = 2'b00;   // forward from result of ALU
+    end else if (rs_out == rd_memory) begin
+        sel_shift_in_reg = 2'b01;   // default from Rs
     end else begin
-        sel_shift_in_reg = 2'b00;   //default from Rs
+        sel_shift_in_reg = 2'b00;   // default from Rs
     end
     sel_shift_reg = 1'b0;
     en_A_reg = 1'b0;
@@ -112,9 +124,6 @@ always_comb begin
             sel_shift_reg = opcode_out[5];
 
             //sel_shift_in 
-            if (rs_out == rd) begin
-                sel_shift_in_reg = 2'b01;   //forward from result of ALU
-            end // else default from Rs
         end
 
         //en_A

@@ -842,6 +842,8 @@ module tb_controller(output err);
         mem_wait(test_num);
         write_back_NOP(test_num);
 
+
+
         // Start forwarding tests
         $display("Starting Forwarding Tests");
         start_pc(test_num);

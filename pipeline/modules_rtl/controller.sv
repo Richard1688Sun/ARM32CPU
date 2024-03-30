@@ -178,7 +178,8 @@ module controller(
         .branch_value(branch_value_execute_unit),
         .instr_output(instr_execute_unit),
         // controller signals
-        .rd(rd_memory_unit_out),
+        .rd_memory(rd_memory_unit_out),
+        .opcode_memory(opcode_memory_unit_out),
         .sel_A_in(sel_A_in_out),
         .sel_B_in(sel_B_in_out),
         .sel_shift_in(sel_shift_in_out),
