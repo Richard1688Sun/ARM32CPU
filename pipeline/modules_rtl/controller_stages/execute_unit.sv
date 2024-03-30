@@ -82,9 +82,21 @@ pipeline_unit pipeline_unit(
 );
 
 always_comb begin
-    sel_A_in_reg = 2'b00;
-    sel_B_in_reg = 2'b00;
-    sel_shift_in_reg = 2'b00;
+    if (rn_out == rd) begin
+        sel_A_in_reg = 2'b01;    //forward from result of ALU
+    end else begin
+        sel_A_in_reg = 2'b00;    //default from Rn
+    end
+    if (rm_out == rd) begin
+        sel_B_in_reg = 2'b01;    //forward from result of ALU
+    end else begin
+        sel_B_in_reg = 2'b00;    //default from Rm
+    end
+    if (rs_out == rd) begin
+        sel_shift_in_reg = 2'b01;   //forward from result of ALU
+    end else begin
+        sel_shift_in_reg = 2'b00;   //default from Rs
+    end
     sel_shift_reg = 1'b0;
     en_A_reg = 1'b0;
     en_B_reg = 1'b0;
@@ -93,15 +105,7 @@ always_comb begin
     //normal instructions
     if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_out != 4'b1111)  begin
         //sel_A_in
-        if (rn_out == rd) begin
-            sel_A_in_reg = 2'b01;    //forward from result of ALU
-        end // else default from Rn
-
         //sel_B_in
-        if (rm_out == rd) begin
-            sel_B_in_reg = 2'b01;    //forward from result of ALU
-        end // else default from Rm
-
         //sel_shift and sel_shift_in
         if (opcode_out[4] == 1'b1) begin
             //sel_shift
@@ -148,15 +152,7 @@ always_comb begin
             // en_S
         end else begin  //register
             //sel_A_in
-            if (rn_out == rd) begin
-                sel_A_in_reg = 2'b01;    //forward from result of ALU
-            end // else default from Rn
-
             //sel_B_in
-            if (rm_out == rd) begin
-                sel_B_in_reg = 2'b01;    //forward from result of ALU
-            end // else default from Rm
-
             //sel_shift
             sel_shift_reg = 1'b1;
 
@@ -176,12 +172,7 @@ always_comb begin
         if (opcode[0] == 1'b0) begin
             // pc realtive for imm branch
             sel_A_in_reg = 2'b11;
-        end 
-        
-        // sel_B_in
-        if (rm_out == rd) begin
-            sel_B_in_reg = 2'b01;    //forward from result of ALU
-        end // else default from Rm
+        end
 
         // sel_shift
         sel_shift_reg = 1'b1;
