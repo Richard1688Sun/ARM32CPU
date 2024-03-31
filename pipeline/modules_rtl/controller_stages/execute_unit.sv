@@ -110,7 +110,7 @@ always_comb begin
 
     if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
         sel_B_in_reg = 2'b00;    // default when instruction is NOP
-    end else if ((opcode[6:4] == 3'b001 || opcode[6:4] == 3'b011 || (opcode[6:5] == 2'b11 && opcode[3]) || (opcode[6:2] == 5'b10010 && opcode[0]))       // a normal_R or normal_RS or STR_R or LDR_R or BX
+    end else if (((!opcode[6] && opcode[4]) || (opcode[6:5] == 2'b11 && opcode[3]) || (opcode[6:2] == 5'b10010 && opcode[0]))       // a (normal_R or normal_RS) or (STR_R or LDR_R) or (BX)
         && ((sel_w_addr1_memory == 2'b10 && rm_out == rn_memory) 
         || (!opcode_memory[6] && rm_out == rd_memory))) begin
         sel_B_in_reg = 2'b01;    // forward from result of ALU
