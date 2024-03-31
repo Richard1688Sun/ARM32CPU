@@ -349,7 +349,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
   </tbody>
 </table>
 
-> Note: `opcode[6:5] == 11` means this instruction is a memory instruction with exception of `LDR_Literal` which has `opcode[6:5] == 10`
+> Note: `opcode[6:5] == 11` means this instruction is a memory instruction with exception of `LDR_Literal` which has `opcode[6:3] == 1000`
 
 <br/>
 
