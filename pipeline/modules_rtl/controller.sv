@@ -38,7 +38,7 @@ module controller(
     output [2:0] ALU_op,
     output sel_pre_indexed,
     output en_status,
-    output sel_load_LR,
+    output [1:0] sel_w_addr1,
     output w_en1,
     output mem_w_en,
 
@@ -91,6 +91,7 @@ module controller(
     // decoded signals
     wire [3:0] cond_memory_unit_out;
     wire [6:0] opcode_memory_unit_out;
+    wire [3:0] rn_memory_unit_out;
     wire [3:0] rd_memory_unit_out;
     wire [1:0] shift_op_memory_unit_out;
     wire [11:0] imm12_memory_unit_out;
@@ -114,7 +115,7 @@ module controller(
     wire [2:0] ALU_op_out;
     wire sel_pre_indexed_out;
     wire en_status_out;
-    wire sel_load_LR_out;
+    wire [1:0] sel_w_addr1_out;
     wire w_en1_out;
     wire mem_w_en_out;
     assign sel_pc = sel_pc_out;
@@ -125,7 +126,7 @@ module controller(
     assign ALU_op = ALU_op_out;
     assign sel_pre_indexed = sel_pre_indexed_out;
     assign en_status = en_status_out;
-    assign sel_load_LR = sel_load_LR_out;
+    assign sel_w_addr1 = sel_w_addr1_out;
     assign w_en1 = w_en1_out;
     assign mem_w_en = mem_w_en_out;
     // global branch reference
@@ -178,8 +179,10 @@ module controller(
         .branch_value(branch_value_execute_unit),
         .instr_output(instr_execute_unit),
         // controller signals
+        .rn_memory(rn_memory_unit_out),
         .rd_memory(rd_memory_unit_out),
         .opcode_memory(opcode_memory_unit_out),
+        .sel_w_addr1_memory(sel_w_addr1_out),
         .sel_A_in(sel_A_in_out),
         .sel_B_in(sel_B_in_out),
         .sel_shift_in(sel_shift_in_out),
@@ -199,6 +202,7 @@ module controller(
         .sel_stall(memory_unit_stall),   //TODO: TBD
         .cond(cond_memory_unit_out),
         .opcode(opcode_memory_unit_out),
+        .rn(rn_memory_unit_out),
         .rd(rd_memory_unit_out),
         .shift_op(shift_op_memory_unit_out),
         .imm12(imm12_memory_unit_out),
@@ -214,7 +218,7 @@ module controller(
         .ALU_op(ALU_op_out),
         .sel_pre_indexed(sel_pre_indexed_out),
         .en_status(en_status_out),
-        .sel_load_LR(sel_load_LR_out),
+        .sel_w_addr1(sel_w_addr1_out),
         .w_en1(w_en1_out),
         .mem_w_en(mem_w_en_out),
         // global branch reference

@@ -39,7 +39,7 @@ module tb_controller(output err);
     wire [2:0] ALU_op;
     wire sel_pre_indexed;
     wire en_status;
-    wire sel_load_LR;
+    wire [1:0] sel_w_addr1;
     wire w_en1;
     wire mem_w_en;
 
@@ -87,7 +87,7 @@ module tb_controller(output err);
         .ALU_op(ALU_op),
         .sel_pre_indexed(sel_pre_indexed),
         .en_status(en_status),
-        .sel_load_LR(sel_load_LR),
+        .sel_w_addr1(sel_w_addr1),
         .w_en1(w_en1),
         .mem_w_en(mem_w_en),
         // *** Write Back Stage Output ***
@@ -201,7 +201,6 @@ module tb_controller(output err);
     task executeCycle_I(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000);
         begin
             check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum);
-            check(0, sel_A_in, startTestNum);
             check(0, sel_B_in, startTestNum + 1);
             check(0, sel_shift_in, startTestNum + 2);
             check(1, en_A, startTestNum + 3);
@@ -217,7 +216,6 @@ module tb_controller(output err);
             check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum);
             check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1);
             check(2'b00, sel_shift_in, startTestNum + 2);
-            check(0, sel_shift_in, startTestNum + 2);
             check(1, en_A, startTestNum + 3);
             check(1, en_B, startTestNum + 4);
             check(1, en_S, startTestNum + 5);
@@ -319,7 +317,7 @@ module tb_controller(output err);
             check(1, sel_B, startTestNum + 1);
             check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
-            check(0, sel_load_LR, startTestNum + 4);
+            check(0, sel_w_addr1, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
@@ -335,7 +333,7 @@ module tb_controller(output err);
             check(0, sel_B, startTestNum + 1);
             check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
-            check(0, sel_load_LR, startTestNum + 4);
+            check(0, sel_w_addr1, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
@@ -350,7 +348,7 @@ module tb_controller(output err);
             check(1, sel_B, startTestNum + 1);
             check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
-            check(0, sel_load_LR, startTestNum + 4);
+            check(0, sel_w_addr1, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
@@ -365,7 +363,7 @@ module tb_controller(output err);
             check(0, sel_B, startTestNum + 1);
             check(0, sel_pre_indexed, startTestNum + 2);
             check(ALU_op_ans, ALU_op, startTestNum + 3);
-            check(0, sel_load_LR, startTestNum + 4);
+            check(0, sel_w_addr1, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
@@ -395,8 +393,12 @@ module tb_controller(output err);
             end else begin
                 check(3'b001, ALU_op, startTestNum + 3);
             end
-
-            check(0, sel_load_LR, startTestNum + 4);
+            
+            if (W == 1 && P == 1)  begin
+                check(2'b10, sel_w_addr1, startTestNum + 4);
+            end else begin
+                check(2'b00, sel_w_addr1, startTestNum + 4);
+            end
 
             if (W == 1 && P == 1) begin
                 check(1, w_en1, startTestNum + 5);
@@ -429,10 +431,10 @@ module tb_controller(output err);
             check(0, sel_pre_indexed, startTestNum + 2);
             check(0, ALU_op, startTestNum + 3);
             if (load_LR == 1) begin
-                check(1, sel_load_LR, startTestNum + 4);
+                check(2'b01, sel_w_addr1, startTestNum + 4);
                 check(1, w_en1, startTestNum + 5);
             end else begin
-                check(0, sel_load_LR, startTestNum + 4);
+                check(0, sel_w_addr1, startTestNum + 4);
                 check(0, w_en1, startTestNum + 5);
             end
             check(0, mem_w_en, startTestNum + 6);
@@ -470,7 +472,7 @@ module tb_controller(output err);
             check(0, sel_B, startTestNum + 1);
             check(0, sel_pre_indexed, startTestNum + 2);
             check(0, ALU_op, startTestNum + 3);
-            check(0, sel_load_LR, startTestNum + 4);
+            check(0, sel_w_addr1, startTestNum + 4);
             check(0, w_en1, startTestNum + 5);
             check(0, sel_pc, startTestNum + 6);
             check(0, mem_w_en, startTestNum + 6);
@@ -631,8 +633,8 @@ module tb_controller(output err);
         3. NOP
         4. NOP
         5. LDR_I R8 R1 #1 - PUW = 101
-        6. STR_R R8 R1 << R1 - PUW = 000
-        7. LDR_R R8 R1 << R1 - PUW = 010
+        6. STR_R R8 R1 R1 - PUW = 000
+        7. LDR_R R8 R1 R1 - PUW = 010
         */
         $display("Starting Memory Tests");
         start_pc(test_num);
@@ -680,7 +682,7 @@ module tb_controller(output err);
         $display("17: Test Number %d", test_num);
         instr_in = STR_R_R8_R1_LSL_R1;        // STR_R R8 R1 << R1
         clkR;
-        executeCycle_LDR_STR(test_num, 2'b10);  //instruction 6
+        executeCycle_LDR_STR(test_num, 2'b10, 3'b110);  //instruction 6
         mem_writeback_STR_LDR(test_num, 1, 0, 1, 2'b00, 0);
         mem_wait(test_num);
         write_back_NOP(test_num);
@@ -889,9 +891,9 @@ module tb_controller(output err);
         instr_in = LDR_I_R8_R1_1;        // LDR_I R8 R1 #1
         clkR;
         // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
-        instr_in = ADD_I_R2_R1_1;        // MOV_R R1 R8 >> 3
+        instr_in = ADD_I_R2_R1_1;        // 
         clkR;
-        executeCycle_R(test_num, 3'b100);  //instruction 2
+        executeCycle_I(test_num, 3'b100);  //instruction 2
 
         /*
         Description: Write-Read register forwarding for memory writeback(pre-indexed), for B register & Shift register

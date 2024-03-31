@@ -13,8 +13,10 @@ module execute_unit(
     output branch_value,
     output [31:0] instr_output,
     // controller signals
-    input [3:0] rd_memory,             // from memory stage for forwarding
-    input [6:0] opcode_memory,    // from memory stage for forwarding
+    input [3:0] rn_memory,                  // from memory stage for forwarding for writeback
+    input [3:0] rd_memory,                  // from memory stage for forwarding
+    input [6:0] opcode_memory,              // from memory stage for forwarding
+    input [1:0] sel_w_addr1_memory,               // from memory stage for forwarding
     output [1:0] sel_A_in,
     output [1:0] sel_B_in,
     output [1:0] sel_shift_in,
@@ -86,9 +88,21 @@ pipeline_unit pipeline_unit(
 );
 
 always_comb begin
+    // default values
+    sel_A_in_reg = 2'b00;
+    sel_B_in_reg = 2'b00;
+    sel_shift_in_reg = 2'b00;
+    sel_shift_reg = 1'b0;
+    en_A_reg = 1'b0;
+    en_B_reg = 1'b0;
+    en_S_reg = 1'b0;    // always 1 anyway
+
+    // forwarding logic
     if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
         sel_A_in_reg = 2'b00;    // default when instruction is NOP
-    end else if (rn_out == rd_memory)begin
+    end else if (((!opcode[6] && opcode[3:0] != 4'b0000) || opcode[6:5] == 2'b11)                 // a normal instruction that is not MOV OR a memory instruction
+        && ((sel_w_addr1_memory == 2'b10 && rn_out == rn_memory) 
+        || (!opcode_memory[6] && rn_out == rd_memory))) begin
         sel_A_in_reg = 2'b01;    // forward from result of ALU
     end else begin
         sel_A_in_reg = 2'b00;    // default from Rn
@@ -96,7 +110,9 @@ always_comb begin
 
     if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
         sel_B_in_reg = 2'b00;    // default when instruction is NOP
-    end else if (rm_out == rd_memory) begin
+    end else if ((opcode[6:4] == 3'b001 || opcode[6:4] == 3'b011 || (opcode[6:5] == 2'b11 && opcode[3]) || (opcode[6:2] == 5'b10010 && opcode[0]))       // a normal_R or normal_RS or STR_R or LDR_R or BX
+        && ((sel_w_addr1_memory == 2'b10 && rm_out == rn_memory) 
+        || (!opcode_memory[6] && rm_out == rd_memory))) begin
         sel_B_in_reg = 2'b01;    // forward from result of ALU
     end else begin
         sel_B_in_reg = 2'b00;    // default from Rm
@@ -104,15 +120,13 @@ always_comb begin
 
     if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
         sel_shift_in_reg = 2'b00;   // forward from result of ALU
-    end else if (rs_out == rd_memory) begin
+    end else if ((opcode[6:4] == 3'b011)                                    // a normal_RS
+        && ((sel_w_addr1_memory == 2'b10 && rs_out == rn_memory) 
+        || (!opcode_memory[6] && rs_out == rd_memory))) begin
         sel_shift_in_reg = 2'b01;   // default from Rs
     end else begin
         sel_shift_in_reg = 2'b00;   // default from Rs
     end
-    sel_shift_reg = 1'b0;
-    en_A_reg = 1'b0;
-    en_B_reg = 1'b0;
-    en_S_reg = 1'b0;    // always 1 anyway
 
     //normal instructions
     if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_out != 4'b1111)  begin
