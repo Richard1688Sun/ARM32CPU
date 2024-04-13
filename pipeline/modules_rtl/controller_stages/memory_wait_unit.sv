@@ -23,7 +23,6 @@ pipeline_unit pipeline_unit(
     .rst_n(rst_n),
     .instr_in(instr_in),
     .branch_in(),
-    .sel_stall(sel_stall),
     .cond(),
     .opcode(),
     .en_status(),

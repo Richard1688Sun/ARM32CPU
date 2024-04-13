@@ -5,7 +5,6 @@ module memory_pipeline_unit(
     input [31:0] instr_in,
     input branch_ref,
     input branch_in,
-    input sel_stall,
     // outputs
     output branch_value,
     output [31:0] instr_output,
@@ -83,9 +82,7 @@ always_ff @( posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         instr_reg <= NOP;
     end else begin
-        if (sel_stall == 1'b0) begin
-            instr_reg <= instr_in;
-        end
+        instr_reg <= instr_in;
     end
 end
 
@@ -94,11 +91,7 @@ always_ff @( posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         branch_value_reg <= 0;
     end else begin
-        if (sel_stall == 1'b1) begin
-            branch_value_reg <= branch_value_reg;
-        end else begin
-            branch_value_reg <= branch_in;
-        end
+        branch_value_reg <= branch_in;
     end
 end
 endmodule: memory_pipeline_unit

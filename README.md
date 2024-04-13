@@ -139,8 +139,8 @@ Stage that loads execution registers(eg. `rn`, `rm`, and `rs`) and completes the
     - outputs `NOP` instead of stored instruction
     - does not replace the current `instr_reg` on next cycle
 
-### Memory Units:
-Stages that deal with writebacks and memory operations. Is in 2 parts since reading from on-board memory(LDR) takes 2 clocks
+### Memory Stage:
+Stage that deal with writebacks and memory operations. Is in 2 parts since reading from on-board memory(LDR) takes 2 clocks
 Stage that does the following:
 - Normal Instructions: Writeback to register file && loads `status_reg`
 - Memory Instructions: 

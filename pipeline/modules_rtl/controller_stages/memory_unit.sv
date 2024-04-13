@@ -110,7 +110,6 @@ memory_pipeline_unit memory_pipeline_unit(
     .instr_in(instr_in),
     .branch_ref(branch_ref_global_reg),
     .branch_in(branch_in),
-    .sel_stall(sel_stall),
     .cond(cond_decoded),
     .opcode(opcode_decoded),
     .en_status(en_status_decoded),
