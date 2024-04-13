@@ -71,18 +71,10 @@ execute_pipeline_unit execute_pipeline_unit(
     .sel_stall(sel_stall),
     .cond(cond_out),
     .opcode(opcode_out),
-    .en_status(),
     .rn(rn_out),
-    .rd(),
     .rs(rs_out),
     .rm(rm_out),
-    .shift_op(),
     .imm5(imm5_out),
-    .imm12(),
-    .imm_branch(),
-    .P(),
-    .U(),
-    .W(),
     .branch_value(branch_value_out),
     .instr_output(instr_out)
 );
