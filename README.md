@@ -157,7 +157,7 @@ Stage that does the following:
   - Contains the following signals: 
     - Instruction Register
     - Branch Register
-  - Stalling: triggered using `sel_stall`
+  - Stalling PC: triggered using `stall_pc`
     - turns `load_pc` to `0`, so fetch stages will not move pull subsequent instructions
   - Squashing: compares the `branch_value` with `branch_ref`
     - if squash: outputs `NOP` 
