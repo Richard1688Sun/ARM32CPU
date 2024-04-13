@@ -63,7 +63,7 @@ assign en_S = en_S_reg;
 localparam [31:0] opcode_NOP = 7'b0100000;
 
 // pipeline unit module
-pipeline_unit pipeline_unit(
+execute_pipeline_unit execute_pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
     .instr_in(instr_in),

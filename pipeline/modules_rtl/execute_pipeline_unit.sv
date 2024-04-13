@@ -1,4 +1,4 @@
-module pipeline_unit(
+module execute_pipeline_unit(
     // inputs
     input clk,
     input rst_n,
@@ -100,4 +100,4 @@ always_ff @( posedge clk or negedge rst_n) begin
         end
     end
 end
-endmodule: pipeline_unit
+endmodule: execute_pipeline_unit
