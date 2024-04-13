@@ -13,10 +13,7 @@ module memory_pipeline_unit(
     output en_status,       // Enable status register
     output [3:0] rn,        // Rn
     output [3:0] rd,        // Rd (destination)
-    output [3:0] rs,        // Rs
-    output [3:0] rm,        // Rm 
     output [1:0] shift_op,  // Shift operation
-    output [4:0] imm5,      // Immediate value
     output [11:0] imm12,    // Immediate value or second operand
     output [31:0] imm_branch,    // Address for branching
     output P,
@@ -43,16 +40,12 @@ assign opcode = opcode_out;
 assign en_status = en_status_out;
 assign rn = rn_out; 
 assign rd = rd_out;
-assign rs = rs_out;
-assign rm = rm_out;
 assign shift_op = shift_op_out;
-assign imm5 = imm5_out;
 assign imm12 = imm12_out;
 assign imm_branch = imm_branch_out;
 assign P = P_out;
 assign U = U_out;
 assign W = W_out;
-assign branch_value = branch_value_reg;
 assign instr_output = instr_decoder_in;
 
 // module instances
@@ -63,10 +56,10 @@ idecoder decoder(
     .en_status(en_status_out),
     .rn(rn_out),
     .rd(rd_out),
-    .rs(rs_out),
-    .rm(rm_out),
+    .rs(),
+    .rm(),
     .shift_op(shift_op_out),
-    .imm5(imm5_out),
+    .imm5(),
     .imm12(imm12_out),
     .imm_branch(imm_branch_out),
     .P(P_out),

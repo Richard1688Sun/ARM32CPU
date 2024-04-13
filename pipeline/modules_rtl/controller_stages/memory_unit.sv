@@ -115,16 +115,12 @@ memory_pipeline_unit memory_pipeline_unit(
     .en_status(en_status_decoded),
     .rn(rn_out),
     .rd(rd_out),
-    .rs(),
-    .rm(),
     .shift_op(shift_op_out),
-    .imm5(),
     .imm12(imm12_out),
     .imm_branch(imm_branch_out),
     .P(P),
     .U(U),
     .W(W),
-    .branch_value(),        // not used -> no longer passed to next stage
     .instr_output(instr_out)
 );
 
