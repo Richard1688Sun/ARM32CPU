@@ -505,7 +505,7 @@ module tb_controller(output err);
     localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
 
     localparam [31:0] STR_I_R8_R1_1 = 32'b1110_01010000_0001_1000_000000000001;
-    localparam [31:0] LDR_LIT_R8_R1_1 = 32'b1110_01011001_1111_1000_000000000001;
+    localparam [31:0] LDR_LIT_R1_1 = 32'b1110_01011001_1111_0001_000000000001;
     localparam [31:0] LDR_I_R8_R1_1 = 32'b1110_01010011_0001_1000_000000000001;
     localparam [31:0] STR_R_R8_R1_LSL_R1 = 32'b1110_01100000_0001_1000_00001_00_0_0001;
     localparam [31:0] LDR_R_R8_R1_LSL_R1 = 32'b1110_01101001_0001_1000_00001_00_0_0001;
@@ -647,7 +647,7 @@ module tb_controller(output err);
 
         // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
         $display("13: Test Number %d", test_num);
-        instr_in = LDR_LIT_R8_R1_1;        // LDR_LIT R8 #1
+        instr_in = LDR_LIT_R1_1;        // LDR_LIT R8 #1
         clkR;
         executeCycle_LDR_STR(test_num, 2'b01);  //instruction 2
         mem_writeback_STR_LDR(test_num, 1, 0, 0, 2'b00, 1);
@@ -912,7 +912,104 @@ module tb_controller(output err);
 
         /*
         Desscription: Write-Read register stalling + forwarding for memory LDR instruction, for A register
+            - 2 clock cycles of stalling
+        1. LDR_R_R8_R1_LSL_R1 PUW = 010
+        2. ADD_R R9 R8 R1
+        3. NOP
+        4. NOP
+        5. .... same
         */
+
+        $display("37: Test Number %d", test_num);
+        start_pc(test_num);
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        instr_in = LDR_R_R8_R1_LSL_R1;        // LDR_R R8 R1 << R1
+        clkR;
+        // EX: 2, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        instr_in = ADD_R_R9_R8_R1;        // ADD_R R9 R8 R1
+        clkR;
+        // EX: 2, MEM: NOP, MEM_WAIT: 1, WB: n/a
+        instr_in = NOP; // should not load into the pipeline
+        clkR;
+        executeCycle_R(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        // EX: 2, MEM: NOP, MEM_WAIT: NOP, WB: 1
+        instr_in = NOP; // should not load into the pipeline
+        clkR;
+        executeCycle_R(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_LDR(test_num);
+        // EX: NOP, MEM: 2, MEM_WAIT: NOP, WB: NOP
+        instr_in = NOP; // should now load into the pipeline
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_R_RS(test_num, 3'b000);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+        // EX: NOP, MEM: NOP, MEM_WAIT: 2, WB: NOP
+        instr_in = NOP; // should now load into the pipeline
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+        // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 2
+        instr_in = NOP; // should now load into the pipeline
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+
+        /*
+        Description: Write-Read register stalling + forwarding for memory LDR instruction, for B register & Shift register
+            - 1 clock cycles of stalling
+        1. LDR_LIT R1 #1 PUW = 110
+        2. NOP
+        3. ADD_RS R10 R8 R1 << R1
+        4. NOP...
+        */
+        $display("38: Test Number %d", test_num);
+        start_pc(test_num);
+        // EX: 1, MEM: n/a, MEM_WAIT: n/a, WB: n/a
+        instr_in = LDR_LIT_R1_1;        // LDR_LIT R1 #1
+        clkR;
+        // EX: NOP, MEM: 1, MEM_WAIT: n/a, WB: n/a
+        instr_in = NOP; // should not load into the pipeline
+        clkR;
+        // EX: 2, MEM: NOP, MEM_WAIT: 1, WB: n/a
+        instr_in = ADD_RS_R10_R8_R1_LSL_R1;        // ADD_RS R10 R8 R1 << R1
+        clkR;
+        // EX: 2, MEM: NOP, MEM_WAIT: NOP, WB: 1
+        instr_in = NOP; // should not load into the pipeline
+        clkR;
+        executeCycle_RS(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_LDR(test_num);
+        // EX: NOP, MEM: 2, MEM_WAIT: NOP, WB: NOP
+        instr_in = NOP; // should load into the pipeline
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_R_RS(test_num, 3'b000);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+        // EX: NOP, MEM: NOP, MEM_WAIT: 2, WB: NOP
+        instr_in = NOP; // should load into the pipeline
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
+        // EX: NOP, MEM: NOP, MEM_WAIT: NOP, WB: 2
+        instr_in = NOP; // should load into the pipeline
+        clkR;
+        execute_NOP(test_num);
+        mem_writeback_NOP(test_num);
+        mem_wait(test_num);
+        write_back_NOP(test_num);
 
         //print test summary
         if (error_count == 0) begin
