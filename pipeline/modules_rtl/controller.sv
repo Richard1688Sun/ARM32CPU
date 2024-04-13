@@ -142,7 +142,6 @@ module controller(
     // *** LDR Write Back Stage Unit ***
     reg ldr_writeback_unit_stall;
     // decoded signals
-    wire [31:0] instr_ldr__write_unit;
     // controller signals
     wire w_en_ldr_out;
     assign w_en_ldr = w_en_ldr_out;
@@ -241,8 +240,6 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
-        .sel_stall(ldr_writeback_unit_stall),   //TODO: TBD
-        .instr_output(instr_ldr__write_unit),
         // controller signals
         .w_en_ldr(w_en_ldr_out)
     );
