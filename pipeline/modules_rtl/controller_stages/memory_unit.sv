@@ -4,7 +4,6 @@ module memory_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
-    input sel_stall,
     output [3:0] cond,      // Condition code               TODO: remove later if needed
     output [6:0] opcode,    // Opcode for the instruction   TODO: remove later if needed
     output [3:0] rn,        // Rn
@@ -15,6 +14,7 @@ module memory_unit(
     output [31:0] instr_output,
     // controller signals
     input [31:0] status_reg,
+    input stall_pc,
     output [1:0] sel_pc,
     output load_pc,
     output sel_branch_imm,
