@@ -87,7 +87,6 @@ module controller(
 
 
     // *** Memory Stage Unit ***
-    reg memory_unit_stall;
     // decoded signals
     wire [3:0] cond_memory_unit_out;
     wire [6:0] opcode_memory_unit_out;
@@ -199,7 +198,6 @@ module controller(
         .rst_n(rst_n),
         .instr_in(instr_execute_unit),
         .branch_in(branch_value_execute_unit),
-        .sel_stall(memory_unit_stall),   //TODO: TBD
         .cond(cond_memory_unit_out),
         .opcode(opcode_memory_unit_out),
         .rn(rn_memory_unit_out),
@@ -210,6 +208,7 @@ module controller(
         .instr_output(instr_memory_unit),
         // controller signals
         .status_reg(status_reg),
+        .stall_pc(1'b0), //TODO: TBD
         .sel_pc(sel_pc_memory_unit_out),
         .load_pc(load_pc_memory_unit_out),
         .sel_branch_imm(sel_branch_imm_out),
@@ -300,7 +299,6 @@ module controller(
         load_pc_out <= load_pc_memory_unit_out;
 
         execute_unit_stall = 1'b1;
-        memory_unit_stall = 1'b1;
         memory_wait_unit_stall = 1'b1;
         ldr_writeback_unit_stall = 1'b1;
         case (state)
@@ -317,16 +315,13 @@ module controller(
             end
             memory: begin
                 execute_unit_stall = 1'b0;
-                memory_unit_stall = 1'b0;
             end
             memory_wait: begin
                 execute_unit_stall = 1'b0;
-                memory_unit_stall = 1'b0;
                 memory_wait_unit_stall = 1'b0;
             end
             write_back: begin
                 execute_unit_stall = 1'b0;
-                memory_unit_stall = 1'b0;
                 memory_wait_unit_stall = 1'b0;
                 ldr_writeback_unit_stall = 1'b0;
             end
@@ -335,7 +330,6 @@ module controller(
                 load_pc_out <= load_pc_memory_unit_out;
 
                 execute_unit_stall = 1'b0;
-                memory_unit_stall = 1'b0;
                 memory_wait_unit_stall = 1'b0;
                 ldr_writeback_unit_stall = 1'b0;
             end
