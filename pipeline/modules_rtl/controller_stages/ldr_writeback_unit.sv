@@ -19,24 +19,7 @@ writeback_pipeline_unit writeback_pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
     .instr_in(instr_in),
-    .branch_in(),
-    .sel_stall(),
-    .cond(),
-    .opcode(opcode_decoded),
-    .en_status(),
-    .rn(),
-    .rd(),
-    .rs(),
-    .rm(),
-    .shift_op(),
-    .imm5(),
-    .imm12(),
-    .imm_branch(),
-    .P(),
-    .U(),
-    .W(),
-    .branch_value(),
-    .instr_output()
+    .opcode(opcode_decoded)
 );
 
 // controller module

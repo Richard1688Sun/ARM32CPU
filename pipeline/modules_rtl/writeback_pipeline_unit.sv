@@ -4,8 +4,7 @@ module writeback_pipeline_unit(
     input rst_n,
     input [31:0] instr_in,
     // outputs
-    output [31:0] instr_output,
-    output [6:0] opcode,    // Opcode for the instruction
+    output [6:0] opcode    // Opcode for the instruction
 );
 // internal signals
 localparam [31:0] NOP = 32'b1110_00110010_0000_11110000_00000000;
@@ -15,7 +14,6 @@ reg [31:0] instr_reg;
 wire [6:0] opcode_out;
 wire [31:0] instr_decoder_in;
 assign opcode = opcode_out;
-assign instr_output = instr_decoder_in;
 
 // module instances
 idecoder decoder(
@@ -44,9 +42,7 @@ always_ff @( posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         instr_reg <= NOP;
     end else begin
-        if (sel_stall == 1'b0) begin
-            instr_reg <= instr_in;
-        end
+        instr_reg <= instr_in;
     end
 end
 endmodule: writeback_pipeline_unit
