@@ -6,7 +6,6 @@ module memory_pipeline_unit(
     input branch_ref,
     input branch_in,
     // outputs
-    output branch_value,
     output [31:0] instr_output,
     output [3:0] cond,      // Condition code
     output [6:0] opcode,    // Opcode for the instruction

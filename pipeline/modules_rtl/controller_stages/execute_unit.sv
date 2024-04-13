@@ -23,7 +23,8 @@ module execute_unit(
     output sel_shift,
     output en_A,
     output en_B,
-    output en_S
+    output en_S,
+    output stall_pc         // TODO: implment later
 );
 
 // pipeline unit ports

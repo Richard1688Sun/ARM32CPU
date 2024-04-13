@@ -186,7 +186,8 @@ module controller(
         .sel_shift(sel_shift_out),
         .en_A(en_A_out),
         .en_B(en_B_out),
-        .en_S(en_S_out)
+        .en_S(en_S_out),
+        .stall_pc() //TODO: TBD
     );
 
     // memory stage
