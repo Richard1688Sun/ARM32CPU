@@ -56,7 +56,10 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
         if (w_en_ldr == 1'b1) begin
             registeres[w_addr_ldr] = w_data_ldr;
         end
+    end
 
+    // PC register
+    always_ff @(posedge clk) begin
         if (load_pc == 1'b1) begin
             case (sel_pc)
                 2'b01: begin
@@ -68,5 +71,6 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
                 default: registeres[4'd15] <= pc_in;
             endcase
         end
+        // otherwise keep the original value
     end
 endmodule: regfile
