@@ -131,7 +131,7 @@ Stages that fetches instructions from memory. Is in 2 parts since on-board memor
 ### Execute Stage:
 Stage that loads execution registers(eg. `rn`, `rm`, and `rs`) and completes the ALU operations as well as shifting
 
-**pipeline_unit**:
+**execute_pipeline_unit**:
   - Contains the following signals: 
     - Instruction Register
     - Branch Register
