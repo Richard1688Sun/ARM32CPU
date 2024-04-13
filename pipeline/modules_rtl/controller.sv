@@ -132,7 +132,6 @@ module controller(
     reg branch_ref_global;
 
     // *** Memory Wait Stage Unit ***
-    reg memory_wait_unit_stall;
     // decoded signals
     wire [31:0] instr_memory_wait_unit;
     // controller signals
@@ -229,7 +228,6 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_unit),
-        .sel_stall(memory_wait_unit_stall),   //TODO: TBD
         .instr_output(instr_memory_wait_unit)
         // controller signals
     );
@@ -296,7 +294,6 @@ module controller(
         load_pc_out <= load_pc_memory_unit_out;
 
         execute_unit_stall = 1'b1;
-        memory_wait_unit_stall = 1'b1;
         ldr_writeback_unit_stall = 1'b1;
         case (state)
             load_pc_start: begin
@@ -315,11 +312,9 @@ module controller(
             end
             memory_wait: begin
                 execute_unit_stall = 1'b0;
-                memory_wait_unit_stall = 1'b0;
             end
             write_back: begin
                 execute_unit_stall = 1'b0;
-                memory_wait_unit_stall = 1'b0;
                 ldr_writeback_unit_stall = 1'b0;
             end
             default: begin
@@ -327,7 +322,6 @@ module controller(
                 load_pc_out <= load_pc_memory_unit_out;
 
                 execute_unit_stall = 1'b0;
-                memory_wait_unit_stall = 1'b0;
                 ldr_writeback_unit_stall = 1'b0;
             end
         endcase
