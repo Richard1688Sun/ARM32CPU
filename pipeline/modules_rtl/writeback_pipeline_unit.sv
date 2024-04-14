@@ -4,6 +4,7 @@ module writeback_pipeline_unit(
     input rst_n,
     input [31:0] instr_in,
     // outputs
+    output [3:0] rt,        // Register number for the destination register
     output [6:0] opcode    // Opcode for the instruction
 );
 // internal signals
@@ -12,7 +13,9 @@ reg [31:0] instr_reg;
 
 // module outputs
 wire [6:0] opcode_out;
+wire [3:0] rt_out;
 wire [31:0] instr_decoder_in;
+assign rt = rt_out;
 assign opcode = opcode_out;
 
 // module instances
@@ -22,7 +25,7 @@ idecoder decoder(
     .opcode(opcode_out),
     .en_status(),
     .rn(),
-    .rd(),
+    .rd(rt_out),
     .rs(),
     .rm(),
     .shift_op(),
