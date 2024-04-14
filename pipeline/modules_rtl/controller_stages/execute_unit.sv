@@ -14,9 +14,13 @@ module execute_unit(
     output [31:0] instr_output,
     // controller signals
     input [3:0] rn_memory,                  // from memory stage for forwarding for writeback
-    input [3:0] rd_memory,                  // from memory stage for forwarding
-    input [6:0] opcode_memory,              // from memory stage for forwarding
-    input [1:0] sel_w_addr1_memory,               // from memory stage for forwarding
+    input [3:0] rd_memory,                  // from memory stage for forwarding & stalling
+    input [6:0] opcode_memory,              // from memory stage for forwarding & stalling
+    input [1:0] sel_w_addr1_memory,               // from memory stage for forwarding replaces the need for P & W
+    input [3:0] rt_memory_wait,             // from wait stage for stalling
+    input [6:0] opcode_memory_wait,         // from wait stage for stalling
+    input [3:0] rt_writeback,               // from writeback stage for forwarding from ldr instructions
+    input [6:0] opcode_writeback,           // from writeback stage for forwarding from ldr instructions
     output [1:0] sel_A_in,
     output [1:0] sel_B_in,
     output [1:0] sel_shift_in,

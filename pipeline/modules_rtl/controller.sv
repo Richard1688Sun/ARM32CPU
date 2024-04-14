@@ -133,14 +133,17 @@ module controller(
 
     // *** Memory Wait Stage Unit ***
     // decoded signals
+    wire [3:0] rt_memory_wait_unit;
+    wire [6:0] opcode_memory_wait_unit;
     wire [31:0] instr_memory_wait_unit;
     // controller signals
     // NOTHING
 
 
     // *** LDR Write Back Stage Unit ***
-    reg ldr_writeback_unit_stall;
     // decoded signals
+    wire [3:0] rt_writeback_unit;
+    wire [6:0] opcode_writeback_unit;
     // controller signals
     wire w_en_ldr_out;
     assign w_en_ldr = w_en_ldr_out;
@@ -180,6 +183,10 @@ module controller(
         .rd_memory(rd_memory_unit_out),
         .opcode_memory(opcode_memory_unit_out),
         .sel_w_addr1_memory(sel_w_addr1_out),
+        .rt_memory_wait(rt_memory_wait_unit),
+        .opcode_memory_wait(opcode_memory_wait_unit),
+        .rt_writeback(rt_writeback_unit),
+        .opcode_writeback(opcode_writeback_unit),
         .sel_A_in(sel_A_in_out),
         .sel_B_in(sel_B_in_out),
         .sel_shift_in(sel_shift_in_out),
@@ -229,6 +236,8 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_unit),
+        .rt(rt_memory_wait_unit),
+        .opcode(opcode_memory_wait_unit),
         .instr_output(instr_memory_wait_unit)
         // controller signals
     );
@@ -239,6 +248,8 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
+        .rt(rt_writeback_unit),
+        .opcode(opcode_writeback_unit),
         // controller signals
         .w_en_ldr(w_en_ldr_out)
     );
@@ -295,7 +306,6 @@ module controller(
         load_pc_out <= load_pc_memory_unit_out;
 
         execute_unit_stall = 1'b1;
-        ldr_writeback_unit_stall = 1'b1;
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b01;
@@ -316,14 +326,12 @@ module controller(
             end
             write_back: begin
                 execute_unit_stall = 1'b0;
-                ldr_writeback_unit_stall = 1'b0;
             end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
                 load_pc_out <= load_pc_memory_unit_out;
 
                 execute_unit_stall = 1'b0;
-                ldr_writeback_unit_stall = 1'b0;
             end
         endcase
     end

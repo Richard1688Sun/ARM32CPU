@@ -498,7 +498,7 @@ module tb_controller(output err);
 
     localparam [31:0] MOV_I_R8_8 = 32'b1110_00111010_0000_1000_000000001000;
     localparam [31:0] MOV_R_R1_R8_3 = 32'b1110_00011010_0000_0001_00011_00_0_1000;
-    localparam [31:0] MOV_RS_R3_R8_LSL_R1 = 32'b1110_00011010_0000_0011_0001_0_00_1_1001;
+    localparam [31:0] MOV_RS_R3_R8_LSL_R1 = 32'b1110_00011010_0000_0011_0001_0_00_1_1000;
     localparam [31:0] ADD_I_R2_R1_1 = 32'b1110_00101000_0001_0010_000000000001;
     localparam [31:0] ADD_R_R9_R8_R1 = 32'b1110_00001000_1000_1001_00000_00_0_0001;
     localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
@@ -562,7 +562,7 @@ module tb_controller(output err);
 
         // EX: 5, MEM: NOP, MEM_WAIT: 3, WB: NOP
         $display("5: Test Number %d", test_num);
-        instr_in = MOV_RS_R3_R1_R1_LSL_R1;        // MOV_RS R3 R1, R1 << R1
+        instr_in = MOV_RS_R3_R8_LSL_R1;        // MOV_RS R3 R1, R1 << R1
         clkR;
         executeCycle_MOV_RS(test_num);  //instruction 5
         mem_writeback_NOP(test_num);
