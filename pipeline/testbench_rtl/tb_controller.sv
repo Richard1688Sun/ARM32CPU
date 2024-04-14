@@ -311,7 +311,7 @@ module tb_controller(output err);
         end
     endtask: execute_NOP
 
-    task mem_writeback_MOV_I(input integer startTestNum, input [2:0] ALU_op_ans);
+    task mem_writeback_MOV_I(input integer startTestNum, input [2:0] ALU_op_ans, input is_load_pc = 1);
         begin
             check(1, sel_A, startTestNum);
             check(1, sel_B, startTestNum + 1);
@@ -321,12 +321,12 @@ module tb_controller(output err);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
-            check(1, load_pc, startTestNum + 8);
+            check(is_load_pc, load_pc, startTestNum + 8);
             test_num = startTestNum + 9;
         end
     endtask: mem_writeback_MOV_I
 
-    task mem_writeback_MOV_R_RS(input integer startTestNum, input [2:0] ALU_op_ans);
+    task mem_writeback_MOV_R_RS(input integer startTestNum, input [2:0] ALU_op_ans, input is_load_pc = 1);
         begin
         
             check(1, sel_A, startTestNum);
@@ -337,12 +337,12 @@ module tb_controller(output err);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
-            check(1, load_pc, startTestNum + 8);
+            check(is_load_pc, load_pc, startTestNum + 8);
             test_num = startTestNum + 9;
         end
     endtask: mem_writeback_MOV_R_RS
 
-    task mem_writeback_I(input integer startTestNum, input [2:0] ALU_op_ans);
+    task mem_writeback_I(input integer startTestNum, input [2:0] ALU_op_ans, input is_load_pc = 1);
         begin
             check(0, sel_A, startTestNum);
             check(1, sel_B, startTestNum + 1);
@@ -352,12 +352,12 @@ module tb_controller(output err);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
             check(2'b00, sel_pc, startTestNum + 7);
-            check(1, load_pc, startTestNum + 8);
+            check(is_load_pc, load_pc, startTestNum + 8);
             test_num = startTestNum + 9;
         end
     endtask: mem_writeback_I
 
-    task mem_writeback_R_RS(input integer startTestNum, input [2:0] ALU_op_ans);
+    task mem_writeback_R_RS(input integer startTestNum, input [2:0] ALU_op_ans, input is_load_pc = 1);
         begin
             check(0, sel_A, startTestNum);
             check(0, sel_B, startTestNum + 1);
@@ -366,13 +366,13 @@ module tb_controller(output err);
             check(0, sel_w_addr1, startTestNum + 4);
             check(1, w_en1, startTestNum + 5);
             check(0, mem_w_en, startTestNum + 6);
+            check(is_load_pc, load_pc, startTestNum + 8);
             check(2'b00, sel_pc, startTestNum + 7);
-            check(1, load_pc, startTestNum + 8);
             test_num = startTestNum + 9;
         end
     endtask: mem_writeback_R_RS
 
-    task mem_writeback_STR_LDR(input integer startTestNum, input P, input U, input W, input [1:0] mode, input is_STR);
+    task mem_writeback_STR_LDR(input integer startTestNum, input P, input U, input W, input [1:0] mode, input is_STR, input is_load_pc = 1);
         begin
             check(0, sel_A, startTestNum);
 
@@ -414,12 +414,12 @@ module tb_controller(output err);
             end
 
             check(2'b00, sel_pc, startTestNum + 7);
-            check(1, load_pc, startTestNum + 8);
+            check(is_load_pc, load_pc, startTestNum + 8);
             test_num = startTestNum + 9;
         end
     endtask: mem_writeback_STR_LDR
 
-    task mem_writeback_Branch (input integer startTestNum, input load_LR, input is_R, input [3:0] cond, input [3:0] NZCV); 
+    task mem_writeback_Branch (input integer startTestNum, input load_LR, input is_R, input [3:0] cond, input [3:0] NZCV, input is_load_pc = 1); 
         begin
             if (is_R == 1) begin
                 check(1'b1, sel_A, startTestNum);
@@ -456,17 +456,16 @@ module tb_controller(output err);
             
                 // take the new address
                 check(2'b11, sel_pc, startTestNum + 7);
-                check(1, load_pc, startTestNum + 8);
             end else begin
                 check(2'b00, sel_pc, startTestNum + 7);
-                check(1, load_pc, startTestNum + 8);
             end
+            check(is_load_pc, load_pc, startTestNum + 8);
             check(0, en_status, startTestNum + 9);
             test_num = startTestNum + 10;
         end
     endtask: mem_writeback_Branch
 
-    task mem_writeback_NOP(input integer startTestNum);
+    task mem_writeback_NOP(input integer startTestNum, input is_load_pc = 1);
         begin
             check(0, sel_A, startTestNum);
             check(0, sel_B, startTestNum + 1);
@@ -499,7 +498,7 @@ module tb_controller(output err);
 
     localparam [31:0] MOV_I_R8_8 = 32'b1110_00111010_0000_1000_000000001000;
     localparam [31:0] MOV_R_R1_R8_3 = 32'b1110_00011010_0000_0001_00011_00_0_1000;
-    localparam [31:0] MOV_RS_R3_R1_R1_LSL_R1 = 32'b1110_00011010_0000_0011_0001_0_00_1_0001;
+    localparam [31:0] MOV_RS_R3_R8_LSL_R1 = 32'b1110_00011010_0000_0011_0001_0_00_1_1001;
     localparam [31:0] ADD_I_R2_R1_1 = 32'b1110_00101000_0001_0010_000000000001;
     localparam [31:0] ADD_R_R9_R8_R1 = 32'b1110_00001000_1000_1001_00000_00_0_0001;
     localparam [31:0] ADD_RS_R10_R8_R1_LSL_R1 = 32'b1110_00001000_1000_1010_0001_0_00_1_0001;
@@ -932,13 +931,13 @@ module tb_controller(output err);
         instr_in = NOP; // should not load into the pipeline
         clkR;
         executeCycle_R(test_num);
-        mem_writeback_NOP(test_num);
+        mem_writeback_NOP(test_num, 1'b0);
         mem_wait(test_num);
         // EX: 2, MEM: NOP, MEM_WAIT: NOP, WB: 1
         instr_in = NOP; // should not load into the pipeline
         clkR;
         executeCycle_R(test_num);
-        mem_writeback_NOP(test_num);
+        mem_writeback_NOP(test_num, 1'b0);
         mem_wait(test_num);
         write_back_LDR(test_num);
         // EX: NOP, MEM: 2, MEM_WAIT: NOP, WB: NOP
@@ -964,11 +963,11 @@ module tb_controller(output err);
         write_back_NOP(test_num);
 
         /*
-        Description: Write-Read register stalling + forwarding for memory LDR instruction, for B register & Shift register
+        Description: Write-Read register stalling + forwarding for memory LDR instruction, for B register
             - 1 clock cycles of stalling
         1. LDR_LIT R1 #1 PUW = 110
         2. NOP
-        3. ADD_RS R10 R8 R1 << R1
+        3. ADD_R R9 R8 R1
         4. NOP...
         */
         $display("38: Test Number %d", test_num);
@@ -980,20 +979,20 @@ module tb_controller(output err);
         instr_in = NOP; // should not load into the pipeline
         clkR;
         // EX: 2, MEM: NOP, MEM_WAIT: 1, WB: n/a
-        instr_in = ADD_RS_R10_R8_R1_LSL_R1;        // ADD_RS R10 R8 R1 << R1
+        instr_in = ADD_R_R9_R8_R1;        // ADD_RS R10 R8 R1 << R1
         clkR;
         // EX: 2, MEM: NOP, MEM_WAIT: NOP, WB: 1
         instr_in = NOP; // should not load into the pipeline
         clkR;
-        executeCycle_RS(test_num);
-        mem_writeback_NOP(test_num);
+        executeCycle_R(test_num);
+        mem_writeback_NOP(test_num, 1'b0);
         mem_wait(test_num);
         write_back_LDR(test_num);
         // EX: NOP, MEM: 2, MEM_WAIT: NOP, WB: NOP
         instr_in = NOP; // should load into the pipeline
         clkR;
         execute_NOP(test_num);
-        mem_writeback_R_RS(test_num, 3'b000);
+        mem_writeback_R_RS(test_num, 3'b000, 1'b0);
         mem_wait(test_num);
         write_back_NOP(test_num);
         // EX: NOP, MEM: NOP, MEM_WAIT: 2, WB: NOP
