@@ -94,39 +94,50 @@ always_comb begin
     en_B_reg = 1'b0;
     en_S_reg = 1'b0;    // always 1 anyway
 
-    // forwarding logic
-    if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
-        sel_A_in_reg = 2'b00;    // default when instruction is NOP
-    end else if (((!opcode[6] && opcode[3:0] != 4'b0000) || opcode[6:5] == 2'b11)                 // a normal instruction that is not MOV OR a memory instruction
-        && ((sel_w_addr1_memory == 2'b10 && rn_out == rn_memory) 
-        || (!opcode_memory[6] && rn_out == rd_memory))) begin
-        sel_A_in_reg = 2'b01;    // forward from result of ALU
-    end else begin
-        sel_A_in_reg = 2'b00;    // default from Rn
+    // forwarding logic for reg A
+    if (opcode_out != opcode_NOP && ((!opcode_out[6] && opcode_out[3:0] != 4'b0000) || opcode_out[6:5] == 2'b11)) begin     // current instruction uses the rn register
+        if (opcode_memory != opcode_NOP                                                                                     // memory stage is not NOP and can be checked for forwarding
+            && ((sel_w_addr1_memory == 2'b10 && rn_out == rn_memory)                                                        // memory stage is doing pre-indexed writeback
+            || (!opcode_memory[6] && rn_out == rd_memory))) begin                                                           // memory stage is doing normal writeback
+            sel_A_in_reg = 2'b01;    // forward from result of ALU
+        end else if (opcode_writeback != opcode_NOP                                                                        // writeback stage is not NOP and can be checked for forwarding
+            && (opcode_writeback[6:4] == 3'b110 || opcode_writeback[6:3] == 4'b1000)                                        // writeback stage is doing LDR or LDR_Lit
+            && (rt_writeback == rn_out)) begin                                                                             // writeback stage is writing back to rn
+            sel_A_in_reg = 2'b10;    // forward from memory     
+        end
     end
+    // otherwise default from Rn
 
-    if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
-        sel_B_in_reg = 2'b00;    // default when instruction is NOP
-    end else if (((!opcode[6] && opcode[4]) || (opcode[6:5] == 2'b11 && opcode[3]) || (opcode[6:2] == 5'b10010 && opcode[0]))       // a (normal_R or normal_RS) or (STR_R or LDR_R) or (BX)
-        && ((sel_w_addr1_memory == 2'b10 && rm_out == rn_memory) 
-        || (!opcode_memory[6] && rm_out == rd_memory))) begin
-        sel_B_in_reg = 2'b01;    // forward from result of ALU
-    end else begin
-        sel_B_in_reg = 2'b00;    // default from Rm
+    // forwarding logic for reg B
+    if ((!opcode_out[6] && opcode_out[4]) || (opcode_out[6:5] == 2'b11 && opcode_out[3]) || (opcode_out[6:2] == 5'b10010 && opcode_out[0])) begin   // current instruction uses the rm reg
+        if (opcode_memory != opcode_NOP 
+            && ((sel_w_addr1_memory == 2'b10 && rm_out == rn_memory)
+            || (!opcode_memory[6] && rm_out == rd_memory))) begin
+            sel_B_in_reg = 2'b01;    // forward from result of ALU
+        end else if (opcode_writeback != opcode_NOP                                                                   // writeback stage is not NOP and can be checked for forwarding
+            && (opcode_writeback[6:4] == 3'b110 || opcode_writeback[6:3] == 4'b1000)                                  // writeback stage is doing LDR or LDR_Lit
+            && (rt_writeback == rm_out)) begin                                                                        // writeback stage is writing back to rm
+            sel_B_in_reg = 2'b10;    // forward from memory
+        end
     end
+    // otherwise default from Rm
 
-    if (opcode_memory == opcode_NOP || opcode_out == opcode_NOP) begin
-        sel_shift_in_reg = 2'b00;   // forward from result of ALU
-    end else if ((opcode[6:4] == 3'b011)                                    // a normal_RS
-        && ((sel_w_addr1_memory == 2'b10 && rs_out == rn_memory) 
-        || (!opcode_memory[6] && rs_out == rd_memory))) begin
-        sel_shift_in_reg = 2'b01;   // default from Rs
-    end else begin
-        sel_shift_in_reg = 2'b00;   // default from Rs
+    // forwarding logic for shift reg
+    if (opcode_out[6:4] == 3'b011) begin
+        if (opcode_memory != opcode_NOP
+            && ((sel_w_addr1_memory == 2'b10 && rs_out == rn_memory) 
+            || (!opcode_memory[6] && rs_out == rd_memory))) begin
+            sel_shift_in_reg = 2'b01;   // forward from result of ALU
+        end else if (opcode_writeback != opcode_NOP                                                                   // writeback stage is not NOP and can be checked for forwarding
+            && (opcode_writeback[6:4] == 3'b110 || opcode_writeback[6:3] == 4'b1000)                                  // writeback stage is doing LDR or LDR_Lit
+            && (rt_writeback == rs_out)) begin                                                                        // writeback stage is writing back to rs
+            sel_shift_in_reg = 2'b10;    // forward from memory
+        end
     end
+    // otherwise default to Rs
 
     //normal instructions
-    if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_out != 4'b1111)  begin
+    if (opcode_out[6] == 0 && opcode_out[5:4] != 2'b10 && cond_out != 4'b1111)  begin
         //sel_A_in
         //sel_B_in
         //sel_shift and sel_shift_in

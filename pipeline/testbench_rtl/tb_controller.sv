@@ -150,8 +150,10 @@ module tb_controller(output err);
         end
     endtask: load_pc_normal
 
-    task check_forwarding(input logic is_forwarding, input logic [1:0] sel, input integer startTestNum);
-        if (is_forwarding == 1'b1) begin
+    task check_forwarding(input logic is_forwarding, input logic [1:0] sel, input integer startTestNum, input is_ldr_forwarding = 0);
+        if (is_ldr_forwarding == 1'b1) begin
+            check(2'b10, sel, startTestNum);
+        end else if (is_forwarding == 1'b1) begin
             check(2'b01, sel, startTestNum);
         end else begin
             check(2'b00, sel, startTestNum);
@@ -238,12 +240,12 @@ module tb_controller(output err);
     endtask: executeCycle_RS
 
     //mode 0 = I, mode 1 = Lit, mode 2 = R
-    task executeCycle_LDR_STR(input integer startTestNum, input [2:0] mode, input [2:0] forwarding_ABS = 3'b000);
+    task executeCycle_LDR_STR(input integer startTestNum, input [2:0] mode, input [2:0] forwarding_ABS = 3'b000, input [2:0] is_ldr_forwarding_ABS = 3'b000);
         begin
             if (mode == 1) begin    //LIT
                 check(2'b11, sel_A_in, startTestNum);
             end else begin
-                check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum);
+                check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum, is_ldr_forwarding_ABS[2]);
             end
 
             check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1);
@@ -628,7 +630,7 @@ module tb_controller(output err);
         // Stage 2 Testing: Memory + ZERO hazards
         /*
         1. STR_I R8 R1 #1 - PUW = 100
-        2. LDR_LIT R8 #1 - PUW = 110
+        2. LDR_LIT R1 #1 - PUW = 110
         3. NOP
         4. NOP
         5. LDR_I R8 R1 #1 - PUW = 101
@@ -672,7 +674,7 @@ module tb_controller(output err);
         $display("16: Test Number %d", test_num);
         instr_in = LDR_I_R8_R1_1;        // LDR_I R8 R1 #1
         clkR;
-        executeCycle_LDR_STR(test_num, 2'b00);  //instruction 5
+        executeCycle_LDR_STR(test_num, 2'b00, 3'b000, 3'b100);  //instruction 5
         mem_writeback_NOP(test_num);
         mem_wait(test_num);
         write_back_LDR(test_num);
