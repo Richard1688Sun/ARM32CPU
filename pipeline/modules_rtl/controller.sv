@@ -55,7 +55,6 @@ module controller(
     wire branch_value_fetch_wait_unit;
 
     // *** Execute Stage Unit ***
-    reg execute_unit_stall;
     // decoded signals
     wire [6:0] opcode_execute_unit_out;
     wire [3:0] rn_execute_unit_out;
@@ -77,6 +76,7 @@ module controller(
     wire en_A_out;
     wire en_B_out;
     wire en_S_out;
+    wire stall_pc;
     assign sel_A_in = sel_A_in_out;
     assign sel_B_in = sel_B_in_out;
     assign sel_shift_in = sel_shift_in_out;
@@ -170,7 +170,6 @@ module controller(
         .rst_n(rst_n),
         .instr_in(instr_in),
         .branch_in(branch_value_fetch_wait_unit),
-        .sel_stall(execute_unit_stall), //TODO: TBD
         .opcode(opcode_execute_unit_out),
         .rn(rn_execute_unit_out),
         .rs(rs_execute_unit_out),
@@ -194,7 +193,7 @@ module controller(
         .en_A(en_A_out),
         .en_B(en_B_out),
         .en_S(en_S_out),
-        .stall_pc() //TODO: TBD
+        .stall_pc(stall_pc)
     );
 
     // memory stage
@@ -214,7 +213,7 @@ module controller(
         .instr_output(instr_memory_unit),
         // controller signals
         .status_reg(status_reg),
-        .stall_pc(1'b0), //TODO: TBD
+        .stall_pc(stall_pc), //TODO: TBD
         .sel_pc(sel_pc_memory_unit_out),
         .load_pc(load_pc_memory_unit_out),
         .sel_branch_imm(sel_branch_imm_out),
@@ -305,33 +304,14 @@ module controller(
         sel_pc_out <= sel_pc_memory_unit_out;
         load_pc_out <= load_pc_memory_unit_out;
 
-        execute_unit_stall = 1'b1;
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b01;
                 load_pc_out <= 1'b1;
             end
-            fetch: begin
-            end
-            fetch_wait: begin
-            end
-            execute: begin
-                execute_unit_stall = 1'b0;
-            end
-            memory: begin
-                execute_unit_stall = 1'b0;
-            end
-            memory_wait: begin
-                execute_unit_stall = 1'b0;
-            end
-            write_back: begin
-                execute_unit_stall = 1'b0;
-            end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
                 load_pc_out <= load_pc_memory_unit_out;
-
-                execute_unit_stall = 1'b0;
             end
         endcase
     end
