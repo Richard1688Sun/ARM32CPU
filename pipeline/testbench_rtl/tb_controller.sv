@@ -200,9 +200,9 @@ module tb_controller(output err);
         end
     endtask: executeCycle_MOV_RS
 
-    task executeCycle_I(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000);
+    task executeCycle_I(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000, input [2:0] is_ldr_forwarding_ABS = 3'b000);
         begin
-            check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum);
+            check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum, is_ldr_forwarding_ABS[2]);
             check(0, sel_B_in, startTestNum + 1);
             check(0, sel_shift_in, startTestNum + 2);
             check(1, en_A, startTestNum + 3);
@@ -213,10 +213,10 @@ module tb_controller(output err);
         end
     endtask: executeCycle_I
 
-    task executeCycle_R(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000);
+    task executeCycle_R(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000, input [2:0] is_ldr_forwarding_ABS = 3'b000);
         begin
-            check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum);
-            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum, is_ldr_forwarding_ABS[2]);
+            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1, is_ldr_forwarding_ABS[1]);
             check(2'b00, sel_shift_in, startTestNum + 2);
             check(1, en_A, startTestNum + 3);
             check(1, en_B, startTestNum + 4);
@@ -226,11 +226,11 @@ module tb_controller(output err);
         end
     endtask: executeCycle_R
 
-    task executeCycle_RS(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000);
+    task executeCycle_RS(input integer startTestNum, input [2:0] forwarding_ABS = 3'b000, input [2:0] is_ldr_forwarding_ABS = 3'b000);
         begin
-            check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum);
-            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1);
-            check_forwarding(forwarding_ABS[0], sel_shift_in, startTestNum + 2);
+            check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum, is_ldr_forwarding_ABS[2]);
+            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1, is_ldr_forwarding_ABS[1]);
+            check_forwarding(forwarding_ABS[0], sel_shift_in, startTestNum + 2, is_ldr_forwarding_ABS[0]);
             check(1, en_A, startTestNum + 3);
             check(1, en_B, startTestNum + 4);
             check(1, en_S, startTestNum + 5);
@@ -248,7 +248,7 @@ module tb_controller(output err);
                 check_forwarding(forwarding_ABS[2], sel_A_in, startTestNum, is_ldr_forwarding_ABS[2]);
             end
 
-            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1, is_ldr_forwarding_ABS[1]);
 
             check(0, sel_shift_in, startTestNum + 2);
 
@@ -277,14 +277,14 @@ module tb_controller(output err);
 
     endtask: executeCycle_LDR_STR
 
-    task executeCycle_Branch(input integer startTestNum, input is_R, input [2:0] forwarding_ABS = 3'b000);
+    task executeCycle_Branch(input integer startTestNum, input is_R, input [2:0] forwarding_ABS = 3'b000, input [2:0] is_ldr_forwarding_ABS = 3'b000);
         begin
             if (is_R == 1'b1) begin
                 check(2'b00, sel_A_in, startTestNum);
             end else begin
                 check(2'b11, sel_A_in, startTestNum);
             end
-            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1);
+            check_forwarding(forwarding_ABS[1], sel_B_in, startTestNum + 1, is_ldr_forwarding_ABS[1]);
             check(2'b11, sel_shift_in, startTestNum + 2);
             check(1'b0, en_A, startTestNum + 3);
 
