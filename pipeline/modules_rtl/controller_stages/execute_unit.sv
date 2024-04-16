@@ -4,7 +4,6 @@ module execute_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
-    input sel_stall,
     output [6:0] opcode,    // Opcode for the instruction TODO: remove later if needed
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
@@ -30,6 +29,26 @@ module execute_unit(
     output en_S,
     output stall_pc         // TODO: implment later
 );
+// constants
+localparam [31:0] opcode_NOP = 7'b0100000;
+
+// controller ports
+reg [1:0] sel_A_in_reg;
+reg [1:0] sel_B_in_reg;
+reg [1:0] sel_shift_in_reg;
+reg sel_shift_reg;
+reg en_A_reg;
+reg en_B_reg;
+reg en_S_reg;
+reg stall_pc_reg;
+assign sel_A_in = sel_A_in_reg;
+assign sel_B_in = sel_B_in_reg;
+assign sel_shift_in = sel_shift_in_reg;
+assign sel_shift = sel_shift_reg;
+assign en_A = en_A_reg;
+assign en_B = en_B_reg;
+assign en_S = en_S_reg;
+assign stall_pc = stall_pc_reg;
 
 // pipeline unit ports
 wire [3:0] cond_out;
@@ -46,26 +65,7 @@ assign rs = rs_out;
 assign rm = rm_out;
 assign imm5 = imm5_out;
 assign branch_value = branch_value_out;
-assign instr_output = instr_out;
-
-// controller ports
-reg [1:0] sel_A_in_reg;
-reg [1:0] sel_B_in_reg;
-reg [1:0] sel_shift_in_reg;
-reg sel_shift_reg;
-reg en_A_reg;
-reg en_B_reg;
-reg en_S_reg;
-assign sel_A_in = sel_A_in_reg;
-assign sel_B_in = sel_B_in_reg;
-assign sel_shift_in = sel_shift_in_reg;
-assign sel_shift = sel_shift_reg;
-assign en_A = en_A_reg;
-assign en_B = en_B_reg;
-assign en_S = en_S_reg;
-
-// constants
-localparam [31:0] opcode_NOP = 7'b0100000;
+assign instr_output = (stall_pc_reg == 1'b1)? opcode_NOP : instr_out;   // to load next stage with NOP instruction
 
 // pipeline unit module
 execute_pipeline_unit execute_pipeline_unit(
@@ -73,11 +73,11 @@ execute_pipeline_unit execute_pipeline_unit(
     .rst_n(rst_n),
     .instr_in(instr_in),
     .branch_in(branch_in),
-    .sel_stall(sel_stall),
+    .sel_stall(stall_pc_reg),
     .cond(cond_out),
     .opcode(opcode_out),
     .rn(rn_out),
-    .rs(rs_out),
+    .rs(rs_out),  
     .rm(rm_out),
     .imm5(imm5_out),
     .branch_value(branch_value_out),
@@ -93,6 +93,7 @@ always_comb begin
     en_A_reg = 1'b0;
     en_B_reg = 1'b0;
     en_S_reg = 1'b0;    // always 1 anyway
+    stall_pc_reg = 1'b0;
 
     // forwarding logic for reg A
     if (opcode_out != opcode_NOP && ((!opcode_out[6] && opcode_out[3:0] != 4'b0000) || opcode_out[6:5] == 2'b11)) begin     // current instruction uses the rn register
@@ -135,6 +136,20 @@ always_comb begin
         end
     end
     // otherwise default to Rs
+
+    // stall pc
+    if ((opcode_out != opcode_NOP && ((!opcode_out[6] && opcode_out[3:0] != 4'b0000) || opcode_out[6:5] == 2'b11)                               // current instruction uses the rn register
+            && (((opcode_memory[6:4] == 3'b110 || opcode_memory[6:3] == 4'b1000) && rd_memory == rn_out)                                        // memory stage is LDR or LDR_Lit and planning to load to rn
+                || ((opcode_memory_wait[6:4] == 3'b110 || opcode_memory_wait[6:3] == 4'b1000) && rt_memory_wait == rn_out)))                    // wait stage is LDR or LDR_Lit and planning to load to rn
+        || (((!opcode_out[6] && opcode_out[4]) || (opcode_out[6:5] == 2'b11 && opcode_out[3]) || (opcode_out[6:2] == 5'b10010 && opcode_out[0]))  // current instruction uses the rm reg
+            && (((opcode_memory[6:4] == 3'b110 || opcode_memory[6:3] == 4'b1000) && rd_memory == rm_out)                                        // memory stage is LDR or LDR_Lit and planning to load to rm
+                || ((opcode_memory_wait[6:4] == 3'b110 || opcode_memory_wait[6:3] == 4'b1000) && rt_memory_wait == rm_out)))                    // wait stage is LDR or LDR_Lit and planning to load to rm
+        || ((opcode_out[6:4] == 3'b011)                                                                                                         // current instruction uses the rs reg
+            && (((opcode_memory[6:4] == 3'b110 || opcode_memory[6:3] == 4'b1000) && rd_memory == rs_out)                                        // memory stage is LDR or LDR_Lit and planning to load to rs
+                || ((opcode_memory_wait[6:4] == 3'b110 || opcode_memory_wait[6:3] == 4'b1000) && rt_memory_wait == rs_out)))) begin             // wait stage is LDR or LDR_Lit and planning to load to rs
+        stall_pc_reg = 1'b1;             
+    end
+    // otherwise default to 0
 
     //normal instructions
     if (opcode_out[6] == 0 && opcode_out[5:4] != 2'b10 && cond_out != 4'b1111)  begin
