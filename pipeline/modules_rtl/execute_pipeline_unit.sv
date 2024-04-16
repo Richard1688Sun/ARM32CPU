@@ -54,7 +54,7 @@ idecoder decoder(
 );
 
 // mux
-assign instr_decoder_in = (sel_stall == 1'b1)? NOP : instr_reg;
+assign instr_decoder_in = instr_reg;
 
 // instruction register
 always_ff @( posedge clk or negedge rst_n) begin
@@ -64,6 +64,7 @@ always_ff @( posedge clk or negedge rst_n) begin
         if (sel_stall == 1'b0) begin
             instr_reg <= instr_in;
         end
+        // else keep the previous instruction
     end
 end
 
