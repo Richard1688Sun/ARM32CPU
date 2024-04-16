@@ -30,7 +30,8 @@ module execute_unit(
     output stall_pc         // TODO: implment later
 );
 // constants
-localparam [31:0] opcode_NOP = 7'b0100000;
+localparam [6:0] opcode_NOP = 7'b0100000;
+localparam [31:0] instr_NOP = 32'b1110_00110010_0000_11110000_00000000;
 
 // controller ports
 reg [1:0] sel_A_in_reg;
@@ -65,7 +66,7 @@ assign rs = rs_out;
 assign rm = rm_out;
 assign imm5 = imm5_out;
 assign branch_value = branch_value_out;
-assign instr_output = (stall_pc_reg == 1'b1)? opcode_NOP : instr_out;   // to load next stage with NOP instruction
+assign instr_output = (stall_pc_reg == 1'b1)? instr_NOP : instr_out;   // to load next stage with NOP instruction
 
 // pipeline unit module
 execute_pipeline_unit execute_pipeline_unit(
