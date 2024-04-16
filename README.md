@@ -130,6 +130,7 @@ Stages that fetches instructions from memory. Is in 2 parts since on-board memor
 
 ### Execute Stage:
 Stage that loads execution registers(eg. `rn`, `rm`, and `rs`) and completes the ALU operations as well as shifting
+When stalling, `instr_out` is NOP to load a blank instruction to the next stage. This is not done within `execute_pipeline_unit` because we need to correctly decoded data within `execute_unit`
 
 **execute_pipeline_unit**:
   - Contains the following signals: 
