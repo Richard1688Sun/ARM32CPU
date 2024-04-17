@@ -1,11 +1,11 @@
-module datapath(input clk, input [31:0] LR_in, input sel_load_LR,
+module datapath(input clk, input [31:0] LR_in, input sel_load_LR, input [1:0] sel_w_addr,
                 input [3:0] w_addr1, input w_en1, input [3:0] w_addr_ldr, input w_en_ldr,                           //regfile write inputs
                 input [31:0] w_data_ldr, input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,                     //end of regfile inputs
                 input [1:0] sel_pc, input load_pc, input [10:0] start_pc,                                                                       //pc inputs
                 input [1:0] sel_A_in, input [1:0] sel_B_in, input [1:0] sel_shift_in,                                   //inputs for forwarding muxes
                 input en_A, input en_B, input [31:0] shift_imme, input sel_shift,
                 input [1:0] shift_op, input en_S,
-                input sel_A, input sel_B, input sel_branch_imme, input sel_pre_indexed, input [31:0] imm12, input [31:0] imm_branch,
+                input sel_A, input sel_B, input sel_branch_imme, input sel_post_indexed, input [31:0] imm12, input [31:0] imm_branch,
                 input [2:0] ALU_op, input en_status, input status_rdy,                                                  //datapath inputs
                 output [31:0] datapath_out, output [31:0] status_out, output [31:0] str_data, output [10:0] PC,         //datapath outputs
                 output [31:0] reg_output, input [3:0] reg_addr);    //TODO: remove later, this is only for testing  
@@ -44,13 +44,23 @@ module datapath(input clk, input [31:0] LR_in, input sel_load_LR,
     status_reg_block status_reg(.clk(clk), .en_status(en_status), .status_rdy(status_rdy), .status_in(status_in), .status_out(status_out_reg));
 
     //muxes
-    assign datapath_out = (sel_pre_indexed == 1'b1) ? val_A : ALU_out;
+    assign datapath_out = (sel_post_indexed == 1'b1) ? val_A : ALU_out;
     assign w_data1 = (sel_load_LR == 1'b1) ? LR_in : ALU_out;
-    assign w_addr1_in = (sel_load_LR == 1'b1) ? 4'd14 : w_addr1;
     assign val_A = (sel_A == 1'b1) ? 31'b0 : A_reg;
     assign val_B = (sel_B == 1'b1) ? imme_data : shift_out; 
     assign imme_data = (sel_branch_imme == 1'b1) ? imm_branch : imm12;
     assign shift_amt = (sel_shift == 1'b1) ? shift_in: shift_imme;
+
+    // w_addr1_in
+    always_comb begin
+        case (sel_w_addr)
+        2'b00: w_addr1_in = w_addr1;
+        2'b01: w_addr1_in = 4'd14;
+        2'b10: w_addr1_in = A_addr; //TODO: change this
+        default: w_addr1_in = w_addr1;
+        endcase
+    end
+    
     //A_mux
     always_comb begin
         case (sel_A_in)
