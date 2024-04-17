@@ -938,7 +938,7 @@ module tb_controller(output err);
         // EX: 2, MEM: NOP, MEM_WAIT: NOP, WB: 1
         instr_in = NOP; // should not load into the pipeline
         clkR;
-        executeCycle_R(test_num);
+        executeCycle_R(test_num, 3'b000, 3'b100);
         mem_writeback_NOP(test_num, 1'b0);
         mem_wait(test_num);
         write_back_LDR(test_num);
@@ -986,7 +986,7 @@ module tb_controller(output err);
         // EX: 2, MEM: NOP, MEM_WAIT: NOP, WB: 1
         instr_in = NOP; // should not load into the pipeline
         clkR;
-        executeCycle_R(test_num);
+        executeCycle_R(test_num, 3'b000, 3'b010);
         mem_writeback_NOP(test_num, 1'b0);
         mem_wait(test_num);
         write_back_LDR(test_num);
@@ -994,12 +994,13 @@ module tb_controller(output err);
         instr_in = NOP; // should load into the pipeline
         clkR;
         execute_NOP(test_num);
-        mem_writeback_R_RS(test_num, 3'b000, 1'b0);
+        mem_writeback_R_RS(test_num, 3'b000);
         mem_wait(test_num);
         write_back_NOP(test_num);
         // EX: NOP, MEM: NOP, MEM_WAIT: 2, WB: NOP
         instr_in = NOP; // should load into the pipeline
         clkR;
+        $display("88: Test Number %d", test_num);
         execute_NOP(test_num);
         mem_writeback_NOP(test_num);
         mem_wait(test_num);
