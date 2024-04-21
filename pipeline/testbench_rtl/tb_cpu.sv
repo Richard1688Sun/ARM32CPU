@@ -47,12 +47,16 @@ module tb_cpu(output err);
         end
     endtask: reset
 
-    //cycle and reset
+    task restart_pc;
+        reset;
+        clkR; // load pc
+        clkR; // fetch
+        clkR; // fetch_wait
+    endtask: restart_pc
+
     task clkRst;
         begin
-            reset;
-            clkR;
-            clkR;
+            restart_pc;
             clkR;
             clkR;
             clkR;
@@ -79,11 +83,11 @@ module tb_cpu(output err);
     
     integer i = 0;
     initial begin
+        restart_pc;
         //load every register with value of register number
         instr = 32'b1110_00111010_0000_0000_000000000001; // MOV R0, #0
 
         for (i = 0; i < 16; i = i + 1) begin
-            clkRst;
             clkR;
             instr = instr + (32'd1 << 12); //increment the register addr
             instr = instr + 32'd1;       //increment the register value
