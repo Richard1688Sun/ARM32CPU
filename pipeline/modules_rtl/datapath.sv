@@ -1,4 +1,4 @@
-module datapath(input clk, input [31:0] LR_in, input sel_load_LR, input [1:0] sel_w_addr,
+module datapath(input clk, input [31:0] LR_in, input sel_load_LR, input [1:0] sel_w_addr1,
                 input [3:0] w_addr1, input w_en1, input [3:0] w_addr_ldr, input w_en_ldr,                           //regfile write inputs
                 input [31:0] w_data_ldr, input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,                     //end of regfile inputs
                 input [1:0] sel_pc, input load_pc, input [10:0] start_pc,                                                                       //pc inputs
@@ -13,7 +13,7 @@ module datapath(input clk, input [31:0] LR_in, input sel_load_LR, input [1:0] se
     // --- internal wires ---
     //regfile
     wire [31:0] A_data, B_data, shift_data, w_data1;
-    wire [3:0] w_addr1_in;
+    reg [3:0] w_addr1_in;
     wire [10:0] pc_out;
     wire [31:0] reg_output_rf;
     assign PC = pc_out;
@@ -53,7 +53,7 @@ module datapath(input clk, input [31:0] LR_in, input sel_load_LR, input [1:0] se
 
     // w_addr1_in
     always_comb begin
-        case (sel_w_addr)
+        case (sel_w_addr1)
         2'b00: w_addr1_in = w_addr1;
         2'b01: w_addr1_in = 4'd14;
         2'b10: w_addr1_in = A_addr; //TODO: change this

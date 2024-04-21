@@ -1,6 +1,6 @@
 module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, input [10:0] start_pc,
             output mem_w_en, output [10:0] ram_addr2, output [31:0] ram_in2,
-            output [31:0] status_out, output [31:0] datapath_out, output [10:0] pc_out,
+            output [31:0] status, output [31:0] dp_out, output [10:0] pc,
             output [31:0] reg_output, input [3:0] reg_addr); //TODO: status_out may be removed
 
     // datapath outputs
@@ -8,13 +8,13 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire [31:0] datapath_out;
     wire [31:0] str_data;
     wire [10:0] pc_out;
-    wire [31:0] reg_output;
-    assign status_out = status_out;
-    assign datapath_out = datapath_out;
-    assign pc_out = pc_out;
+    wire [31:0] reg_output_out;
+    assign status = status_out;
+    assign dp_out = datapath_out;
+    assign pc = pc_out;
     assign ram_addr2 = datapath_out[10:0];
     assign ram_in2 = str_data;
-    assign reg_output = reg_output;
+    assign reg_output = reg_output_out;
 
     // controller outputs
     wire [6:0] opcode;
@@ -31,7 +31,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire [11:0] imm12;
     wire [31:0] imm_branch;
     wire [1:0] sel_pc;
-    wire load_pc, sel_branch_imm, sel_A, sel_B, sel_pre_indexed;
+    wire load_pc, sel_branch_imm, sel_A, sel_B;
     wire [2:0] ALU_op;
     wire sel_pre_indexed, en_status;
     wire [1:0] sel_w_addr1;
@@ -39,6 +39,10 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     // write back signals
     wire w_en_ldr;
     assign mem_w_en = mem_w_en_out;
+
+    // internal signals
+    wire [3:0] rt;
+    assign rt = rd;
 
     // datapath module
     datapath datapath(
@@ -80,7 +84,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .status_out(status_out),
         .str_data(str_data),
         .PC(pc_out),
-        .reg_output(reg_output), .reg_addr(reg_addr) //TODO: remove later, this is only for testing
+        .reg_output(reg_output_out), .reg_addr(reg_addr) //TODO: remove later, this is only for testing
     );
 
     // controller module
@@ -88,7 +92,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr),
-        .status_reg(status_out_dp),
+        .status_reg(status_out),
         .opcode_execute_unit(opcode),
         .rn_execute_unit(rn),
         .rm_execute_unit(rm),
