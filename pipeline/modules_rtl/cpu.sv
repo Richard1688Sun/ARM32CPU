@@ -78,7 +78,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .imm_branch(imm_branch),
         .ALU_op(ALU_op),
         .en_status(en_status),
-        .status_rdy(status_rdy),
+        .status_rdy(1'b0),              // TODO: remove later if not needed to make tests pass -> artifact from normal
         .datapath_out(datapath_out),
         .status_out(status_out),
         .str_data(str_data),
