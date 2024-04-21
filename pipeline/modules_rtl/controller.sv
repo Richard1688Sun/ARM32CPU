@@ -9,8 +9,8 @@ module controller(
     // decoded signals
     output [6:0] opcode_execute_unit,
     output [3:0] rn_execute_unit,
-    output [3:0] rs_execute_unit,
     output [3:0] rm_execute_unit,
+    output [3:0] rs_execute_unit,
     output [4:0] imm5_execute_unit,
     // controller signals
     output [1:0] sel_A_in,

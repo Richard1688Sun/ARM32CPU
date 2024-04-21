@@ -23,41 +23,41 @@
 Where all the actual computation happens within the CPU. Operational registers are A, B, and Shift. Those operational registers are then fed into the ALU for computation. This module is controlled by the `controller` module
 **Inputs**
 
-|         Name         | Origin     | Purpose                                                      |
-|:--------------------:|:-----------|:-------------------------------------------------------------|
-|        `clk`         | hardware   | clock for hardware                                           |
-|    `[31:0] LR_in`    | ram        | Link Register value for branch & link instruction            |
-|    `sel_load_LR`     | controller | select writing to Link Register                              |
-|   `[3:0] w_addr1`    | controller | writeback address for normal and memory instructions         |
-|       `w_en1`        | controller | enable writeback to regfile at port 1                        |
-|  `[3:0] w_addr_ldr`  | idecoder   | writeback address for LDR instruction during `LDR_writeback` |
-|      `w_en_ldr`      | controller | enable writeback to regfile for LDR port                     |
-| `[31:0] w_data_ldr`  | ram        | data to be written back to regfile for LDR port              |
-|    `[3:0] A_addr`    | idecoder   | address of rn                                                |
-|    `[3:0] B_addr`    | idecoder   | address of rm                                                |
-|  `[3:0] shift_addr`  | idecoder   | address for shift input to ALU or shift amount               |
-|   `[3:0] str_addr`   | idecoder   | address for accessing STR data                               |
-|    `[1:0] sel_pc`    | controller | select PC source within regfile                              |
-|      `load_pc`       | controller | load PC within regfile                                       |
-|  `[10:0] start_pc`   | controller | start PC value on startup                                    |
-|   `[1:0] sel_A_in`   | controller | select input to register A                                   |
-|   `[1:0] sel_B_in`   | controller | select input to register B                                   |
-| `[1:0] sel_shift_in` | controller | select input to shift unit                                   |
-|        `en_A`        | controller | enable input to register A                                   |
-|        `en_B`        | controller | enable input to register B                                   |
-| `[31:0] shift_imme`  | idecoder   | immediate shift value                                        |
-|     `sel_shift`      | controller | select shift type                                            |
-|   `[1:0] shift_op`   | idecoder   | shift operation                                              |
-|        `en_S`        | controller | enable input to shift unit                                   |
-|       `sel_A`        | controller | select input 1 to ALU                                        |
-|       `sel_B`        | controller | select input 2 to ALU                                        |
-|  `sel_branch_imme`   | controller | select immediate value for input 2 to ALU                    |
-|  `sel_pre_indexed`   | controller | select pre-indexed addressing mode for memory instructions   |
-|    `[31:0] imm12`    | idecoder   | immediate value for normal and memory instructions           |
-| `[31:0] imm_branch`  | idecoder   | immediate value for branch instructions                      |
-|    `[2:0] ALU_op`    | idecoder   | ALU operation                                                |
-|     `en_status`      | controller | enable status register                                       |
-|     `status_rdy`     | controller | **[Maybe deprecated]** status register ready                 |
+|         Name         | Origin     | Purpose                                                                                                        |
+|:--------------------:|:-----------|:---------------------------------------------------------------------------------------------------------------|
+|        `clk`         | hardware   | clock for hardware                                                                                             |
+|    `[31:0] LR_in`    | ram        | Link Register value for branch & link instruction                                                              |
+|    `sel_load_LR`     | controller | select writing to Link Register                                                                                |
+|   `[3:0] w_addr1`    | controller | writeback address for normal and memory instructions                                                           |
+|       `w_en1`        | controller | enable writeback to regfile at port 1                                                                          |
+|  `[3:0] w_addr_ldr`  | idecoder   | writeback address for LDR instruction during `LDR_writeback`                                                   |
+|      `w_en_ldr`      | controller | enable writeback to regfile for LDR port                                                                       |
+| `[31:0] w_data_ldr`  | ram        | data to be written back to regfile for LDR port                                                                |
+|    `[3:0] A_addr`    | idecoder   | address of rn                                                                                                  |
+|    `[3:0] B_addr`    | idecoder   | address of rm                                                                                                  |
+|  `[3:0] shift_addr`  | idecoder   | address for shift input to ALU or shift amount                                                                 |
+|   `[3:0] str_addr`   | idecoder   | address for accessing STR data                                                                                 |
+|    `[1:0] sel_pc`    | controller | select PC source within regfile                                                                                |
+|      `load_pc`       | controller | load PC within regfile                                                                                         |
+|  `[10:0] start_pc`   | controller | start PC value on startup                                                                                      |
+|   `[1:0] sel_A_in`   | controller | select input to register A                                                                                     |
+|   `[1:0] sel_B_in`   | controller | select input to register B                                                                                     |
+| `[1:0] sel_shift_in` | controller | select input to shift unit                                                                                     |
+|        `en_A`        | controller | enable input to register A                                                                                     |
+|        `en_B`        | controller | enable input to register B                                                                                     |
+| `[31:0] shift_imme`  | idecoder   | immediate shift value                                                                                          |
+|     `sel_shift`      | controller | select shift type                                                                                              |
+|   `[1:0] shift_op`   | idecoder   | shift operation                                                                                                |
+|        `en_S`        | controller | enable input to shift unit                                                                                     |
+|       `sel_A`        | controller | select input 1 to ALU                                                                                          |
+|       `sel_B`        | controller | select input 2 to ALU                                                                                          |
+|  `sel_branch_imme`   | controller | select immediate value for input 2 to ALU                                                                      |
+|  `sel_pre_indexed`   | controller | select pre-indexed addressing mode for memory instructions(value dp_out is indexed prior to memory op == `~P`) |
+|    `[31:0] imm12`    | idecoder   | immediate value for normal and memory instructions                                                             |
+| `[31:0] imm_branch`  | idecoder   | immediate value for branch instructions                                                                        |
+|    `[2:0] ALU_op`    | idecoder   | ALU operation                                                                                                  |
+|     `en_status`      | controller | enable status register                                                                                         |
+|     `status_rdy`     | controller | **[Maybe deprecated]** status register ready                                                                   |
 
 **Outputs**
 |         Name          |   Destination   |                          Purpose                          |
@@ -423,7 +423,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <th>4</th>
       <th>3</th>
       <th>2</th>
-      <th>1 (<code>sel_load_LR</code>)</th>
+      <th>1 (indicates load LR)</th>
       <th>0 (<code>~sel_B</code>)</th>
     </tr>
   </thead>
