@@ -4,7 +4,6 @@ module execute_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
-    input sel_stall,
     output [6:0] opcode,    // Opcode for the instruction TODO: remove later if needed
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
@@ -13,15 +12,44 @@ module execute_unit(
     output branch_value,
     output [31:0] instr_output,
     // controller signals
-    input [3:0] rd,         // from memory stage for forwarding
+    input [3:0] rn_memory,                  // from memory stage for forwarding for writeback
+    input [3:0] rd_memory,                  // from memory stage for forwarding & stalling
+    input [6:0] opcode_memory,              // from memory stage for forwarding & stalling
+    input [1:0] sel_w_addr1_memory,               // from memory stage for forwarding replaces the need for P & W
+    input [3:0] rt_memory_wait,             // from wait stage for stalling
+    input [6:0] opcode_memory_wait,         // from wait stage for stalling
+    input [3:0] rt_writeback,               // from writeback stage for forwarding from ldr instructions
+    input [6:0] opcode_writeback,           // from writeback stage for forwarding from ldr instructions
     output [1:0] sel_A_in,
     output [1:0] sel_B_in,
     output [1:0] sel_shift_in,
     output sel_shift,
     output en_A,
     output en_B,
-    output en_S
+    output en_S,
+    output stall_pc         // TODO: implment later
 );
+// constants
+localparam [6:0] opcode_NOP = 7'b0100000;
+localparam [31:0] instr_NOP = 32'b1110_00110010_0000_11110000_00000000;
+
+// controller ports
+reg [1:0] sel_A_in_reg;
+reg [1:0] sel_B_in_reg;
+reg [1:0] sel_shift_in_reg;
+reg sel_shift_reg;
+reg en_A_reg;
+reg en_B_reg;
+reg en_S_reg;
+reg stall_pc_reg;
+assign sel_A_in = sel_A_in_reg;
+assign sel_B_in = sel_B_in_reg;
+assign sel_shift_in = sel_shift_in_reg;
+assign sel_shift = sel_shift_reg;
+assign en_A = en_A_reg;
+assign en_B = en_B_reg;
+assign en_S = en_S_reg;
+assign stall_pc = stall_pc_reg;
 
 // pipeline unit ports
 wire [3:0] cond_out;
@@ -38,50 +66,27 @@ assign rs = rs_out;
 assign rm = rm_out;
 assign imm5 = imm5_out;
 assign branch_value = branch_value_out;
-assign instr_output = instr_out;
-
-// controller ports
-reg [1:0] sel_A_in_reg;
-reg [1:0] sel_B_in_reg;
-reg [1:0] sel_shift_in_reg;
-reg sel_shift_reg;
-reg en_A_reg;
-reg en_B_reg;
-reg en_S_reg;
-assign sel_A_in = sel_A_in_reg;
-assign sel_B_in = sel_B_in_reg;
-assign sel_shift_in = sel_shift_in_reg;
-assign sel_shift = sel_shift_reg;
-assign en_A = en_A_reg;
-assign en_B = en_B_reg;
-assign en_S = en_S_reg;
+assign instr_output = (stall_pc_reg == 1'b1)? instr_NOP : instr_out;   // to load next stage with NOP instruction
 
 // pipeline unit module
-pipeline_unit pipeline_unit(
+execute_pipeline_unit execute_pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
     .instr_in(instr_in),
     .branch_in(branch_in),
-    .sel_stall(sel_stall),
+    .sel_stall(stall_pc_reg),
     .cond(cond_out),
     .opcode(opcode_out),
-    .en_status(),
     .rn(rn_out),
-    .rd(),
-    .rs(rs_out),
+    .rs(rs_out),  
     .rm(rm_out),
-    .shift_op(),
     .imm5(imm5_out),
-    .imm12(),
-    .imm_branch(),
-    .P(),
-    .U(),
-    .W(),
     .branch_value(branch_value_out),
     .instr_output(instr_out)
 );
 
 always_comb begin
+    // default values
     sel_A_in_reg = 2'b00;
     sel_B_in_reg = 2'b00;
     sel_shift_in_reg = 2'b00;
@@ -89,28 +94,74 @@ always_comb begin
     en_A_reg = 1'b0;
     en_B_reg = 1'b0;
     en_S_reg = 1'b0;    // always 1 anyway
+    stall_pc_reg = 1'b0;
+
+    // forwarding logic for reg A
+    if (opcode_out != opcode_NOP && ((!opcode_out[6] && opcode_out[3:0] != 4'b0000) || opcode_out[6:5] == 2'b11)) begin     // current instruction uses the rn register
+        if (opcode_memory != opcode_NOP                                                                                     // memory stage is not NOP and can be checked for forwarding
+            && ((sel_w_addr1_memory == 2'b10 && rn_out == rn_memory)                                                        // memory stage is doing pre-indexed writeback
+            || (!opcode_memory[6] && rn_out == rd_memory))) begin                                                           // memory stage is doing normal writeback
+            sel_A_in_reg = 2'b01;    // forward from result of ALU
+        end else if (opcode_writeback != opcode_NOP                                                                        // writeback stage is not NOP and can be checked for forwarding
+            && (opcode_writeback[6:4] == 3'b110 || opcode_writeback[6:3] == 4'b1000)                                        // writeback stage is doing LDR or LDR_Lit
+            && (rt_writeback == rn_out)) begin                                                                             // writeback stage is writing back to rn
+            sel_A_in_reg = 2'b10;    // forward from memory     
+        end
+    end
+    // otherwise default from Rn
+
+    // forwarding logic for reg B
+    if ((!opcode_out[6] && opcode_out[4]) || (opcode_out[6:5] == 2'b11 && opcode_out[3]) || (opcode_out[6:2] == 5'b10010 && opcode_out[0])) begin   // current instruction uses the rm reg
+        if (opcode_memory != opcode_NOP 
+            && ((sel_w_addr1_memory == 2'b10 && rm_out == rn_memory)
+            || (!opcode_memory[6] && rm_out == rd_memory))) begin
+            sel_B_in_reg = 2'b01;    // forward from result of ALU
+        end else if (opcode_writeback != opcode_NOP                                                                   // writeback stage is not NOP and can be checked for forwarding
+            && (opcode_writeback[6:4] == 3'b110 || opcode_writeback[6:3] == 4'b1000)                                  // writeback stage is doing LDR or LDR_Lit
+            && (rt_writeback == rm_out)) begin                                                                        // writeback stage is writing back to rm
+            sel_B_in_reg = 2'b10;    // forward from memory
+        end
+    end
+    // otherwise default from Rm
+
+    // forwarding logic for shift reg
+    if (opcode_out[6:4] == 3'b011) begin
+        if (opcode_memory != opcode_NOP
+            && ((sel_w_addr1_memory == 2'b10 && rs_out == rn_memory) 
+            || (!opcode_memory[6] && rs_out == rd_memory))) begin
+            sel_shift_in_reg = 2'b01;   // forward from result of ALU
+        end else if (opcode_writeback != opcode_NOP                                                                   // writeback stage is not NOP and can be checked for forwarding
+            && (opcode_writeback[6:4] == 3'b110 || opcode_writeback[6:3] == 4'b1000)                                  // writeback stage is doing LDR or LDR_Lit
+            && (rt_writeback == rs_out)) begin                                                                        // writeback stage is writing back to rs
+            sel_shift_in_reg = 2'b10;    // forward from memory
+        end
+    end
+    // otherwise default to Rs
+
+    // stall pc
+    if ((opcode_out != opcode_NOP && ((!opcode_out[6] && opcode_out[3:0] != 4'b0000) || opcode_out[6:5] == 2'b11)                               // current instruction uses the rn register
+            && (((opcode_memory[6:4] == 3'b110 || opcode_memory[6:3] == 4'b1000) && rd_memory == rn_out)                                        // memory stage is LDR or LDR_Lit and planning to load to rn
+                || ((opcode_memory_wait[6:4] == 3'b110 || opcode_memory_wait[6:3] == 4'b1000) && rt_memory_wait == rn_out)))                    // wait stage is LDR or LDR_Lit and planning to load to rn
+        || (((!opcode_out[6] && opcode_out[4]) || (opcode_out[6:5] == 2'b11 && opcode_out[3]) || (opcode_out[6:2] == 5'b10010 && opcode_out[0]))  // current instruction uses the rm reg
+            && (((opcode_memory[6:4] == 3'b110 || opcode_memory[6:3] == 4'b1000) && rd_memory == rm_out)                                        // memory stage is LDR or LDR_Lit and planning to load to rm
+                || ((opcode_memory_wait[6:4] == 3'b110 || opcode_memory_wait[6:3] == 4'b1000) && rt_memory_wait == rm_out)))                    // wait stage is LDR or LDR_Lit and planning to load to rm
+        || ((opcode_out[6:4] == 3'b011)                                                                                                         // current instruction uses the rs reg
+            && (((opcode_memory[6:4] == 3'b110 || opcode_memory[6:3] == 4'b1000) && rd_memory == rs_out)                                        // memory stage is LDR or LDR_Lit and planning to load to rs
+                || ((opcode_memory_wait[6:4] == 3'b110 || opcode_memory_wait[6:3] == 4'b1000) && rt_memory_wait == rs_out)))) begin             // wait stage is LDR or LDR_Lit and planning to load to rs
+        stall_pc_reg = 1'b1;             
+    end
+    // otherwise default to 0
 
     //normal instructions
-    if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_out != 4'b1111)  begin
+    if (opcode_out[6] == 0 && opcode_out[5:4] != 2'b10 && cond_out != 4'b1111)  begin
         //sel_A_in
-        if (rn_out == rd) begin
-            sel_A_in_reg = 2'b01;    //forward from result of ALU
-        end // else default from Rn
-
         //sel_B_in
-        if (rm_out == rd) begin
-            sel_B_in_reg = 2'b01;    //forward from result of ALU
-        end // else default from Rm
-
         //sel_shift and sel_shift_in
         if (opcode_out[4] == 1'b1) begin
             //sel_shift
             sel_shift_reg = opcode_out[5];
 
             //sel_shift_in 
-            if (rs_out == rd) begin
-                sel_shift_in_reg = 2'b01;   //forward from result of ALU
-            end // else default from Rs
         end
 
         //en_A
@@ -148,15 +199,7 @@ always_comb begin
             // en_S
         end else begin  //register
             //sel_A_in
-            if (rn_out == rd) begin
-                sel_A_in_reg = 2'b01;    //forward from result of ALU
-            end // else default from Rn
-
             //sel_B_in
-            if (rm_out == rd) begin
-                sel_B_in_reg = 2'b01;    //forward from result of ALU
-            end // else default from Rm
-
             //sel_shift
             sel_shift_reg = 1'b1;
 
@@ -176,12 +219,7 @@ always_comb begin
         if (opcode[0] == 1'b0) begin
             // pc realtive for imm branch
             sel_A_in_reg = 2'b11;
-        end 
-        
-        // sel_B_in
-        if (rm_out == rd) begin
-            sel_B_in_reg = 2'b01;    //forward from result of ALU
-        end // else default from Rm
+        end
 
         // sel_shift
         sel_shift_reg = 1'b1;

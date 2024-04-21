@@ -4,9 +4,9 @@ module memory_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
-    input sel_stall,
     output [3:0] cond,      // Condition code               TODO: remove later if needed
     output [6:0] opcode,    // Opcode for the instruction   TODO: remove later if needed
+    output [3:0] rn,        // Rn
     output [3:0] rd,        // Rd (destination)
     output [1:0] shift_op,  // Shift operation
     output [11:0] imm12,    // Immediate value or second operand
@@ -14,6 +14,7 @@ module memory_unit(
     output [31:0] instr_output,
     // controller signals
     input [31:0] status_reg,
+    input stall_pc,
     output [1:0] sel_pc,
     output load_pc,
     output sel_branch_imm,
@@ -22,7 +23,7 @@ module memory_unit(
     output [2:0] ALU_op,
     output sel_pre_indexed,
     output en_status,
-    output sel_load_LR,
+    output [1:0] sel_w_addr1,
     output w_en1,
     output mem_w_en,
     // global branch reference
@@ -33,6 +34,7 @@ module memory_unit(
 wire [3:0] cond_decoded;
 wire [6:0] opcode_decoded;
 wire en_status_decoded;
+wire [3:0] rn_out;
 wire [3:0] rd_out;
 wire [1:0] shift_op_out;
 wire [11:0] imm12_out;
@@ -43,6 +45,7 @@ wire W;
 wire [31:0] instr_out;
 assign cond = cond_decoded;
 assign opcode = opcode_decoded;
+assign rn = rn_out;
 assign rd = rd_out;
 assign shift_op = shift_op_out;
 assign imm12 = imm12_out;
@@ -65,7 +68,7 @@ reg sel_B_reg;
 reg [2:0] ALU_op_reg;
 reg en_status_reg;
 reg sel_pre_indexed_reg;
-reg sel_load_LR_reg;
+reg [1:0] sel_w_addr1_reg;
 reg w_en1_reg;
 reg mem_w_en_reg;
 assign sel_pc = sel_pc_reg;
@@ -76,7 +79,7 @@ assign sel_B = sel_B_reg;
 assign ALU_op = ALU_op_reg;
 assign en_status = en_status_reg;
 assign sel_pre_indexed = sel_pre_indexed_reg;
-assign sel_load_LR = sel_load_LR_reg;
+assign sel_w_addr1 = sel_w_addr1_reg;
 assign w_en1 = w_en1_reg;
 assign mem_w_en = mem_w_en_reg;
 
@@ -107,22 +110,17 @@ memory_pipeline_unit memory_pipeline_unit(
     .instr_in(instr_in),
     .branch_ref(branch_ref_global_reg),
     .branch_in(branch_in),
-    .sel_stall(sel_stall),
     .cond(cond_decoded),
     .opcode(opcode_decoded),
     .en_status(en_status_decoded),
-    .rn(),
+    .rn(rn_out),
     .rd(rd_out),
-    .rs(),
-    .rm(),
     .shift_op(shift_op_out),
-    .imm5(),
     .imm12(imm12_out),
     .imm_branch(imm_branch_out),
     .P(P),
     .U(U),
     .W(W),
-    .branch_value(),        // not used -> no longer passed to next stage
     .instr_output(instr_out)
 );
 
@@ -145,7 +143,7 @@ always_comb begin
     ALU_op_reg = 3'b000;
     sel_pre_indexed_reg = 1'b0;
     en_status_reg = 1'b0;
-    sel_load_LR_reg = 1'b0;
+    sel_w_addr1_reg = 2'b00;
     w_en1_reg = 1'b0;
     mem_w_en_reg = 1'b0;
     branch_ref_new = branch_ref_global_reg;
@@ -186,7 +184,7 @@ always_comb begin
         // en_status -> in branching decodded result doesnt this work
         en_status_reg = en_status_decoded;
         
-        // sel_load_LR
+        // sel_w_addr1
 
         // w_en1
         if (opcode[3:0] != CMP) begin
@@ -226,7 +224,10 @@ always_comb begin
         //en_status
         en_status_reg = en_status_decoded;
 
-        // sel_load_LR
+        // sel_w_addr1
+        if (P && W) begin
+            sel_w_addr1_reg = 2'b10;
+        end // else default to 00
 
         // w_en1
         w_en1_reg = P && W;
@@ -283,10 +284,10 @@ always_comb begin
         // sel_pre_indexed
         // en_status
 
-        // sel_load_LR
+        // sel_w_addr1
         // w_en1
         if (opcode[1] == 1'b1) begin
-            sel_load_LR_reg = 1'b1;
+            sel_w_addr1_reg = 2'b01;
             w_en1_reg = 1'b1;
         end
 

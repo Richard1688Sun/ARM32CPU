@@ -119,6 +119,61 @@ The mastermind behind this CPU. Controls datapath and how it operates through si
 
 ## Stages
 
+### Fetch Stages:
+Stages that fetches instructions from memory. Is in 2 parts since on-board memory takes `2` clock cycles to read
+
+**fetch_pipeline_unit**: holds `branch_value` for squashing
+  - Contains the following signals: 
+    - Branch Register
+  - Stalling:
+    - Doesn't exist. Since at this stage there is no instruction yet. Technically the stalling is controlled by the `PC`. As long as the `PC` doesn't change this stage is effectively stalled
+
+### Execute Stage:
+Stage that loads execution registers(eg. `rn`, `rm`, and `rs`) and completes the ALU operations as well as shifting
+When stalling, `instr_out` is NOP to load a blank instruction to the next stage. This is not done within `execute_pipeline_unit` because we need to correctly decoded data within `execute_unit`
+
+**execute_pipeline_unit**:
+  - Contains the following signals: 
+    - Instruction Register
+    - Branch Register
+  - Stalling: triggered using `sel_stall` 
+    - outputs `NOP` instead of stored instruction
+    - does not replace the current `instr_reg` on next cycle
+
+### Memory Stage:
+Stage that deal with writebacks and memory operations. Is in 2 parts since reading from on-board memory(LDR) takes 2 clocks
+Stage that does the following:
+- Normal Instructions: Writeback to register file && loads `status_reg`
+- Memory Instructions: 
+  - STR: write to memory at `rt`
+  - LDR: initiates read from memory at `rt`
+  - Both: if `W == P == 1`(writeback and post-index) writes to `rn`
+- Branch Instructions:
+  - branches the PC if necessary 
+  - writes to `LR` if necessary
+- All:
+  - increments PC value to begin fetching next instruction (different for Branch Instructions)
+
+**memory_pipeline_unit**: 
+  - Contains the following signals: 
+    - Instruction Register
+    - Branch Register
+  - Stalling PC: triggered using `stall_pc`
+    - turns `load_pc` to `0`, so fetch stages will not move pull subsequent instructions
+  - Squashing: compares the `branch_value` with `branch_ref`
+    - if squash: outputs `NOP` 
+      - NOTE: `instr_reg` will replaced with new instruction the following clock so no need to squash that value
+    - else: outputs `instr_reg` as normal
+
+### Write Back Unit:
+Stage deals with writeback for LDR instructions only. This is off-sync with others since reading from on-board memory takes 2 clock cycles + 1 for writeback to regfile(This stage)
+
+Uses **writeback_pipeline_unit**:
+  - Contains the following signals:
+    - Instruction Register
+
+> `Note:` Below is outdated, will be removed later
+
 ### Pipeline Unit:
 The basic building for each stage of the pipeline. This modules holds the instructions for each stage and also decodes it as output. Also can be used to stall the pipeline if necessary through `sel_stall` signal. It also holds a designated `branch_val` for when the instruction was created.
 
@@ -349,7 +404,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
   </tbody>
 </table>
 
-> Note: `opcode[6:5] == 11` means this instruction is a memory instruction with exception of `LDR_Literal` which has `opcode[6:5] == 10`
+> Note: `opcode[6:5] == 11` means this instruction is a memory instruction with exception of `LDR_Literal` which has `opcode[6:3] == 1000`
 
 <br/>
 
