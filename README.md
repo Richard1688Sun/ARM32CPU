@@ -423,7 +423,7 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <th>4</th>
       <th>3</th>
       <th>2</th>
-      <th>1 (<code>sel_load_LR</code>)</th>
+      <th>1 (indicates load LR)</th>
       <th>0 (<code>~sel_B</code>)</th>
     </tr>
   </thead>
