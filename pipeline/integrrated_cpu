@@ -1,0 +1,102 @@
+onerror {resume}
+quietly WaveActivateNextPane {} 0
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/state
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
+add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
+TreeUpdate [SetDefaultTree]
+WaveRestoreCursors {{Cursor 1} {0 ps} 0} {{Cursor 2} {2659 ps} 0}
+quietly wave cursor active 2
+configure wave -namecolwidth 401
+configure wave -valuecolwidth 40
+configure wave -justifyvalue left
+configure wave -signalnamewidth 1
+configure wave -snapdistance 10
+configure wave -datasetprefix 0
+configure wave -rowmargin 4
+configure wave -childrowmargin 2
+configure wave -gridoffset 0
+configure wave -gridperiod 1
+configure wave -griddelta 40
+configure wave -timeline 0
+configure wave -timelineunits ps
+update
+WaveRestoreZoom {0 ps} {35432 ps}

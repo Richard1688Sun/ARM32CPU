@@ -6,11 +6,11 @@ module tb_integrated_cpu();
 
     //cpu inputs
     reg clk, rst_n, sel_instr;
-    reg CLOCK_50;
-    reg [3:0] KEY;
-    reg [9:0] SW;
-    reg [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
-    reg [9:0] LEDR;
+    wire CLOCK_50;
+    wire [3:0] KEY;
+    wire [9:0] SW;
+    wire [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
+    wire [9:0] LEDR;
     reg [31:0] status_out;
     reg [31:0] reg_output;
     reg [3:0] reg_addr;
@@ -74,17 +74,30 @@ module tb_integrated_cpu();
         end
     endtask: reset
 
-    task clkCycle;
+    task restart_pc;
+        reset; // load pc
+        clkR; // fetch
+        clkR; // fetch_wait
+    endtask: restart_pc
+
+    task clkEnterMemory;
         begin
-            clkR;
-            clkR;
-            clkR;
-            clkR;
-            clkR;
-            clkR;
-            clkR;
+            clkR;   //execute
+            clkR;   //memory
         end
-    endtask: clkCycle
+    endtask: clkEnterMemory
+
+    task clkEnterMemWait;
+        begin
+            clkR;   // memory_wait
+        end
+    endtask: clkEnterMemWait
+
+    task clkDone;
+        begin
+            clkR;   // ldr_writeback
+        end
+    endtask: clkDone
 
     integer i = 0;
     initial begin
@@ -92,40 +105,40 @@ module tb_integrated_cpu();
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/rtl_data/remakeCPUTests.memb",
             DUT.instruction_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
         
-        reset;
-        sel_instr = 1'b0;
+        restart_pc;
+        sel_instr = 1'b1;
+        clkEnterMemory;
 
 
         // Fill each register with default values
         for (i = 0; i < 15; i = i + 1) begin
-            clkCycle;
+            clkR;
             setRegAddr(i);
             check(i + 1, reg_output, i);
         end
         
         // ADD_R r0, r0, r0
-        clkCycle;
-        clkR;   //because loading start_pc is exctra cycle
+        clkR;
         setRegAddr(0);
         check(2, reg_output, 16);
-        check(0, status_out, 17);
 
         // ADD_I r1, r1, #8
-        clkCycle;
+        clkR;
         setRegAddr(1);
+        check(0, status_out, 17);   // from previous test
         check(10, reg_output, 18);
-        check(0, status_out, 19);
 
         // ADD_RS r2, r2, r0, LSL r0
-        clkCycle;
+        clkR;
+        check(0, status_out, 19);
         check(0, status_out, 21);
 
         // CMP_R r2, r1, LSL #1 (r2 = 11, r1 = 10 -> 20)
-        clkCycle;
+        clkR;
         check(32'b10000000_00000000_00000000_00000000, status_out, 23);
 
         // CMP_I r2, #11
-        clkCycle;
+        clkR;
         check(32'b01000000_00000000_00000000_00000000, status_out, 25);
 
         // ### LDR and STR tests ###
@@ -133,60 +146,54 @@ module tb_integrated_cpu();
             DUT.instruction_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/rtl_data/str_ldr_data_CPUTests.memb",
             DUT.data_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
-        reset;
-        clkR;   //because loading start_pc is exctra cycle
-
+        
+        restart_pc;
         // Fill each register with default values
         for (i = 0; i < 15; i = i + 1) begin
-            clkCycle;
+            clkR;
             setRegAddr(i);
             check(i, reg_output, i + 26);
         end
 
-        //filler instruction
-        clkCycle;
-
         // LDR_I r0, r9, #19
-        clkCycle;
-        clkR;   //because the actual LDR writeback is done on the very very last clk edge
+        clkR;
         setRegAddr(0);
         check(38, reg_output, 42);
 
         // STR_I r8, r0, #9 -> store 8 in address 29 -> 38 - 9 = 29 -> store 29 in r0
-        clkCycle;
+        clkR;
         setRegAddr(0);
         check(29, reg_output, 43);
 
         //LDR_R r14, r0, r1 -> address = 29 -> write 28 to r0
-        clkCycle;
+        clkR;
         setRegAddr(0);
         check(28, reg_output, 44);
         setRegAddr(14);
         check(8, reg_output, 45);
 
         //STR_R r9, r12, r2 LSL 3 -> address = 12 + 2 * 8 = 28 -> write 28 address 12
-        clkCycle;
+        clkR;
         setRegAddr(12);
         check(28, reg_output, 46);
         
         // LDR_Lit r1, #8 -> PC == 20, write 10 to r1
-        clkCycle;
+        clkR;
         setRegAddr(1);
         check(10, reg_output, 47);
 
         // ### Branch tests ###
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/rtl_data/branchCPUTests.memb",
             DUT.instruction_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
-        reset;
-        clkR;   //because loading start_pc is exctra cycle
+        restart_pc;
 
         //MOV_I r0, #1
-        clkCycle;
+        clkR;
         setRegAddr(0);
         check(1, reg_output, 48);
 
         //MOV_I r1, #10
-        clkCycle;
+        clkR;
         setRegAddr(1);
         check(10, reg_output, 49);
 
@@ -194,34 +201,34 @@ module tb_integrated_cpu();
         //CMP r0, r1
         //BLE #2
         for (i = 0; i < 8; i = i + 1) begin
-            clkCycle;
+            clkR;
             setRegAddr(0);
             check(2 + i, reg_output, i * 3 + 50);
-            clkCycle;
+            clkR;
             check(32'b10000000_00000000_00000000_00000000, status_out, (i * 3) + 51);
-            clkCycle;
+            clkR;
             setRegAddr(15);
             check(2, reg_output, (i * 3) + 52);
         end
-        clkCycle;
+        clkR;
         setRegAddr(0);
         check(10, reg_output, 77);
-        clkCycle;   //r0 == r1
+        clkR;   //r0 == r1
         check(32'b01000000_00000000_00000000_00000000, status_out, 78);
-        clkCycle;
+        clkR;
         setRegAddr(15);
         check(2, reg_output, 79);
-        clkCycle;
+        clkR;
         setRegAddr(0);
         check(11, reg_output, 80);
-        clkCycle;   //r0 > r1
+        clkR;   //r0 > r1
         check(32'b00000000_00000000_00000000_00000000, status_out, 81);
-        clkCycle;
+        clkR;
         setRegAddr(15);
         check(5, reg_output, 82);
         
         //STR r0, r0, #1
-        clkCycle;
+        clkR;
         check(11, DUT.data_memory.altsyncram_component.m_default.altsyncram_inst.mem_data[10], 83);
 
         //print final test results
