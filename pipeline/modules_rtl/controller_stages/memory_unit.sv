@@ -136,7 +136,7 @@ end
 always_comb begin
     // default values
     sel_pc_reg = 2'b00;
-    load_pc_reg = 1'b0;
+    load_pc_reg = 1'b1;
     sel_branch_imm_reg = 1'b0;
     sel_A_reg = 1'b0;
     sel_B_reg = 1'b0;
@@ -154,7 +154,6 @@ always_comb begin
         // sel_pc_reg
 
         // load_pc_reg
-        load_pc_reg = 1'b1;
 
         // sel_branch_imm
 
@@ -198,7 +197,6 @@ always_comb begin
         // sel_pc_reg
 
         // load_pc_reg
-        load_pc_reg = 1'b1;
 
         // sel_A - always from Rn
         sel_A_reg = 1'b0;
@@ -259,11 +257,9 @@ always_comb begin
             
             // take the new address
             sel_pc_reg = 2'b11;
-            load_pc_reg = 1'b1;
             branch_ref_new = ~branch_ref_global_reg;
         end else begin
             sel_pc_reg = 2'b00;
-            load_pc_reg = 1'b1;
         end
 
         //sel_A
