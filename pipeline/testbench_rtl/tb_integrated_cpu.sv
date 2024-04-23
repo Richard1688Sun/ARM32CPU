@@ -78,6 +78,7 @@ module tb_integrated_cpu();
         reset; // load pc
         clkR; // fetch
         clkR; // fetch_wait
+        clkR; // decode stage -> preapre to load execute register
     endtask: restart_pc
 
     task clkEnterMemory;
@@ -106,7 +107,7 @@ module tb_integrated_cpu();
             DUT.instruction_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
         
         restart_pc;
-        sel_instr = 1'b1;
+        sel_instr = 1'b0;
         clkEnterMemory;
 
 
