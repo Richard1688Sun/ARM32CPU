@@ -160,8 +160,7 @@ module tb_integrated_cpu();
         end
 
         // LDR_I r0, r9, #19
-        clkR;
-        // stalling
+        clkR; // memory
         clkR; // memory_wait
         clkR; // ldr_writeback
         clkR; // complete ldr_writeback
@@ -169,12 +168,14 @@ module tb_integrated_cpu();
         check(38, reg_output, 42);
 
         // STR_I r8, r0, #9 -> store 8 in address 29 -> 38 - 9 = 29 -> store 29 in r0
-        clkR;
+        // NOTE: There was stallin done for this instruction
+        clkR; // memory
+        clkR; // complete memory
         setRegAddr(0);
         check(29, reg_output, 43);
 
         //LDR_R r14, r0, r1 -> address = 29 -> write 28 to r0
-        clkR;
+        clkR; // complete memory
         setRegAddr(0);
         check(28, reg_output, 44);
 
