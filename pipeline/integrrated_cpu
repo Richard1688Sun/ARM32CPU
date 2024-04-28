@@ -175,7 +175,7 @@ add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_addr
 add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_data
 add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_in
 add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_reg
-add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/datapath_out
+add wave -noupdate -expand -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/datapath_out
 add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_A
 add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_B
 add wave -noupdate -expand -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_S
@@ -249,7 +249,7 @@ add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/re
 add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en1
 add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en_ldr
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Start of LDR_I memory} {645 ps} 1} {{Cursor 3} {666 ps} 0}
+WaveRestoreCursors {{Start of LDR_I memory} {645 ps} 1} {{Cursor 3} {678 ps} 0}
 quietly wave cursor active 2
 configure wave -namecolwidth 199
 configure wave -valuecolwidth 221
@@ -265,4 +265,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {533 ps} {815 ps}
+WaveRestoreZoom {573 ps} {855 ps}
