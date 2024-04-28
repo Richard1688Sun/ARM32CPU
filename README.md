@@ -405,8 +405,11 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
 </table>
 
 > Note: `opcode[6:5] == 11` means this instruction is a memory instruction with exception of `LDR_Literal` which has `opcode[6:3] == 1000`
+
 > Note: `P == 0` means post-index addressing(use the post-ALU value for addr), `P == 1` means pre-index addressing **0 is the most basic instruction operation**
+
 > Note: `U == 0` means ALU subtraction operation, `U == 1` means ALU addition operation
+
 > Note: `W == 0` means no writeback to base register, `W == 1` means yes writeback to base register
 
 <br/>
