@@ -42,6 +42,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
 
     // internal signals
     wire [3:0] rt;
+    wire [3:0] rt_writeback_unit;
     assign rt = rd;
 
     // datapath module
@@ -51,7 +52,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .sel_w_addr1(sel_w_addr1),
         .w_addr1(rd),
         .w_en1(w_en1),
-        .w_addr_ldr(rt),   //for LDR
+        .w_addr_ldr(rt_writeback_unit),   //for LDR
         .w_en_ldr(w_en_ldr),
         .w_data_ldr(ram_data2),  //for LDR
         .A_addr(rn),
@@ -121,7 +122,8 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .sel_w_addr1(sel_w_addr1),
         .w_en1(w_en1),
         .mem_w_en(mem_w_en_out),
-        .w_en_ldr(w_en_ldr)
+        .w_en_ldr(w_en_ldr),
+        .rt_writeback_unit(rt_writeback_unit)
     );
 
 endmodule: cpu

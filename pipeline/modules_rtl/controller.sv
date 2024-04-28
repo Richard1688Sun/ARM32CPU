@@ -44,7 +44,8 @@ module controller(
 
     // *** Write Back Stage Output ***
     // controller signals
-    output w_en_ldr
+    output w_en_ldr,
+    output [3:0] rt_writeback_unit
 );
     // *** Fetch Stage Unit ***
     // branch value signals
@@ -142,8 +143,9 @@ module controller(
 
     // *** LDR Write Back Stage Unit ***
     // decoded signals
-    wire [3:0] rt_writeback_unit;
+    wire [3:0] rt_writeback_unit_out;
     wire [6:0] opcode_writeback_unit;
+    assign rt_writeback_unit = rt_writeback_unit_out;
     // controller signals
     wire w_en_ldr_out;
     assign w_en_ldr = w_en_ldr_out;
@@ -184,7 +186,7 @@ module controller(
         .sel_w_addr1_memory(sel_w_addr1_out),
         .rt_memory_wait(rt_memory_wait_unit),
         .opcode_memory_wait(opcode_memory_wait_unit),
-        .rt_writeback(rt_writeback_unit),
+        .rt_writeback(rt_writeback_unit_out),
         .opcode_writeback(opcode_writeback_unit),
         .sel_A_in(sel_A_in_out),
         .sel_B_in(sel_B_in_out),
@@ -247,7 +249,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
-        .rt(rt_writeback_unit),
+        .rt(rt_writeback_unit_out),
         .opcode(opcode_writeback_unit),
         // controller signals
         .w_en_ldr(w_en_ldr_out)
