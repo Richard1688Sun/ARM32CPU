@@ -27,6 +27,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire [3:0] cond;
     wire [6:0] opcode_memory_unit; //TODO: might not be used
     wire [3:0] rd;
+    wire [3:0] rn_memory_unit;
     wire [1:0] shift_op;
     wire [11:0] imm12;
     wire [31:0] imm_branch;
@@ -50,7 +51,8 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .clk(clk),
         .LR_in(ram_data2),
         .sel_w_addr1(sel_w_addr1),
-        .w_addr1(rd),
+        .rd_memory_unit(rd),
+        .rn_memory_unit(rn_memory_unit),
         .w_en1(w_en1),
         .w_addr_ldr(rt_writeback_unit),   //for LDR
         .w_en_ldr(w_en_ldr),
@@ -107,6 +109,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .en_S(en_S),
         .cond_memory_unit(cond),
         .opcode_memory_unit(opcode_memory_unit),
+        .rn_memory_unit(rn_memory_unit),
         .rd_memory_unit(rd),
         .shift_op_memory_unit(shift_op),
         .imm12_memory_unit(imm12),

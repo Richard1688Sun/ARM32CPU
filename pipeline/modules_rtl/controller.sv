@@ -25,6 +25,7 @@ module controller(
     // decoded signals
     output [3:0] cond_memory_unit,                      // TODO: might not be used
     output [6:0] opcode_memory_unit,
+    output [3:0] rn_memory_unit,
     output [3:0] rd_memory_unit,
     output [1:0] shift_op_memory_unit,
     output [11:0] imm12_memory_unit,
@@ -100,6 +101,7 @@ module controller(
     wire [31:0] instr_memory_unit;
     assign cond_memory_unit = cond_memory_unit_out;
     assign opcode_memory_unit = opcode_memory_unit_out;
+    assign rn_memory_unit = rn_memory_unit_out;
     assign rd_memory_unit = rd_memory_unit_out;
     assign shift_op_memory_unit = shift_op_memory_unit_out;
     assign imm12_memory_unit = imm12_memory_unit_out;

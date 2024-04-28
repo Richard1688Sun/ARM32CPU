@@ -228,7 +228,7 @@ always_comb begin
         end // else default to 00
 
         // w_en1
-        w_en1_reg = ~P && W;
+        w_en1_reg = P && W;
 
         // mem_w_en
         if (opcode[4] == 1'b1) begin    //STR
