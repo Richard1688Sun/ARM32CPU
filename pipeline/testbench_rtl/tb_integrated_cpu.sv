@@ -74,6 +74,7 @@ module tb_integrated_cpu();
         end
     endtask: reset
 
+    // ALL THE TASKS MEAN WE START THE STAGE NOT COMPLETE
     task restart_pc;
         reset; // load pc
         clkR; // fetch
@@ -149,6 +150,8 @@ module tb_integrated_cpu();
             DUT.data_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
         
         restart_pc;
+        clkEnterMemory;
+
         // Fill each register with default values
         for (i = 0; i < 15; i = i + 1) begin
             clkR;
@@ -158,6 +161,10 @@ module tb_integrated_cpu();
 
         // LDR_I r0, r9, #19
         clkR;
+        // stalling
+        clkR; // memory_wait
+        clkR; // ldr_writeback
+        clkR; // complete ldr_writeback
         setRegAddr(0);
         check(38, reg_output, 42);
 
@@ -170,16 +177,17 @@ module tb_integrated_cpu();
         clkR;
         setRegAddr(0);
         check(28, reg_output, 44);
-        setRegAddr(14);
-        check(8, reg_output, 45);
 
+        clkR; // memory_wait for LDR_R
         //STR_R r9, r12, r2 LSL 3 -> address = 12 + 2 * 8 = 28 -> write 28 address 12
-        clkR;
         setRegAddr(12);
         check(28, reg_output, 46);
+        clkR; // ldr_writeback for STR_R
+        setRegAddr(14);             // check again LDR_R r14, r0, r1
+        check(8, reg_output, 45);
+
         
         // LDR_Lit r1, #8 -> PC == 20, write 10 to r1
-        clkR;
         setRegAddr(1);
         check(10, reg_output, 47);
 
@@ -190,6 +198,7 @@ module tb_integrated_cpu();
 
         //MOV_I r0, #1
         clkR;
+        clkEnterMemory;
         setRegAddr(0);
         check(1, reg_output, 48);
 
