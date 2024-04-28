@@ -202,7 +202,7 @@ always_comb begin
         sel_A_reg = 1'b0;
 
         // sel_B & sel_pre_indexed
-        sel_pre_indexed_reg = ~P;
+        sel_pre_indexed_reg = P;
         if (opcode[3] == 1'b1) begin
             // register - load from regB
             sel_B_reg = 1'b0;
@@ -228,7 +228,7 @@ always_comb begin
         end // else default to 00
 
         // w_en1
-        w_en1_reg = P && W;
+        w_en1_reg = ~P && W;
 
         // mem_w_en
         if (opcode[4] == 1'b1) begin    //STR
