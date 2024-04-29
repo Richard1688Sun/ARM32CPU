@@ -6,6 +6,7 @@
     - [Datapath Ports](#datapath-ports)
   - [Controller](#controller)
     - [Controller Ports](#controller-ports)
+  - [Instruction Queue](#instruction-queue)
   - [Stages](#stages)
     - [Pipeline Unit:](#pipeline-unit)
     - [Memory Stage:](#memory-stage)
@@ -116,6 +117,15 @@ The mastermind behind this CPU. Controls datapath and how it operates through si
 |             `w_en1`             |    memory     |   regfile   |           enable writeback to regfile at port 1            |
 |           `mem_w_en`            |    memory     |     ram     |                    enable memory write                     |
 |           `w_en_ldr`            | ldr_writeback |   regfile   |          enable writeback to regfile for LDR port          |
+
+## Instruction Queue:
+Used to queue fetched instructions while the CPU is stalling. Necessary since the fetching process cannot be stalled, hence we will loose fetched instruction when the CPU is stalling.
+
+**Attributes**
+- 2 stage queue
+- always moves instructions along the queue
+  - overflowing the queue will loose the first instruction
+- `is_empty` indicates that the queue is empty can we can begin taking instructions from the `fetch_wait` stage again
 
 ## Stages
 
