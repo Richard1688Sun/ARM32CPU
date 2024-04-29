@@ -121,6 +121,9 @@ The mastermind behind this CPU. Controls datapath and how it operates through si
 ## Instruction Queue:
 Used to queue fetched instructions while the CPU is stalling. Necessary since the fetching process cannot be stalled, hence we will loose fetched instruction when the CPU is stalling.
 
+**Diagram**
+![image](https://github.com/Richard1688Sun/ARM32CPU/assets/112845533/333fb425-40f0-4857-8f84-4118e272354b)
+
 **Attributes**
 - 2 stage queue
 - always moves instructions along the queue
