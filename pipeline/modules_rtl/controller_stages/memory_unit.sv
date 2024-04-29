@@ -14,9 +14,8 @@ module memory_unit(
     output [31:0] instr_output,
     // controller signals
     input [31:0] status_reg,
-    input stall_pc,
     output [1:0] sel_pc,
-    output load_pc,
+
     output sel_branch_imm,
     output sel_A,
     output sel_B,
@@ -61,7 +60,6 @@ reg branch_ref_global_reg;
 
 // controller ports
 reg [1:0] sel_pc_reg;
-reg load_pc_reg;
 reg sel_branch_imm_reg;
 reg sel_A_reg;
 reg sel_B_reg;
@@ -72,7 +70,6 @@ reg [1:0] sel_w_addr1_reg;
 reg w_en1_reg;
 reg mem_w_en_reg;
 assign sel_pc = sel_pc_reg;
-assign load_pc = load_pc_reg;
 assign sel_branch_imm = sel_branch_imm_reg;
 assign sel_A = sel_A_reg;
 assign sel_B = sel_B_reg;
@@ -136,7 +133,6 @@ end
 always_comb begin
     // default values
     sel_pc_reg = 2'b00;
-    load_pc_reg = 1'b1;
     sel_branch_imm_reg = 1'b0;
     sel_A_reg = 1'b0;
     sel_B_reg = 1'b0;
@@ -152,8 +148,6 @@ always_comb begin
     if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_decoded != 4'b1111)  begin
 
         // sel_pc_reg
-
-        // load_pc_reg
 
         // sel_branch_imm
 
@@ -196,8 +190,6 @@ always_comb begin
 
         // sel_pc_reg
 
-        // load_pc_reg
-
         // sel_A - always from Rn
         sel_A_reg = 1'b0;
 
@@ -238,7 +230,6 @@ always_comb begin
     end else if (opcode[6:3] == 4'b1001) begin  //branching
 
         // sel_pc_reg
-        // load_pc_reg
         if ((cond_decoded == 4'b0000 && Z) || 
             (cond_decoded == 4'b0001 && ~Z) || 
             (cond_decoded == 4'b0010 && C) || 

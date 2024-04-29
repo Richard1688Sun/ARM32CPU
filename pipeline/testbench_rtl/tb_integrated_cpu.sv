@@ -179,16 +179,17 @@ module tb_integrated_cpu();
         setRegAddr(0);
         check(28, reg_output, 44);
 
-        clkR; // memory_wait for LDR_R
+        clkR; // complete memory_wait for LDR_R && complete memory for STR_R
         //STR_R r9, r12, r2 LSL 3 -> address = 12 + 2 * 8 = 28 -> write 28 address 12
         setRegAddr(12);
         check(28, reg_output, 46);
-        clkR; // ldr_writeback for STR_R
+        clkR; // complete ldr_writeback for LDR_R && complete memory_wait STR_R
         setRegAddr(14);             // check again LDR_R r14, r0, r1
         check(8, reg_output, 45);
 
         
         // LDR_Lit r1, #8 -> PC == 20, write 10 to r1
+        clkR; // was stalled for 1 cycle -> complete memory for LDR_Lit
         setRegAddr(1);
         check(10, reg_output, 47);
 
