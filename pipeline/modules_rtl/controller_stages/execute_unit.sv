@@ -27,7 +27,7 @@ module execute_unit(
     output en_A,
     output en_B,
     output en_S,
-    output stall_pc         // TODO: implment later
+    output stall_pc
 );
 // constants
 localparam [6:0] opcode_NOP = 7'b0100000;
