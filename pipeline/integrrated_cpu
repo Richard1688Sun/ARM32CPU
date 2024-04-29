@@ -31,8 +31,6 @@ add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controll
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_out
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
@@ -113,8 +111,6 @@ add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controll
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_out
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
 add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
@@ -247,8 +243,19 @@ add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT
 add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_data_ldr
 add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en1
 add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en_ldr
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/clk
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/instr_in
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/instr_out
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/is_empty
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/is_enqueue
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q1_filled_reg
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q1_reg
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q2_filled_reg
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q2_reg
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/rst_n
+add wave -noupdate -expand -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/sel_q1
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Start of LDR_I memory} {645 ps} 1} {{Memory STR} {677 ps} 1}
+WaveRestoreCursors {{Start of LDR_I memory} {645 ps} 1} {{Memory STR} {4500 ps} 1}
 quietly wave cursor active 2
 configure wave -namecolwidth 199
 configure wave -valuecolwidth 221
@@ -264,4 +271,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {998 ps} {1280 ps}
+WaveRestoreZoom {0 ps} {282 ps}
