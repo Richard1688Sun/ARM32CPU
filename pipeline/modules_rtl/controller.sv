@@ -20,6 +20,7 @@ module controller(
     output en_A,
     output en_B,
     output en_S,
+    output load_pc,
 
     // *** Memory Stage Output ***
     // decoded signals
@@ -32,7 +33,6 @@ module controller(
     output [31:0] imm_branch_memory_unit,
     // controller signals
     output [1:0] sel_pc,
-    output load_pc,
     output sel_branch_imm,
     output sel_A,
     output sel_B,

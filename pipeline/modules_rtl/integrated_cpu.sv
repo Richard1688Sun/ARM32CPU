@@ -7,6 +7,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     reg clk;
     reg rst_n;
     reg sel_instr;
+    reg [31:0] instr_in;
     assign clk = CLOCK_50;
     assign rst_n = KEY[0];
     assign sel_instr = KEY[1];
@@ -19,11 +20,17 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     wire [31:0] ram_in2;
     wire [31:0] status;
     wire [31:0] dp_out;
-
-    // pc outputs
     wire [10:0] pc;
+    wire load_pc;
 
-    // duel_ram outputs
+    // instruction queue inputs
+    wire is_enqueue;
+    assign is_enqueue = ~load_pc;
+    // instruction queue outputs
+    wire [31:0] instr_queued;
+    wire is_empty;
+
+    // memory outputs
     wire [31:0] ram_data1;
     wire [31:0] ram_data2;
 
@@ -40,7 +47,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     cpu cpu(
         .clk(clk),
         .rst_n(rst_n),
-        .instr(ram_data1),
+        .instr(instr_in),
         .ram_data2(ram_data2),
         .start_pc(11'b0),
         .mem_w_en(mem_w_en),
@@ -49,7 +56,17 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
         .status(status),
         .dp_out(dp_out),
         .pc(pc),
+        .load_pc(load_pc),
         .reg_output(reg_output), .reg_addr(SW[3:0]) //TODO: remove later
+    );
+
+    instruction_queue instruction_queue(
+        .clk(clk),
+        .rst_n(rst_n),
+        .instr_in(ram_data1),
+        .is_enqueue(is_enqueue),
+        .instr_out(instr_queued),
+        .is_empty(is_empty)
     );
 
     //instruction_memory module
@@ -69,4 +86,9 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
         .data(ram_in2),
         .q(ram_data2)
     );
+
+    // logic for instr_in
+    always_comb begin
+        instr_in = (is_empty) ? ram_data1 : instr_queued;
+    end
 endmodule: integrated_cpu

@@ -1,6 +1,6 @@
 module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, input [10:0] start_pc,
             output mem_w_en, output [10:0] ram_addr2, output [31:0] ram_in2,
-            output [31:0] status, output [31:0] dp_out, output [10:0] pc,
+            output [31:0] status, output [31:0] dp_out, output [10:0] pc, output load_pc,
             output [31:0] reg_output, input [3:0] reg_addr); //TODO: status_out may be removed
 
     // datapath outputs
@@ -17,7 +17,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     assign reg_output = reg_output_out;
 
     // controller outputs
-    wire [6:0] opcode;
+    wire [6:0] opcode;      // TODO: probably needs to be removed
     // execute signals
     wire [3:0] rn, rm, rs;
     wire [4:0] imm5;
@@ -32,11 +32,12 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire [11:0] imm12;
     wire [31:0] imm_branch;
     wire [1:0] sel_pc;
-    wire load_pc, sel_branch_imm, sel_A, sel_B;
+    wire load_pc_out, sel_branch_imm, sel_A, sel_B;
     wire [2:0] ALU_op;
     wire sel_pre_indexed, en_status;
     wire [1:0] sel_w_addr1;
     wire w_en1, mem_w_en_out;
+    assign load_pc = load_pc_out;
     // write back signals
     wire w_en_ldr;
     assign mem_w_en = mem_w_en_out;
@@ -62,7 +63,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .shift_addr(rs),
         .str_addr(rt),
         .sel_pc(sel_pc),
-        .load_pc(load_pc),
+        .load_pc(load_pc_out),
         .start_pc(start_pc),
         .sel_A_in(sel_A_in),
         .sel_B_in(sel_B_in),
@@ -107,6 +108,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .en_A(en_A),
         .en_B(en_B),
         .en_S(en_S),
+        .load_pc(load_pc_out),
         .cond_memory_unit(cond),
         .opcode_memory_unit(opcode_memory_unit),
         .rn_memory_unit(rn_memory_unit),
@@ -115,7 +117,6 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .imm12_memory_unit(imm12),
         .imm_branch_memory_unit(imm_branch),
         .sel_pc(sel_pc),
-        .load_pc(load_pc),
         .sel_branch_imm(sel_branch_imm),
         .sel_A(sel_A),
         .sel_B(sel_B),
