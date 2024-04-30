@@ -169,7 +169,6 @@ module tb_integrated_cpu();
 
         // STR_I r8, r0, #9 -> store 8 in address 29 -> 38 - 9 = 29 -> store 29 in r0
         // NOTE: There was stallin done for this instruction
-        clkR; // memory
         clkR; // complete memory
         setRegAddr(0);
         check(29, reg_output, 43);

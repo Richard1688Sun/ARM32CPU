@@ -201,8 +201,6 @@ always_comb begin
             //sel_A_in
             //sel_B_in
             //sel_shift
-            sel_shift_reg = 1'b1;
-
             //sel_shift_in
 
             //en_A - always from Rn
