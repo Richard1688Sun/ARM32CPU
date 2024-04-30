@@ -215,12 +215,12 @@ always_comb begin
         en_status_reg = en_status_decoded;
 
         // sel_w_addr1
-        if (P && W) begin
+        if (W) begin
             sel_w_addr1_reg = 2'b10;
         end // else default to 00
 
         // w_en1
-        w_en1_reg = P && W;
+        w_en1_reg = W;
 
         // mem_w_en
         if (opcode[4] == 1'b1) begin    //STR
