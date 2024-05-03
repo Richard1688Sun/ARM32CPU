@@ -5,8 +5,8 @@ module memory_pipeline_unit(
     input [31:0] instr_in,
     input branch_ref,
     input branch_in,
+    input [6:0] pc_in,
     // outputs
-    output [31:0] instr_output,
     output [3:0] cond,      // Condition code
     output [6:0] opcode,    // Opcode for the instruction
     output en_status,       // Enable status register
@@ -17,7 +17,9 @@ module memory_pipeline_unit(
     output [31:0] imm_branch,    // Address for branching
     output P,
     output U,
-    output W
+    output W,
+    output [31:0] instr_output,
+    output [6:0] pc_out
 );
 // internal signals
 localparam [31:0] NOP = 32'b1110_00110010_0000_11110000_00000000;
@@ -34,6 +36,7 @@ wire P_out, U_out, W_out;
 wire en_status_out;
 wire [6:0] opcode_out;
 wire [31:0] instr_decoder_in;
+reg [6:0] pc_reg;
 assign cond = cond_out;
 assign opcode = opcode_out;
 assign en_status = en_status_out;
@@ -46,6 +49,7 @@ assign P = P_out;
 assign U = U_out;
 assign W = W_out;
 assign instr_output = instr_decoder_in;
+assign pc_out = pc_reg;
 
 // module instances
 idecoder decoder(
@@ -84,6 +88,15 @@ always_ff @( posedge clk or negedge rst_n) begin
         branch_value_reg <= 0;
     end else begin
         branch_value_reg <= branch_in;
+    end
+end
+
+// pc register
+always_ff @( posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        pc_reg <= 7'd0
+    end else begin
+        pc_reg <= pc_in;
     end
 end
 endmodule: memory_pipeline_unit

@@ -4,6 +4,7 @@ module memory_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
+    input [6:0] pc_in,
     output [3:0] cond,      // Condition code               TODO: remove later if needed
     output [6:0] opcode,    // Opcode for the instruction   TODO: remove later if needed
     output [3:0] rn,        // Rn
@@ -12,10 +13,10 @@ module memory_unit(
     output [11:0] imm12,    // Immediate value or second operand
     output [31:0] imm_branch,    // Address for branching
     output [31:0] instr_output,
+    output [6:0] pc_out,
     // controller signals
     input [31:0] status_reg,
     output [1:0] sel_pc,
-
     output sel_branch_imm,
     output sel_A,
     output sel_B,
@@ -107,6 +108,7 @@ memory_pipeline_unit memory_pipeline_unit(
     .instr_in(instr_in),
     .branch_ref(branch_ref_global_reg),
     .branch_in(branch_in),
+    .pc_in(pc_in),
     .cond(cond_decoded),
     .opcode(opcode_decoded),
     .en_status(en_status_decoded),
@@ -118,7 +120,8 @@ memory_pipeline_unit memory_pipeline_unit(
     .P(P),
     .U(U),
     .W(W),
-    .instr_output(instr_out)
+    .instr_output(instr_out),
+    .pc_out(pc_out)
 );
 
 // branch reference register

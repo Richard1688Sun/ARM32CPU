@@ -4,6 +4,7 @@ module execute_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
+    input [6:0] pc_in,
     output [6:0] opcode,    // Opcode for the instruction TODO: remove later if needed
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
@@ -11,6 +12,7 @@ module execute_unit(
     output [4:0] imm5,      // Immediate value
     output branch_value,
     output [31:0] instr_output,
+    output [6:0] pc_out,
     // controller signals
     input [3:0] rn_memory,                  // from memory stage for forwarding for writeback
     input [3:0] rd_memory,                  // from memory stage for forwarding & stalling
@@ -75,6 +77,7 @@ execute_pipeline_unit execute_pipeline_unit(
     .instr_in(instr_in),
     .branch_in(branch_in),
     .sel_stall(stall_pc_reg),
+    .pc_in(pc_in),
     .cond(cond_out),
     .opcode(opcode_out),
     .rn(rn_out),
@@ -82,7 +85,8 @@ execute_pipeline_unit execute_pipeline_unit(
     .rm(rm_out),
     .imm5(imm5_out),
     .branch_value(branch_value_out),
-    .instr_output(instr_out)
+    .instr_output(instr_out),
+    .pc_out(pc_out)
 );
 
 always_comb begin
