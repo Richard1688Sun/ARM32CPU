@@ -261,7 +261,7 @@ add wave -noupdate -expand -group {memory data} -radix unsigned /tb_integrated_c
 add wave -noupdate -expand -group {memory data} /tb_integrated_cpu/DUT/data_memory/sub_wire0
 add wave -noupdate -expand -group {memory data} /tb_integrated_cpu/DUT/data_memory/wren
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{memory of STR_I} {680 ps} 0} {{Memory STR} {4500 ps} 1}
+WaveRestoreCursors {{memory of STR_I} {724 ps} 0} {{Memory STR} {4500 ps} 1}
 quietly wave cursor active 1
 configure wave -namecolwidth 199
 configure wave -valuecolwidth 221
@@ -277,4 +277,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {609 ps} {751 ps}
+WaveRestoreZoom {676 ps} {818 ps}
