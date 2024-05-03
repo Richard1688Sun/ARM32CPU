@@ -73,7 +73,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     instr_mem instruction_memory(
         .clock(clk),
         .wren(1'b0),
-        .address(pc[6:0]),
+        .address(pc[6:0]),          // TODO: check why actual pc size is 10 here
         .data(32'b0),
         .q(ram_data1)
     );
