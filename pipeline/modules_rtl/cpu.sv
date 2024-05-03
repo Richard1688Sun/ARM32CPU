@@ -23,6 +23,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     wire [4:0] imm5;
     wire [1:0] sel_A_in, sel_B_in, sel_shift_in;
     wire sel_shift, en_A, en_B, en_S;
+    wire [6:0] pc_execute_unit;
     // memory signals
     wire [3:0] cond;
     wire [6:0] opcode_memory_unit; //TODO: might not be used
@@ -65,6 +66,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .sel_pc(sel_pc),
         .load_pc(load_pc_out),
         .start_pc(start_pc),
+        .pc_execute_unit(pc_execute_unit),
         .sel_A_in(sel_A_in),
         .sel_B_in(sel_B_in),
         .sel_shift_in(sel_shift_in),
@@ -96,6 +98,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .rst_n(rst_n),
         .instr_in(instr),
         .status_reg(status_out),
+        .pc_in(pc_out),
         .opcode_execute_unit(opcode),
         .rn_execute_unit(rn),
         .rm_execute_unit(rm),
@@ -109,6 +112,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .en_B(en_B),
         .en_S(en_S),
         .load_pc(load_pc_out),
+        .pc_execute_unit(pc_execute_unit),
         .cond_memory_unit(cond),
         .opcode_memory_unit(opcode_memory_unit),
         .rn_memory_unit(rn_memory_unit),

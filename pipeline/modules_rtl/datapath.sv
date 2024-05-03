@@ -1,7 +1,7 @@
 module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
                 input [3:0] rd_memory_unit, input [3:0] rn_memory_unit, input w_en1, input [3:0] w_addr_ldr, input w_en_ldr,                           //regfile write inputs
                 input [31:0] w_data_ldr, input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,                     //end of regfile inputs
-                input [1:0] sel_pc, input load_pc, input [10:0] start_pc,                                                                       //pc inputs
+                input [1:0] sel_pc, input load_pc, input [10:0] start_pc, input [6:0] pc_execute_unit,                                                                      //pc inputs
                 input [1:0] sel_A_in, input [1:0] sel_B_in, input [1:0] sel_shift_in,                                   //inputs for forwarding muxes
                 input en_A, input en_B, input [31:0] shift_imm, input sel_shift,
                 input [1:0] shift_op, input en_S,
@@ -75,7 +75,7 @@ module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
             2'b00: A_in = A_data;
             2'b01: A_in = ALU_out;
             2'b10: A_in = w_data_ldr;
-            2'b11: A_in = pc_out;
+            2'b11: A_in = {25'd0, pc_execute_unit};
             default: A_in = A_data;
         endcase
     end
