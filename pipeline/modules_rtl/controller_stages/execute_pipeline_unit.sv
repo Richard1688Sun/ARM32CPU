@@ -88,7 +88,7 @@ end
 // pc register
 always_ff @( posedge clk or negedge rst_n) begin
     if (~rst_n) begin
-        pc_reg <= 7'd0
+        pc_reg <= 7'd0;
     end else begin
         pc_reg <= pc_in;
     end

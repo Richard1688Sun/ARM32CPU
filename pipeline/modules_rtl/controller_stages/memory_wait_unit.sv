@@ -7,7 +7,7 @@ module memory_wait_unit(
     output [3:0] rt,
     output [6:0] opcode,
     output [31:0] instr_output,
-    output [6:0] pc_out,
+    output [6:0] pc_out
     // controller signals
     // NOTHING for now
 );
