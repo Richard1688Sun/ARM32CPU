@@ -190,9 +190,9 @@ module tb_integrated_cpu();
         // LDR_Lit r1, #8 -> PC == 20
         clkR; // complete memory_wait for LDR_Lit
         clkR; // was stalled for 1 cycle -> complete memory for LDR_Lit
-        // TODO: need to track the PC value for each instruction for the LDR_Lit
-        // setRegAddr(1);
-        // check(10, reg_output, 47);
+        // checking final register value
+        setRegAddr(1);
+        check(888, reg_output, 47);
 
         // ### Branch tests ###
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/rtl_data/branchCPUTests.memb",
