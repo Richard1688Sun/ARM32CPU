@@ -20,7 +20,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     wire [31:0] ram_in2;
     wire [31:0] status;
     wire [31:0] dp_out;
-    wire [10:0] pc;
+    wire [6:0] pc;
     wire load_pc;
 
     // instruction queue inputs
@@ -73,7 +73,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     instr_mem instruction_memory(
         .clock(clk),
         .wren(1'b0),
-        .address(pc[6:0]),          // TODO: check why actual pc size is 10 here
+        .address(pc),        
         .data(32'b0),
         .q(ram_data1)
     );

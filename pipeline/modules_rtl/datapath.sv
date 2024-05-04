@@ -7,7 +7,7 @@ module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
                 input [1:0] shift_op, input en_S,
                 input sel_A, input sel_B, input sel_branch_imm, input sel_pre_indexed, input [31:0] imm12, input [31:0] imm_branch,
                 input [2:0] ALU_op, input en_status, input status_rdy,                                                  //datapath inputs
-                output [31:0] datapath_out, output [31:0] status_out, output [31:0] str_data, output [10:0] PC,         //datapath outputs
+                output [31:0] datapath_out, output [31:0] status_out, output [31:0] str_data, output [6:0] PC,         //datapath outputs
                 output [31:0] reg_output, input [3:0] reg_addr);    //TODO: remove later, this is only for testing  
   
     // --- internal wires ---
@@ -69,7 +69,7 @@ module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
         endcase
     end
     
-    //A_mux
+    //A_in mux
     always_comb begin
         case (sel_A_in)
             2'b00: A_in = A_data;
