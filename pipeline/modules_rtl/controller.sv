@@ -58,6 +58,12 @@ module controller(
     // branch value signals
     wire branch_value_fetch_wait_unit;
 
+    // *** Decode Stage Unit ***
+    // decoded signals
+    wire [6:0] pc_decode_unit;
+    wire [31:0] instr_decode_unit;
+    // controller signals
+
     // *** Execute Stage Unit ***
     // decoded signals
     wire [6:0] opcode_execute_unit_out;
@@ -172,12 +178,25 @@ module controller(
         .branch_in(branch_value_fetch_unit),
         .branch_value(branch_value_fetch_wait_unit)
     );
-    execute_unit execute_unit(
+
+    // NEED THAT DECODER STAGE AS BUFFER
+    decoder_unit decoder_unit(
         // pipeline_unit signals
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_in),
-        .pc_in(pc_in - 7'd2),              // subtract 2 since the fetch is 2 cycles ahead
+        .pc_in(pc_in - 7'd1),     // subtract 1 since pc gets incremented by 1 right after the clock, hence right before the clk the pc_in, one being fed into here, is just 1 bigger
+        .instr_out(instr_decode_unit),
+        .pc_out(pc_decode_unit)
+        // controller signals
+    );
+
+    execute_unit execute_unit(
+        // pipeline_unit signals
+        .clk(clk),
+        .rst_n(rst_n),
+        .instr_in(instr_decode_unit),
+        .pc_in(pc_decode_unit),              
         .branch_in(branch_value_fetch_wait_unit),
         .opcode(opcode_execute_unit_out),
         .rn(rn_execute_unit_out),
