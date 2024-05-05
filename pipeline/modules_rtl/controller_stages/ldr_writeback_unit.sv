@@ -3,10 +3,12 @@ module ldr_writeback_unit(
     input clk,
     input rst_n,
     input [31:0] instr_in,
+    input [6:0] pc_in,
     // controller signals
     output [3:0] rt,
     output [6:0] opcode,
-    output w_en_ldr
+    output w_en_ldr,
+    output [6:0] pc_out
 );
 
 // pipeline unit ports
@@ -24,8 +26,10 @@ writeback_pipeline_unit writeback_pipeline_unit(
     .clk(clk),
     .rst_n(rst_n),
     .instr_in(instr_in),
+    .pc_in(pc_in),
     .rt(rt_out),
-    .opcode(opcode_out)
+    .opcode(opcode_out),
+    .pc_out(pc_out)
 );
 
 // controller module

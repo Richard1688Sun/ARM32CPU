@@ -4,6 +4,7 @@ module execute_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
+    input [6:0] pc_in,
     output [6:0] opcode,    // Opcode for the instruction TODO: remove later if needed
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
@@ -11,6 +12,7 @@ module execute_unit(
     output [4:0] imm5,      // Immediate value
     output branch_value,
     output [31:0] instr_output,
+    output [6:0] pc_out,
     // controller signals
     input [3:0] rn_memory,                  // from memory stage for forwarding for writeback
     input [3:0] rd_memory,                  // from memory stage for forwarding & stalling
@@ -27,7 +29,7 @@ module execute_unit(
     output en_A,
     output en_B,
     output en_S,
-    output stall_pc         // TODO: implment later
+    output stall_pc
 );
 // constants
 localparam [6:0] opcode_NOP = 7'b0100000;
@@ -75,6 +77,7 @@ execute_pipeline_unit execute_pipeline_unit(
     .instr_in(instr_in),
     .branch_in(branch_in),
     .sel_stall(stall_pc_reg),
+    .pc_in(pc_in),
     .cond(cond_out),
     .opcode(opcode_out),
     .rn(rn_out),
@@ -82,7 +85,8 @@ execute_pipeline_unit execute_pipeline_unit(
     .rm(rm_out),
     .imm5(imm5_out),
     .branch_value(branch_value_out),
-    .instr_output(instr_out)
+    .instr_output(instr_out),
+    .pc_out(pc_out)
 );
 
 always_comb begin
@@ -201,8 +205,6 @@ always_comb begin
             //sel_A_in
             //sel_B_in
             //sel_shift
-            sel_shift_reg = 1'b1;
-
             //sel_shift_in
 
             //en_A - always from Rn
@@ -228,6 +230,10 @@ always_comb begin
         sel_shift_in_reg = 2'b11;
 
         // en_A
+        if (opcode[0] == 1'b0) begin
+            // pc realtive for imm branch
+            en_A_reg = 1'b1;
+        end
 
         // en_B
         if (opcode_out[0] == 1'b1) begin

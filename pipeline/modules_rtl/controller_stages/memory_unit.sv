@@ -4,6 +4,7 @@ module memory_unit(
     input rst_n,
     input [31:0] instr_in,
     input branch_in,
+    input [6:0] pc_in,
     output [3:0] cond,      // Condition code               TODO: remove later if needed
     output [6:0] opcode,    // Opcode for the instruction   TODO: remove later if needed
     output [3:0] rn,        // Rn
@@ -12,11 +13,10 @@ module memory_unit(
     output [11:0] imm12,    // Immediate value or second operand
     output [31:0] imm_branch,    // Address for branching
     output [31:0] instr_output,
+    output [6:0] pc_out,
     // controller signals
     input [31:0] status_reg,
-    input stall_pc,
     output [1:0] sel_pc,
-    output load_pc,
     output sel_branch_imm,
     output sel_A,
     output sel_B,
@@ -61,7 +61,6 @@ reg branch_ref_global_reg;
 
 // controller ports
 reg [1:0] sel_pc_reg;
-reg load_pc_reg;
 reg sel_branch_imm_reg;
 reg sel_A_reg;
 reg sel_B_reg;
@@ -72,7 +71,6 @@ reg [1:0] sel_w_addr1_reg;
 reg w_en1_reg;
 reg mem_w_en_reg;
 assign sel_pc = sel_pc_reg;
-assign load_pc = load_pc_reg;
 assign sel_branch_imm = sel_branch_imm_reg;
 assign sel_A = sel_A_reg;
 assign sel_B = sel_B_reg;
@@ -110,6 +108,7 @@ memory_pipeline_unit memory_pipeline_unit(
     .instr_in(instr_in),
     .branch_ref(branch_ref_global_reg),
     .branch_in(branch_in),
+    .pc_in(pc_in),
     .cond(cond_decoded),
     .opcode(opcode_decoded),
     .en_status(en_status_decoded),
@@ -121,7 +120,8 @@ memory_pipeline_unit memory_pipeline_unit(
     .P(P),
     .U(U),
     .W(W),
-    .instr_output(instr_out)
+    .instr_output(instr_out),
+    .pc_out(pc_out)
 );
 
 // branch reference register
@@ -136,7 +136,6 @@ end
 always_comb begin
     // default values
     sel_pc_reg = 2'b00;
-    load_pc_reg = 1'b0;
     sel_branch_imm_reg = 1'b0;
     sel_A_reg = 1'b0;
     sel_B_reg = 1'b0;
@@ -152,9 +151,6 @@ always_comb begin
     if (opcode[6] == 0 && opcode[5:4] != 2'b10 && cond_decoded != 4'b1111)  begin
 
         // sel_pc_reg
-
-        // load_pc_reg
-        load_pc_reg = 1'b1;
 
         // sel_branch_imm
 
@@ -197,14 +193,11 @@ always_comb begin
 
         // sel_pc_reg
 
-        // load_pc_reg
-        load_pc_reg = 1'b1;
-
         // sel_A - always from Rn
         sel_A_reg = 1'b0;
 
         // sel_B & sel_pre_indexed
-        sel_pre_indexed_reg = ~P;
+        sel_pre_indexed_reg = P;
         if (opcode[3] == 1'b1) begin
             // register - load from regB
             sel_B_reg = 1'b0;
@@ -225,12 +218,12 @@ always_comb begin
         en_status_reg = en_status_decoded;
 
         // sel_w_addr1
-        if (P && W) begin
+        if (W) begin
             sel_w_addr1_reg = 2'b10;
         end // else default to 00
 
         // w_en1
-        w_en1_reg = P && W;
+        w_en1_reg = W;
 
         // mem_w_en
         if (opcode[4] == 1'b1) begin    //STR
@@ -240,7 +233,6 @@ always_comb begin
     end else if (opcode[6:3] == 4'b1001) begin  //branching
 
         // sel_pc_reg
-        // load_pc_reg
         if ((cond_decoded == 4'b0000 && Z) || 
             (cond_decoded == 4'b0001 && ~Z) || 
             (cond_decoded == 4'b0010 && C) || 
@@ -259,16 +251,14 @@ always_comb begin
             
             // take the new address
             sel_pc_reg = 2'b11;
-            load_pc_reg = 1'b1;
             branch_ref_new = ~branch_ref_global_reg;
         end else begin
             sel_pc_reg = 2'b00;
-            load_pc_reg = 1'b1;
         end
 
         //sel_A
         if (opcode[0] == 1'b1) begin
-            // type X is PC relative
+            // type X is NOT PC relative
             sel_A_reg = 1'b1;
         end
 

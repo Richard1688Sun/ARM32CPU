@@ -14,8 +14,8 @@ module tb_shifter(output err);
   task check(input [31:0] expected, input [31:0] actual, integer test_num);
       begin
           if (expected !== actual) begin
-          $error("Test %d failed. Expected: %d, Actual: %d", test_num, expected, actual);
-          error_count = error_count + 1;
+            $error("Test %d failed. Expected: %d, Actual: %d", test_num, expected, actual);
+            error_count = error_count + 1;
           end
       end
   endtask: check

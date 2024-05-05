@@ -6,6 +6,7 @@
     - [Datapath Ports](#datapath-ports)
   - [Controller](#controller)
     - [Controller Ports](#controller-ports)
+  - [Instruction Queue](#instruction-queue)
   - [Stages](#stages)
     - [Pipeline Unit:](#pipeline-unit)
     - [Memory Stage:](#memory-stage)
@@ -116,6 +117,18 @@ The mastermind behind this CPU. Controls datapath and how it operates through si
 |             `w_en1`             |    memory     |   regfile   |           enable writeback to regfile at port 1            |
 |           `mem_w_en`            |    memory     |     ram     |                    enable memory write                     |
 |           `w_en_ldr`            | ldr_writeback |   regfile   |          enable writeback to regfile for LDR port          |
+
+## Instruction Queue:
+Used to queue fetched instructions while the CPU is stalling. Necessary since the fetching process cannot be stalled, hence we will loose fetched instruction when the CPU is stalling.
+
+**Diagram**
+![image](https://github.com/Richard1688Sun/ARM32CPU/assets/112845533/333fb425-40f0-4857-8f84-4118e272354b)
+
+**Attributes**
+- 2 stage queue
+- always moves instructions along the queue
+  - overflowing the queue will loose the first instruction
+- `is_empty` indicates that the queue is empty can we can begin taking instructions from the `fetch_wait` stage again
 
 ## Stages
 
@@ -405,6 +418,12 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
 </table>
 
 > Note: `opcode[6:5] == 11` means this instruction is a memory instruction with exception of `LDR_Literal` which has `opcode[6:3] == 1000`
+
+> Note: `P == 0` means post-index addressing(use the post-ALU value for addr), `P == 1` means pre-index addressing **0 is the most basic instruction operation**
+
+> Note: `U == 0` means ALU subtraction operation, `U == 1` means ALU addition operation
+
+> Note: `W == 0` means no writeback to base register, `W == 1` means yes writeback to base register
 
 <br/>
 

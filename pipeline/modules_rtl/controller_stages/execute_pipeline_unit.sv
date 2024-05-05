@@ -5,15 +5,17 @@ module execute_pipeline_unit(
     input [31:0] instr_in,
     input branch_in,
     input sel_stall,
+    input [6:0] pc_in,
     // outputs
-    output branch_value,
-    output [31:0] instr_output,
     output [3:0] cond,      // Condition code
     output [6:0] opcode,    // Opcode for the instruction
     output [3:0] rn,        // Rn
     output [3:0] rs,        // Rs
     output [3:0] rm,        // Rm 
-    output [4:0] imm5      // Immediate value
+    output [4:0] imm5,      // Immediate value
+    output branch_value,
+    output [31:0] instr_output,
+    output [6:0] pc_out
 );
 // internal signals
 localparam [31:0] NOP = 32'b1110_00110010_0000_11110000_00000000;
@@ -25,6 +27,7 @@ wire [3:0] cond_out, rn_out, rs_out, rm_out;
 wire [4:0] imm5_out;
 wire [6:0] opcode_out;
 wire [31:0] instr_decoder_in;
+reg [6:0] pc_reg;
 assign cond = cond_out;
 assign opcode = opcode_out;
 assign rn = rn_out; 
@@ -33,6 +36,7 @@ assign rm = rm_out;
 assign imm5 = imm5_out;
 assign branch_value = branch_value_reg;
 assign instr_output = instr_decoder_in;
+assign pc_out = pc_reg; 
 
 // module instances
 idecoder decoder(
@@ -78,6 +82,15 @@ always_ff @( posedge clk or negedge rst_n) begin
         end else begin
             branch_value_reg <= branch_in;
         end
+    end
+end
+
+// pc register
+always_ff @( posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        pc_reg <= 7'd0;
+    end else begin
+        pc_reg <= pc_in;
     end
 end
 endmodule: execute_pipeline_unit

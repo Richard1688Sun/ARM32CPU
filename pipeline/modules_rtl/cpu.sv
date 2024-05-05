@@ -1,13 +1,13 @@
 module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, input [10:0] start_pc,
             output mem_w_en, output [10:0] ram_addr2, output [31:0] ram_in2,
-            output [31:0] status, output [31:0] dp_out, output [10:0] pc,
+            output [31:0] status, output [31:0] dp_out, output [6:0] pc, output load_pc,
             output [31:0] reg_output, input [3:0] reg_addr); //TODO: status_out may be removed
 
     // datapath outputs
     wire [31:0] status_out;
     wire [31:0] datapath_out;
     wire [31:0] str_data;
-    wire [10:0] pc_out;
+    wire [6:0] pc_out;
     wire [31:0] reg_output_out;
     assign status = status_out;
     assign dp_out = datapath_out;
@@ -17,31 +17,35 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     assign reg_output = reg_output_out;
 
     // controller outputs
-    wire [6:0] opcode;
+    wire [6:0] opcode;      // TODO: probably needs to be removed
     // execute signals
     wire [3:0] rn, rm, rs;
     wire [4:0] imm5;
     wire [1:0] sel_A_in, sel_B_in, sel_shift_in;
     wire sel_shift, en_A, en_B, en_S;
+    wire [6:0] pc_execute_unit;
     // memory signals
     wire [3:0] cond;
     wire [6:0] opcode_memory_unit; //TODO: might not be used
     wire [3:0] rd;
+    wire [3:0] rn_memory_unit;
     wire [1:0] shift_op;
     wire [11:0] imm12;
     wire [31:0] imm_branch;
     wire [1:0] sel_pc;
-    wire load_pc, sel_branch_imm, sel_A, sel_B;
+    wire load_pc_out, sel_branch_imm, sel_A, sel_B;
     wire [2:0] ALU_op;
     wire sel_pre_indexed, en_status;
     wire [1:0] sel_w_addr1;
     wire w_en1, mem_w_en_out;
+    assign load_pc = load_pc_out;
     // write back signals
     wire w_en_ldr;
     assign mem_w_en = mem_w_en_out;
 
     // internal signals
     wire [3:0] rt;
+    wire [3:0] rt_writeback_unit;
     assign rt = rd;
 
     // datapath module
@@ -49,9 +53,10 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .clk(clk),
         .LR_in(ram_data2),
         .sel_w_addr1(sel_w_addr1),
-        .w_addr1(rd),
+        .rd_memory_unit(rd),
+        .rn_memory_unit(rn_memory_unit),
         .w_en1(w_en1),
-        .w_addr_ldr(rt),   //for LDR
+        .w_addr_ldr(rt_writeback_unit),   //for LDR
         .w_en_ldr(w_en_ldr),
         .w_data_ldr(ram_data2),  //for LDR
         .A_addr(rn),
@@ -59,8 +64,9 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .shift_addr(rs),
         .str_addr(rt),
         .sel_pc(sel_pc),
-        .load_pc(load_pc),
+        .load_pc(load_pc_out),
         .start_pc(start_pc),
+        .pc_execute_unit(pc_execute_unit),
         .sel_A_in(sel_A_in),
         .sel_B_in(sel_B_in),
         .sel_shift_in(sel_shift_in),
@@ -92,6 +98,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .rst_n(rst_n),
         .instr_in(instr),
         .status_reg(status_out),
+        .pc_in(pc_out),
         .opcode_execute_unit(opcode),
         .rn_execute_unit(rn),
         .rm_execute_unit(rm),
@@ -104,14 +111,16 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .en_A(en_A),
         .en_B(en_B),
         .en_S(en_S),
+        .load_pc(load_pc_out),
+        .pc_execute_unit(pc_execute_unit),
         .cond_memory_unit(cond),
         .opcode_memory_unit(opcode_memory_unit),
+        .rn_memory_unit(rn_memory_unit),
         .rd_memory_unit(rd),
         .shift_op_memory_unit(shift_op),
         .imm12_memory_unit(imm12),
         .imm_branch_memory_unit(imm_branch),
         .sel_pc(sel_pc),
-        .load_pc(load_pc),
         .sel_branch_imm(sel_branch_imm),
         .sel_A(sel_A),
         .sel_B(sel_B),
@@ -121,7 +130,8 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
         .sel_w_addr1(sel_w_addr1),
         .w_en1(w_en1),
         .mem_w_en(mem_w_en_out),
-        .w_en_ldr(w_en_ldr)
+        .w_en_ldr(w_en_ldr),
+        .rt_writeback_unit(rt_writeback_unit)
     );
 
 endmodule: cpu

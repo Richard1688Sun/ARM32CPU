@@ -4,6 +4,7 @@ module controller(
     input rst_n,
     input [31:0] instr_in,
     input [31:0] status_reg,
+    input [6:0] pc_in,
 
     // *** Execute Stage Output ***
     // decoded signals
@@ -20,18 +21,20 @@ module controller(
     output en_A,
     output en_B,
     output en_S,
+    output load_pc,
+    output [6:0] pc_execute_unit,
 
     // *** Memory Stage Output ***
     // decoded signals
     output [3:0] cond_memory_unit,                      // TODO: might not be used
     output [6:0] opcode_memory_unit,
+    output [3:0] rn_memory_unit,
     output [3:0] rd_memory_unit,
     output [1:0] shift_op_memory_unit,
     output [11:0] imm12_memory_unit,
     output [31:0] imm_branch_memory_unit,
     // controller signals
     output [1:0] sel_pc,
-    output load_pc,
     output sel_branch_imm,
     output sel_A,
     output sel_B,
@@ -44,7 +47,8 @@ module controller(
 
     // *** Write Back Stage Output ***
     // controller signals
-    output w_en_ldr
+    output w_en_ldr,
+    output [3:0] rt_writeback_unit
 );
     // *** Fetch Stage Unit ***
     // branch value signals
@@ -53,6 +57,12 @@ module controller(
     // *** Fetch Wait Stage Unit ***
     // branch value signals
     wire branch_value_fetch_wait_unit;
+
+    // *** Decode Stage Unit ***
+    // decoded signals
+    wire [6:0] pc_decode_unit;
+    wire [31:0] instr_decode_unit;
+    // controller signals
 
     // *** Execute Stage Unit ***
     // decoded signals
@@ -63,11 +73,13 @@ module controller(
     wire [4:0] imm5_execute_unit_out;
     wire branch_value_execute_unit;
     wire [31:0] instr_execute_unit;
+    wire [6:0] pc_execute_unit_out;
     assign opcode_execute_unit = opcode_execute_unit_out;
     assign rn_execute_unit = rn_execute_unit_out;
     assign rs_execute_unit = rs_execute_unit_out;
     assign rm_execute_unit = rm_execute_unit_out;
     assign imm5_execute_unit = imm5_execute_unit_out;
+    assign pc_execute_unit = pc_execute_unit_out;
     // controller signals
     wire [1:0] sel_A_in_out;
     wire [1:0] sel_B_in_out;
@@ -84,7 +96,7 @@ module controller(
     assign en_A = en_A_out;
     assign en_B = en_B_out;
     assign en_S = en_S_out;
-
+    assign load_pc = ~stall_pc;
 
     // *** Memory Stage Unit ***
     // decoded signals
@@ -97,8 +109,10 @@ module controller(
     wire [31:0] imm_branch_memory_unit_out;
     wire branch_value_memory_unit;
     wire [31:0] instr_memory_unit;
+    wire [6:0] pc_memory_unit;
     assign cond_memory_unit = cond_memory_unit_out;
     assign opcode_memory_unit = opcode_memory_unit_out;
+    assign rn_memory_unit = rn_memory_unit_out;
     assign rd_memory_unit = rd_memory_unit_out;
     assign shift_op_memory_unit = shift_op_memory_unit_out;
     assign imm12_memory_unit = imm12_memory_unit_out;
@@ -106,8 +120,6 @@ module controller(
     // controller signals
     reg [1:0] sel_pc_out;
     wire [1:0] sel_pc_memory_unit_out;  // special case for memory stage
-    reg load_pc_out;
-    wire load_pc_memory_unit_out;       // special case for memory stage
     wire sel_branch_imm_out;
     wire sel_A_out;
     wire sel_B_out;
@@ -118,7 +130,6 @@ module controller(
     wire w_en1_out;
     wire mem_w_en_out;
     assign sel_pc = sel_pc_out;
-    assign load_pc = load_pc_out;
     assign sel_branch_imm = sel_branch_imm_out;
     assign sel_A = sel_A_out;
     assign sel_B = sel_B_out;
@@ -136,14 +147,17 @@ module controller(
     wire [3:0] rt_memory_wait_unit;
     wire [6:0] opcode_memory_wait_unit;
     wire [31:0] instr_memory_wait_unit;
+    wire [6:0] pc_memory_wait_unit;
     // controller signals
     // NOTHING
 
 
     // *** LDR Write Back Stage Unit ***
     // decoded signals
-    wire [3:0] rt_writeback_unit;
+    wire [3:0] rt_writeback_unit_out;
     wire [6:0] opcode_writeback_unit;
+    wire [6:0] pc_writeback_unit;
+    assign rt_writeback_unit = rt_writeback_unit_out;
     // controller signals
     wire w_en_ldr_out;
     assign w_en_ldr = w_en_ldr_out;
@@ -164,11 +178,25 @@ module controller(
         .branch_in(branch_value_fetch_unit),
         .branch_value(branch_value_fetch_wait_unit)
     );
-    execute_unit execute_unit(
+
+    // NEED THAT DECODER STAGE AS BUFFER
+    decoder_unit decoder_unit(
         // pipeline_unit signals
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_in),
+        .pc_in(pc_in - 7'd1),     // subtract 1 since pc gets incremented by 1 right after the clock, hence right before the clk the pc_in, one being fed into here, is just 1 bigger
+        .instr_out(instr_decode_unit),
+        .pc_out(pc_decode_unit)
+        // controller signals
+    );
+
+    execute_unit execute_unit(
+        // pipeline_unit signals
+        .clk(clk),
+        .rst_n(rst_n),
+        .instr_in(instr_decode_unit),
+        .pc_in(pc_decode_unit),              
         .branch_in(branch_value_fetch_wait_unit),
         .opcode(opcode_execute_unit_out),
         .rn(rn_execute_unit_out),
@@ -177,6 +205,7 @@ module controller(
         .imm5(imm5_execute_unit_out),
         .branch_value(branch_value_execute_unit),
         .instr_output(instr_execute_unit),
+        .pc_out(pc_execute_unit_out),
         // controller signals
         .rn_memory(rn_memory_unit_out),
         .rd_memory(rd_memory_unit_out),
@@ -184,7 +213,7 @@ module controller(
         .sel_w_addr1_memory(sel_w_addr1_out),
         .rt_memory_wait(rt_memory_wait_unit),
         .opcode_memory_wait(opcode_memory_wait_unit),
-        .rt_writeback(rt_writeback_unit),
+        .rt_writeback(rt_writeback_unit_out),
         .opcode_writeback(opcode_writeback_unit),
         .sel_A_in(sel_A_in_out),
         .sel_B_in(sel_B_in_out),
@@ -203,6 +232,7 @@ module controller(
         .rst_n(rst_n),
         .instr_in(instr_execute_unit),
         .branch_in(branch_value_execute_unit),
+        .pc_in(pc_execute_unit_out),
         .cond(cond_memory_unit_out),
         .opcode(opcode_memory_unit_out),
         .rn(rn_memory_unit_out),
@@ -211,11 +241,10 @@ module controller(
         .imm12(imm12_memory_unit_out),
         .imm_branch(imm_branch_memory_unit_out),
         .instr_output(instr_memory_unit),
+        .pc_out(pc_memory_unit),
         // controller signals
         .status_reg(status_reg),
-        .stall_pc(stall_pc), //TODO: TBD
         .sel_pc(sel_pc_memory_unit_out),
-        .load_pc(load_pc_memory_unit_out),
         .sel_branch_imm(sel_branch_imm_out),
         .sel_A(sel_A_out),
         .sel_B(sel_B_out),
@@ -235,9 +264,11 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_unit),
+        .pc_in(pc_memory_unit),
         .rt(rt_memory_wait_unit),
         .opcode(opcode_memory_wait_unit),
-        .instr_output(instr_memory_wait_unit)
+        .instr_output(instr_memory_wait_unit),
+        .pc_out(pc_memory_wait_unit)
         // controller signals
     );
 
@@ -247,10 +278,12 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_memory_wait_unit),
-        .rt(rt_writeback_unit),
+        .pc_in(pc_memory_wait_unit),
+        .rt(rt_writeback_unit_out),
         .opcode(opcode_writeback_unit),
         // controller signals
-        .w_en_ldr(w_en_ldr_out)
+        .w_en_ldr(w_en_ldr_out),
+        .pc_out(pc_writeback_unit)
     );
 
 
@@ -301,17 +334,12 @@ module controller(
 
     // controller logic
     always_comb begin
-        sel_pc_out <= sel_pc_memory_unit_out;
-        load_pc_out <= load_pc_memory_unit_out;
-
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b01;
-                load_pc_out <= 1'b1;
             end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
-                load_pc_out <= load_pc_memory_unit_out;
             end
         endcase
     end
