@@ -258,7 +258,7 @@ always_comb begin
 
         //sel_A
         if (opcode[0] == 1'b1) begin
-            // type X is PC relative
+            // type X is NOT PC relative
             sel_A_reg = 1'b1;
         end
 

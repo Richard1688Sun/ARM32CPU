@@ -230,6 +230,10 @@ always_comb begin
         sel_shift_in_reg = 2'b11;
 
         // en_A
+        if (opcode[0] == 1'b0) begin
+            // pc realtive for imm branch
+            en_A_reg = 1'b1;
+        end
 
         // en_B
         if (opcode_out[0] == 1'b1) begin

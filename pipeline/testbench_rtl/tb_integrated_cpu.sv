@@ -197,11 +197,12 @@ module tb_integrated_cpu();
         // ### Branch tests ###
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/rtl_data/branchCPUTests.memb",
             DUT.instruction_memory.altsyncram_component.m_default.altsyncram_inst.mem_data);
+        
         restart_pc;
+        clkEnterMemory;
 
         //MOV_I r0, #1
         clkR;
-        clkEnterMemory;
         setRegAddr(0);
         check(1, reg_output, 48);
 
