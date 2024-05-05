@@ -102,6 +102,7 @@ module tb_integrated_cpu();
     endtask: clkDone
 
     integer i = 0;
+    integer pc_before = 0;
     initial begin
         //fill the duel memory with instructions: with the mov instructions
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/rtl_data/remakeCPUTests.memb",
@@ -223,6 +224,11 @@ module tb_integrated_cpu();
             clkR;
             setRegAddr(15);
             check(2, reg_output, (i * 3) + 52);
+            // branch was taken so need to squash the next 3 instructions
+            clkR; // load_pc register 
+            clkR; // finish fetch
+            clkR; // finish fetch_wait
+            clkR; // finish decode
         end
         clkR;
         setRegAddr(0);
@@ -232,14 +238,20 @@ module tb_integrated_cpu();
         clkR;
         setRegAddr(15);
         check(2, reg_output, 79);
+        clkR; // load_pc register 
+        clkR; // finish fetch
+        clkR; // finish fetch_wait
+        clkR; // finish decode
+        // last loop iteration, branch not taken
         clkR;
         setRegAddr(0);
         check(11, reg_output, 80);
         clkR;   //r0 > r1
         check(32'b00000000_00000000_00000000_00000000, status_out, 81);
-        clkR;
         setRegAddr(15);
-        check(5, reg_output, 82);
+        pc_before = reg_output; //  caching the previous PC value
+        clkR;
+        check(pc_before + 1, reg_output, 82);   // checking that the PC was incremented by 1
         
         //STR r0, r0, #1
         clkR;
