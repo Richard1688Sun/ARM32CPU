@@ -35,7 +35,8 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
     R16 - Status Register (SR)
     */
 
-    reg [31:0] registeres[0:15];
+    reg [31:0] registeres[0:14];
+    reg [31:0] pc_register;
     wire [10:0] pc_in;
 
     // read is combinational
@@ -43,17 +44,17 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
     assign B_data = registeres[B_addr];
     assign shift_data = registeres[shift_addr];
     assign str_data = registeres[str_addr];
-    assign pc_out = registeres[4'd15];
+    assign pc_out = pc_register;
     assign pc_in = pc_out + 1;
-    assign reg_output = registeres[reg_addr]; //TODO: remove later, this is only for testing
+    assign reg_output = (reg_addr == 4'd15)? pc_register : registeres[reg_addr]; //TODO: remove later, this is only for testing
 
     // write is sequential
     always_ff @(posedge clk) begin
-        if (w_en1 == 1'b1) begin
+        if (w_en1 == 1'b1 && w_addr1 != 4'd15) begin
             registeres[w_addr1] = w_data1;
         end
 
-        if (w_en_ldr == 1'b1) begin
+        if (w_en_ldr == 1'b1 && w_addr_ldr != 4'd15) begin
             registeres[w_addr_ldr] = w_data_ldr;
         end
     end
@@ -63,12 +64,12 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
         if (load_pc == 1'b1) begin
             case (sel_pc)
                 2'b01: begin
-                    registeres[4'd15] <= start_pc;
+                    pc_register <= start_pc;
                 end
                 2'b11: begin
-                    registeres[4'd15] <= dp_pc;
+                    pc_register <= dp_pc;
                 end
-                default: registeres[4'd15] <= pc_in;
+                default: pc_register <= pc_in;
             endcase
         end
         // otherwise keep the original value
