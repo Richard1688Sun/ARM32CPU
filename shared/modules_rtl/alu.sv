@@ -46,7 +46,7 @@ module ALU(input [31:0] val_A, input [31:0] val_B, input [2:0] ALU_op, output [3
       end
       3'b101: begin // Division
         out1 = ($signed(val_B) == 0) ? 0 : $signed(val_A) / $signed(val_B);
-        out2[29] = (val_B == 0) ? 1 : 0;
+        out2[29] = (val_B == 0) ? 1'b1 : 1'b0;
         out2[28:0] = 0; // [27:0] are not used
         out2[31:30] = 0; // [31:30] are not used
         temp = 0;

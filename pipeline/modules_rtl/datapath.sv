@@ -15,7 +15,7 @@ module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
     wire [31:0] A_data, B_data, shift_data;
     reg [31:0] w_data1;
     reg [3:0] w_addr1;
-    wire [10:0] pc_out;
+    wire [6:0] pc_out;
     wire [31:0] reg_output_rf;
     assign PC = pc_out;
     assign reg_output = reg_output_rf;
