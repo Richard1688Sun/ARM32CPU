@@ -154,7 +154,7 @@ module tb_integrated_cpu_syn();
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/syn_data/str_ldr_data_CPUTestsA.memb",
             DUT.\data_memory|altsyncram_component|auto_generated|altsyncram1|ram_block3a0 .ram_core0.ram_core0.mem);
         $readmemb("C:/Users/richa/OneDrive - UBC/Documents/Personal_Projects/Winter_CPU_Project/ARM32CPU/memory_data/syn_data/str_ldr_data_CPUTestsB.memb",
-            DUT.\data_memory|altsyncram_component|auto_generated|altsyncram1|ram_block3a10 .ram_core0.ram_core0.mem);
+            DUT.\data_memory|altsyncram_component|auto_generated|altsyncram1|ram_block3a12 .ram_core0.ram_core0.mem);
         
         restart_pc;
         clkEnterMemory;
