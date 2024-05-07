@@ -1,7 +1,7 @@
 module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1,
             input [31:0] w_data_ldr, input [3:0] w_addr_ldr, input w_en_ldr,
             input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,
-            input [1:0] sel_pc, input load_pc, input [10:0] start_pc, input [10:0] dp_pc,
+            input [1:0] sel_pc, input load_pc, input [6:0] start_pc, input [6:0] dp_pc,
             output [31:0] A_data, output [31:0] B_data, output [31:0] shift_data, output [31:0] str_data, output [6:0] pc_out,
             output [31:0] reg_output, input [3:0] reg_addr);
 
@@ -37,7 +37,7 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
 
     reg [31:0] registeres[0:14];
     reg [6:0] pc_register;
-    wire [10:0] pc_in;
+    wire [6:0] pc_in;
 
     // read is combinational
     assign A_data = registeres[A_addr];
@@ -45,7 +45,7 @@ module regfile(input clk, input [31:0] w_data1, input [3:0] w_addr1, input w_en1
     assign shift_data = registeres[shift_addr];
     assign str_data = registeres[str_addr];
     assign pc_out = pc_register;
-    assign pc_in = pc_out + 1;
+    assign pc_in = pc_out + 7'd1;
     assign reg_output = (reg_addr == 4'd15)? pc_register : registeres[reg_addr]; //TODO: remove later, this is only for testing
 
     // write is sequential
