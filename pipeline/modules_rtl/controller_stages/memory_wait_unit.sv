@@ -21,8 +21,8 @@ assign rt = rt_out;
 assign opcode = opcode_out;
 
 // controller ports
-wire status_rdy_out;
-assign status_rdy = status_rdy_out;
+// wire status_rdy_out;     // TODO: really sure this is no longer needed will need to confirm later
+// assign status_rdy = status_rdy_out;
 
 // pipeline unit module
 memory_wait_pipeline_unit memory_wait_pipeline_unit(

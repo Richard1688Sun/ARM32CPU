@@ -16,7 +16,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     // cpu outputs
     wire waiting;
     wire mem_w_en;
-    wire [10:0] ram_addr2;
+    wire [6:0] ram_addr2;
     wire [31:0] ram_in2;
     wire [31:0] status;
     wire [31:0] dp_out;
@@ -49,7 +49,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
         .rst_n(rst_n),
         .instr(instr_in),
         .ram_data2(ram_data2),
-        .start_pc(11'b0),
+        .start_pc(7'b0),
         .mem_w_en(mem_w_en),
         .ram_addr2(ram_addr2),
         .ram_in2(ram_in2),
@@ -82,7 +82,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
     data_mem data_memory(
         .clock(clk),
         .wren(mem_w_en),
-        .address(ram_addr2[6:0]),
+        .address(ram_addr2),
         .data(ram_in2),
         .q(ram_data2)
     );

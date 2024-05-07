@@ -1,5 +1,5 @@
-module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, input [10:0] start_pc,
-            output mem_w_en, output [10:0] ram_addr2, output [31:0] ram_in2,
+module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, input [6:0] start_pc,
+            output mem_w_en, output [6:0] ram_addr2, output [31:0] ram_in2,
             output [31:0] status, output [31:0] dp_out, output [6:0] pc, output load_pc,
             output [31:0] reg_output, input [3:0] reg_addr); //TODO: status_out may be removed
 
@@ -12,7 +12,7 @@ module cpu (input clk, input rst_n, input [31:0] instr, input [31:0] ram_data2, 
     assign status = status_out;
     assign dp_out = datapath_out;
     assign pc = pc_out;
-    assign ram_addr2 = datapath_out[10:0];
+    assign ram_addr2 = datapath_out[6:0];
     assign ram_in2 = str_data;
     assign reg_output = reg_output_out;
 
