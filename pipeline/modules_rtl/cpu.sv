@@ -26,7 +26,7 @@ module cpu (
     output [6:0] opcode_memory_wait_unit,
     output [6:0] opcode_writeback_unit,
     output [31:0] reg_output, 
-    input [3:0] reg_addr
+    input [4:0] reg_addr
 );
 
     // datapath outputs
@@ -139,12 +139,12 @@ module cpu (
         .imm_branch(imm_branch),
         .ALU_op(ALU_op),
         .en_status(en_status),
-        .status_rdy(1'b0),              // TODO: remove later if not needed to make tests pass -> artifact from normal
         .datapath_out(datapath_out),
         .status_out(status_out),
         .str_data(str_data),
         .PC(pc_out),
-        .reg_output(reg_output_out), .reg_addr(reg_addr) //TODO: remove later, this is only for testing
+        .reg_output(reg_output_out), 
+        .reg_addr(reg_addr)
     );
 
     // controller module
