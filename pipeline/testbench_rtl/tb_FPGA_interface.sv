@@ -52,7 +52,9 @@ module tb_FPGA_interface();
 
   // internal control signals
   reg is_show_reg_mode;
-  assign SW[9] = is_show_reg_mode;
+  assign SW[8] = is_show_reg_mode;
+  reg is_manual_clk_mode;
+  assign SW[9] = is_manual_clk_mode;
   reg [2:0] stage_select;
   assign SW[2:0] = stage_select;
   reg [3:0] reg_select;
@@ -108,6 +110,7 @@ module tb_FPGA_interface();
   task reset;
     begin
       is_show_reg_mode = 0;
+      is_manual_clk_mode = 1;
       reg_select = 4'b0000;
       stage_select = 3'b000;
       opcode_fetch_unit = 7'b0000001;
@@ -271,6 +274,23 @@ module tb_FPGA_interface();
     stage_select = 3'b110;  // writeback_stage
     #5;
     check(~opcode_writeback_unit, LEDR, 37);
+
+    // Test 4: is not manual clock mode so everythign should be blank
+    reset;
+    is_show_reg_mode = 0;
+    is_manual_clk_mode = 0;
+    for (int i = 0; i < 6; i = i + 1) begin
+      clkR;
+    end
+    // HEX display should be blank
+    check(display[10], HEX0, 38);
+    check(display[10], HEX1, 39);
+    check(display[10], HEX2, 40);
+    check(display[10], HEX3, 41);
+    check(display[10], HEX4, 42);
+    check(display[10], HEX5, 43);
+    // LEDR should be blank
+    check(10'b1111111111, LEDR, 44);
 
     // show test summary
     if (error_count == 0) begin

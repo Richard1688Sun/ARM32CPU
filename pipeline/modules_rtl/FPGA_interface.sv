@@ -46,6 +46,14 @@ module FPGA_interface(
     7'b1111111 // blank
   };
 
+  // state registers
+  reg is_show_reg_mode;
+  assign is_show_reg_mode = SW[8];
+  reg is_manual_clk_mode;
+  assign is_manual_clk_mode = SW[9];
+  reg [2:0] state;
+  reg [9:0] prev_SW;
+
   // output registers
   reg [6:0] HEX0_out;
   reg [6:0] HEX1_out;
@@ -54,19 +62,13 @@ module FPGA_interface(
   reg [6:0] HEX4_out;
   reg [6:0] HEX5_out;
   reg [9:0] LEDR_out;
-  assign HEX0 = HEX0_out;
-  assign HEX1 = HEX1_out;
-  assign HEX2 = HEX2_out;
-  assign HEX3 = HEX3_out;
-  assign HEX4 = HEX4_out;
-  assign HEX5 = HEX5_out;
-  assign LEDR = LEDR_out;
-
-  // state registers
-  reg is_show_reg_mode;
-  assign is_show_reg_mode = SW[9];
-  reg [2:0] state;
-  reg [9:0] prev_SW;
+  assign HEX0 = (is_manual_clk_mode == 1'd1) ? HEX0_out : 7'b1111111;
+  assign HEX1 = (is_manual_clk_mode == 1'd1) ? HEX1_out : 7'b1111111;
+  assign HEX2 = (is_manual_clk_mode == 1'd1) ? HEX2_out : 7'b1111111;
+  assign HEX3 = (is_manual_clk_mode == 1'd1) ? HEX3_out : 7'b1111111;
+  assign HEX4 = (is_manual_clk_mode == 1'd1) ? HEX4_out : 7'b1111111;
+  assign HEX5 = (is_manual_clk_mode == 1'd1) ? HEX5_out : 7'b1111111;
+  assign LEDR = (is_manual_clk_mode == 1'd1) ? LEDR_out : 10'b1111111111;
 
   // internal signals
   reg [19:0] target_value;
