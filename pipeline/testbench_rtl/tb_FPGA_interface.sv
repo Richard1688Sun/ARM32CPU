@@ -38,7 +38,7 @@ module tb_FPGA_interface();
   reg [6:0] opcode_memory_unit;
   reg [6:0] opcode_memory_wait_unit;
   reg [6:0] opcode_writeback_unit;
-  reg [19:0] selected_reg_value;
+  reg [19:0] selected_register;
   reg [9:0] SW;
 
   // DUT outputs
@@ -77,7 +77,8 @@ module tb_FPGA_interface();
     .opcode_memory_unit(opcode_memory_unit),
     .opcode_memory_wait_unit(opcode_memory_wait_unit),
     .opcode_writeback_unit(opcode_writeback_unit),
-    .selected_reg_value(selected_reg_value),
+    .selected_register({12'd0, selected_register}),
+    .status_register(32'd0),
     .SW(SW),
     .HEX0(HEX0),
     .HEX1(HEX1),
@@ -120,7 +121,7 @@ module tb_FPGA_interface();
       opcode_memory_unit = 7'b0000101;
       opcode_memory_wait_unit = 7'b0000110;
       opcode_writeback_unit = 7'b0000111;
-      selected_reg_value = 20'b0000000000000000;
+      selected_register = 20'b0000000000000000;
       pc_fetch_unit = 7'b0000000;
       pc_fetch_wait_unit = 7'b0001000;
       pc_decode_unit = 7'b0001001;
@@ -144,7 +145,7 @@ module tb_FPGA_interface();
     reset;
     is_show_reg_mode = 1;
     reg_select = 4'b0000;
-    selected_reg_value = 20'd123456;
+    selected_register = 20'd123456;
 
     clkR;
     // HEX0 should display 6
@@ -169,7 +170,7 @@ module tb_FPGA_interface();
     reset;
     is_show_reg_mode = 1;
     reg_select = 4'b0001;
-    selected_reg_value = 20'd654321;
+    selected_register = 20'd654321;
 
     for (int i = 0; i < 6; i = i + 1) begin
       clkR;

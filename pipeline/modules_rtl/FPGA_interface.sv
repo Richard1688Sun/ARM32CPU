@@ -15,7 +15,8 @@ module FPGA_interface(
   input [6:0] opcode_memory_unit,
   input [6:0] opcode_memory_wait_unit,
   input [6:0] opcode_writeback_unit,
-  input [19:0] selected_reg_value,
+  input [31:0] selected_register,
+  input [31:0] status_register,
   input [9:0] SW,
   output [6:0] HEX0,
   output [6:0] HEX1,
@@ -73,7 +74,9 @@ module FPGA_interface(
   // internal signals
   reg [19:0] target_value;
   reg [6:0] selected_pc;
-  assign target_value = (is_show_reg_mode == 1'b1) ? selected_reg_value : {13'd0, selected_pc};
+  reg [19:0] combined_register;
+  assign combined_register = (SW[7:3] == 5'b10000) ? status_register[31:20] : selected_register[19:0];  // status register takes MSBs since that is where the falg bits are
+  assign target_value = (is_show_reg_mode == 1'b1) ? combined_register : {13'd0, selected_pc};
 
   // divider module
   reg [19:0] divider_in;
