@@ -49,9 +49,9 @@ module FPGA_interface(
 
   // state registers
   reg is_show_reg_mode;
-  assign is_show_reg_mode = SW[8];
+  assign is_show_reg_mode = SW[8];    // might be active low
   reg is_manual_clk_mode;
-  assign is_manual_clk_mode = SW[9];
+  assign is_manual_clk_mode = SW[9];  // might be active low
   reg [2:0] state;
   reg [9:0] prev_SW;
 

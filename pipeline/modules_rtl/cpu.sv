@@ -8,7 +8,6 @@ module cpu (
     output [6:0] ram_addr2, 
     output [31:0] ram_in2,
     output [31:0] status, 
-    output [31:0] dp_out, 
     output [6:0] pc, 
     output load_pc,
     output [6:0] pc_fetch_unit,
@@ -36,7 +35,6 @@ module cpu (
     wire [6:0] pc_out;
     wire [31:0] reg_output_out;
     assign status = status_out;
-    assign dp_out = datapath_out;
     assign pc = pc_out;
     assign ram_addr2 = datapath_out[6:0];
     assign ram_in2 = str_data;
