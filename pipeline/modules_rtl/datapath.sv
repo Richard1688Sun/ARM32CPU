@@ -1,15 +1,48 @@
-module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
-                input [3:0] rd_memory_unit, input [3:0] rn_memory_unit, input w_en1, input [3:0] w_addr_ldr, input w_en_ldr,                           //regfile write inputs
-                input [31:0] w_data_ldr, input [3:0] A_addr, input [3:0] B_addr, input [3:0] shift_addr, input [3:0] str_addr,                     //end of regfile inputs
-                input [1:0] sel_pc, input load_pc, input [6:0] start_pc, input [6:0] pc_execute_unit,                                                                      //pc inputs
-                input [1:0] sel_A_in, input [1:0] sel_B_in, input [1:0] sel_shift_in,                                   //inputs for forwarding muxes
-                input en_A, input en_B, input [31:0] shift_imm, input sel_shift,
-                input [1:0] shift_op, input en_S,
-                input sel_A, input sel_B, input sel_branch_imm, input sel_pre_indexed, input [31:0] imm12, input [31:0] imm_branch,
-                input [2:0] ALU_op, input en_status, input status_rdy,                                                  //datapath inputs
-                output [31:0] datapath_out, output [31:0] status_out, output [31:0] str_data, output [6:0] PC,         //datapath outputs
-                output [31:0] reg_output, input [3:0] reg_addr);    //TODO: remove later, this is only for testing  
-  
+module datapath(
+    input clk, 
+    input [31:0] LR_in, 
+    input [1:0] sel_w_addr1,
+    input [3:0] rd_memory_unit, 
+    input [3:0] rn_memory_unit, 
+    input w_en1, 
+    input [3:0] w_addr_ldr, 
+    input w_en_ldr,
+    input [31:0] w_data_ldr, 
+    input [3:0] A_addr, 
+    input [3:0] B_addr, 
+    input [3:0] shift_addr, 
+    input [3:0] str_addr,
+    input [1:0] sel_pc, 
+    input load_pc, 
+    input [6:0] start_pc, 
+    input [6:0] pc_execute_unit,
+    input [1:0] sel_A_in, 
+    input [1:0] sel_B_in, 
+    input [1:0] sel_shift_in,
+    input en_A, 
+    input en_B, 
+    input [31:0] shift_imm, 
+    input sel_shift,
+    input [1:0] shift_op, 
+    input en_S,
+    input sel_A, 
+    input sel_B, 
+    input sel_branch_imm, 
+    input sel_pre_indexed, 
+    input [31:0] imm12, 
+    input [31:0] imm_branch,
+    input [2:0] ALU_op, 
+    input en_status,
+    output [31:0] datapath_out, 
+    output [31:0] status_out, 
+    output [31:0] str_data, 
+    output [6:0] PC,
+
+    // FPGA Interface
+    output [31:0] reg_output, 
+    input [4:0] reg_addr
+);
+
     // --- internal wires ---
     //regfile
     wire [31:0] A_data, B_data, shift_data;
@@ -34,15 +67,56 @@ module datapath(input clk, input [31:0] LR_in, input [1:0] sel_w_addr1,
     assign status_out = status_out_reg;
 
     //internal modules
-    regfile regfile(.clk(clk), .w_data1(w_data1), .w_addr1(w_addr1), .w_en1(w_en1),
-                    .w_data_ldr(w_data_ldr), .w_addr_ldr(w_addr_ldr), .w_en_ldr(w_en_ldr), 
-                    .sel_pc(sel_pc), .load_pc(load_pc), .start_pc(start_pc), .dp_pc(ALU_out[6:0]),
-                    .A_addr(A_addr), .B_addr(B_addr), .shift_addr(shift_addr), .str_addr(str_addr),
-                    .A_data(A_data), .B_data(B_data), .shift_data(shift_data), .str_data(str_data), .pc_out(pc_out),
-                    .reg_output(reg_output_rf), .reg_addr(reg_addr));   //TODO: remove later
-    shifter shifter(.shift_in(B_reg), .shift_op(shift_op), .shift_amt(S_reg), .shift_out(shift_out));
-    ALU alu(.val_A(val_A), .val_B(val_B), .ALU_op(ALU_op), .ALU_out(ALU_out), .flags(status_in));
-    status_reg_block status_reg(.clk(clk), .en_status(en_status), .status_rdy(status_rdy), .status_in(status_in), .status_out(status_out_reg));
+    regfile regfile(
+        .clk(clk), 
+
+        // normal register operations
+        .w_data1(w_data1), 
+        .w_addr1(w_addr1), 
+        .w_en1(w_en1),
+        .w_data_ldr(w_data_ldr), 
+        .w_addr_ldr(w_addr_ldr), 
+        .w_en_ldr(w_en_ldr), 
+        .A_addr(A_addr), 
+        .B_addr(B_addr), 
+        .shift_addr(shift_addr), 
+        .str_addr(str_addr),
+        .A_data(A_data), 
+        .B_data(B_data), 
+        .shift_data(shift_data), 
+        .str_data(str_data), 
+
+        // pc signals
+        .sel_pc(sel_pc), 
+        .load_pc(load_pc), 
+        .start_pc(start_pc), 
+        .dp_pc(ALU_out[6:0]),
+        .pc_out(pc_out),
+
+        // status register signals
+        .en_status(en_status),
+        .status_in(status_in),
+        .status_out(status_out_reg),
+
+        // FPGA Interface
+        .reg_output(reg_output_rf), 
+        .reg_addr(reg_addr)
+    );
+
+    shifter shifter(
+        .shift_in(B_reg), 
+        .shift_op(shift_op), 
+        .shift_amt(S_reg), 
+        .shift_out(shift_out)
+    );
+
+    ALU alu(
+        .val_A(val_A), 
+        .val_B(val_B), 
+        .ALU_op(ALU_op), 
+        .ALU_out(ALU_out), 
+        .flags(status_in)
+    );
 
     //muxes
     assign datapath_out = (sel_pre_indexed == 1'b1) ? val_A : ALU_out;
