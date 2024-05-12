@@ -48,7 +48,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
 
     // FPGA interface
     FPGA_interface FPGA_interface(
-        .clk(clk),
+        .clk(CLOCK_50),
         .rst_n(rst_n),
         .pc_fetch_unit(pc_fetch_unit),
         .pc_fetch_wait_unit(pc_fetch_wait_unit),
