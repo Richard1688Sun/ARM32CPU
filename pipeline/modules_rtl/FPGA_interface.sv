@@ -54,6 +54,7 @@ module FPGA_interface(
   assign is_manual_clk_mode = SW[9];  // might be active low
   reg [2:0] state;
   reg [9:0] prev_SW;
+  reg rst_n_sw;
 
   // output registers
   reg [6:0] HEX0_out;
@@ -146,22 +147,16 @@ module FPGA_interface(
     endcase
   end
 
+  // logic for reseting the state when switch changes
+  always_comb begin
+    rst_n_sw = (SW == prev_SW || state == 3'b000) ? 1'b1 : 1'b0;
+  end
+
   // logic for HEX display
-  always_ff @(posedge clk or negedge rst_n or SW) begin
-    if (~rst_n) begin
+  always_ff @(posedge clk or negedge rst_n or negedge rst_n_sw) begin
+    if (~rst_n || ~rst_n_sw) begin
       state <= 3'b000;
-      prev_SW <= SW;
-      // set everything to blank
-      HEX0_out = 7'b1111111;
-      HEX1_out = 7'b1111111;
-      HEX2_out = 7'b1111111;
-      HEX3_out = 7'b1111111;
-      HEX4_out = 7'b1111111;
-      HEX5_out = 7'b1111111;
-    end else if (SW != prev_SW) begin
-      // when something resets we want to recompute the values
-      state <= 3'b000;
-      prev_SW <= SW;
+      prev_SW <= 10'd0;
       // set everything to blank
       HEX0_out = 7'b1111111;
       HEX1_out = 7'b1111111;
@@ -173,6 +168,7 @@ module FPGA_interface(
       case (state)
         3'b000: begin
           state <= 3'b001;
+          prev_SW <= SW;
           HEX0_out = (SW[7:3] == 5'b10000) ? display[shift_in & 4'b0001] : display[divider_in % 10];
         end
         3'b001: begin
