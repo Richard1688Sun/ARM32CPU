@@ -174,7 +174,7 @@ module cpu (
         .load_pc(load_pc_out),
         .cond_memory_unit(cond),
         .pc_memory_unit(pc_memory_unit_out),
-        .opcode_memory_unit(opcode_memory_unit),
+        .opcode_memory_unit(opcode_memory_unit_out),
         .rn_memory_unit(rn_memory_unit),
         .rd_memory_unit(rd),
         .shift_op_memory_unit(shift_op),
