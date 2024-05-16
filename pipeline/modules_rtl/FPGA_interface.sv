@@ -96,9 +96,6 @@ module FPGA_interface(
   wire [3:0] remainder;
   assign remainder = (SW[7:3] == 5'b10000) ? shift_out & 4'b0001: divider_out % 10;
 
-  // display value mux
-  reg [3:0] display_value;
-
   // divider module
   divider divider (
     .clk(clk),
@@ -195,7 +192,7 @@ module FPGA_interface(
           HEX4_out = display[remainder];
         end
         3'b101: begin
-          state <= 3'b110;
+          state <= 3'b000;
           HEX5_out = display[remainder];
         end
         default: state <= state;
