@@ -75,7 +75,7 @@ module FPGA_interface(
   reg [19:0] target_value;
   reg [6:0] selected_pc;
   reg [19:0] combined_register;
-  assign combined_register = (SW[7:3] == 5'b10000) ? status_register[31:20] : selected_register[19:0];  // status register takes MSBs since that is where the falg bits are
+  assign combined_register = selected_register[19:0];
   assign target_value = (is_show_reg_mode == 1'b1) ? combined_register : {13'd0, selected_pc};
 
   // divider module
@@ -83,13 +83,21 @@ module FPGA_interface(
   wire [19:0] divider_out;
   assign divider_in = (state == 3'd0) ? target_value : divider_out;
 
+  // simple shifter module
+  reg [3:0] shift_in;
+  wire [3:0] shift_out;
+  assign shift_in = (state == 3'd0) ? status_register[31:28] : shift_out;
+
   // inverter module
   reg [6:0] inverter_in;
   wire [6:0] selected_opcode;
 
   // remainder singals
   wire [3:0] remainder;
-  assign remainder = divider_out % 10;
+  assign remainder = (SW[7:3] == 5'b10000) ? shift_out & 4'b0001: divider_out % 10;
+
+  // display value mux
+  reg [3:0] display_value;
 
   // divider module
   divider divider (
@@ -103,6 +111,14 @@ module FPGA_interface(
   inverter inverter (
     .in(inverter_in),
     .out(selected_opcode)
+  );
+
+  // simple shifter module -> for status register showing
+  simple_shifter simple_shifter (
+    .clk(clk),
+    .rst_n(rst_n),
+    .shift_in(shift_in),
+    .shift_out(shift_out)
   );
 
   // selected_pc mux
@@ -160,7 +176,7 @@ module FPGA_interface(
       case (state)
         3'b000: begin
           state <= 3'b001;
-          HEX0_out = display[target_value % 10];
+          HEX0_out = (SW[7:3] == 5'b10000) ? display[shift_in & 4'b0001] : display[divider_in % 10];
         end
         3'b001: begin
           state <= 3'b010;

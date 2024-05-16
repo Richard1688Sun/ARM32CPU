@@ -103,22 +103,39 @@ module tb_integrated_cpu();
             has_error = 0;
             og_expected = expected;
             autoClkTimes(6);
-            if (HEX0 !== display[expected % 10]) has_error = 1;
-            expected = expected / 10;
-            if (HEX1 !== display[expected % 10]) has_error = 1;
-            expected = expected / 10;
-            if (HEX2 !== display[expected % 10]) has_error = 1;
-            expected = expected / 10;
-            if (HEX3 !== display[expected % 10]) has_error = 1;
-            expected = expected / 10;
-            if (HEX4 !== display[expected % 10]) has_error = 1;
-            expected = expected / 10;
-            if (HEX5 !== display[expected % 10]) has_error = 1;
-            if (has_error) begin
-                $error("Test %d failed. Expected: %d, Actual: %d%d%d%d%d%d", test_num, og_expected, reverse_display(HEX5), reverse_display(HEX4), reverse_display(HEX3), reverse_display(HEX2), reverse_display(HEX1), reverse_display(HEX0));
-                error_count = error_count + 1;
+            if (reg_addr == 16) begin
+                if (HEX0 !== display[expected[28]]) has_error = 1;
+                if (HEX1 !== display[expected[29]]) has_error = 1;
+                if (HEX2 !== display[expected[30]]) has_error = 1;
+                if (HEX3 !== display[expected[31]]) has_error = 1;
+                if (HEX4 !== display[0]) has_error = 1;
+                if (HEX5 !== display[0]) has_error = 1;
+
+                if (has_error) begin
+                    $error("Test %d failed. Expected: %b, Actual: %d%d%d%d%d%d", test_num, og_expected, reverse_display(HEX5), reverse_display(HEX4), reverse_display(HEX3), reverse_display(HEX2), reverse_display(HEX1), reverse_display(HEX0));
+                    error_count = error_count + 1;
+                end else begin
+                    $display("Test %d: Expected: %b, Actual: %b", test_num, og_expected, og_expected);
+                end
             end else begin
-                $display("Test %d: Expected: %d, Actual: %d", test_num, og_expected, og_expected);
+                if (HEX0 !== display[expected % 10]) has_error = 1;
+                expected = expected / 10;
+                if (HEX1 !== display[expected % 10]) has_error = 1;
+                expected = expected / 10;
+                if (HEX2 !== display[expected % 10]) has_error = 1;
+                expected = expected / 10;
+                if (HEX3 !== display[expected % 10]) has_error = 1;
+                expected = expected / 10;
+                if (HEX4 !== display[expected % 10]) has_error = 1;
+                expected = expected / 10;
+                if (HEX5 !== display[expected % 10]) has_error = 1;
+
+                if (has_error) begin
+                    $error("Test %d failed. Expected: %d, Actual: %d%d%d%d%d%d", test_num, og_expected, reverse_display(HEX5), reverse_display(HEX4), reverse_display(HEX3), reverse_display(HEX2), reverse_display(HEX1), reverse_display(HEX0));
+                    error_count = error_count + 1;
+                end else begin
+                    $display("Test %d: Expected: %d, Actual: %d", test_num, og_expected, og_expected);
+                end
             end
         end
     endtask : displayCheck
