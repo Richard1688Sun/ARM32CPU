@@ -85,8 +85,22 @@ module regfile(
 
     // selected register MUX
     always_comb begin
-        case (reg_addr) inside
-            [5'd0:5'd14]: selected_register = registeres[reg_addr];
+        case (reg_addr)
+            5'd0: selected_register = registeres[0];
+            5'd1: selected_register = registeres[1];
+            5'd2: selected_register = registeres[2];
+            5'd3: selected_register = registeres[3];
+            5'd4: selected_register = registeres[4];
+            5'd5: selected_register = registeres[5];
+            5'd6: selected_register = registeres[6];
+            5'd7: selected_register = registeres[7];
+            5'd8: selected_register = registeres[8];
+            5'd9: selected_register = registeres[9];
+            5'd10: selected_register = registeres[10];
+            5'd11: selected_register = registeres[11];
+            5'd12: selected_register = registeres[12];
+            5'd13: selected_register = registeres[13];
+            5'd14: selected_register = registeres[14];
             5'd15: selected_register = pc_register;
             5'd16: selected_register = status_reg;
             default: selected_register = 32'd0; // register DNE
