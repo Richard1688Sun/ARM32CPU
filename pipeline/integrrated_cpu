@@ -12,174 +12,354 @@ add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q
 add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q2_reg
 add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/rst_n
 add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/sel_q1
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_decode_unit
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_decode_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_memory_wait_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_writeback_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_execute_unit_out
-add wave -noupdate -expand -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/state
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/state
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
-add wave -noupdate -expand -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/clk
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/clk
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/instr_in
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/instr_out
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/is_empty
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/is_enqueue
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q1_filled_reg
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q1_reg
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q2_filled_reg
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/q2_reg
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/rst_n
+add wave -noupdate -group instr_queue /tb_integrated_cpu/DUT/instruction_queue/sel_q1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_decode_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_decode_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_execute_unit_out
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/state
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/state
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_decode_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_decode_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_execute_unit_out
+add wave -noupdate -group controller -radix unsigned /tb_integrated_cpu/DUT/cpu/controller/pc_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/state
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/clk
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/instr_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/cond_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_S_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/en_status_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/execute
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/fetch_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/opcode_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm5_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm12_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/imm_branch_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/load_pc_start
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/mem_w_en_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/memory_wait
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rd_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rm_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rn_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rs_execute_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rst_n
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_memory_wait_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/rt_writeback_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_A_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_B_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_branch_imm_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pc_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_pre_indexed_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_in_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_shift_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/sel_w_addr1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/shift_op_memory_unit_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/stall_pc
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/start_cpu
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/state
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/status_reg
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en1_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/w_en_ldr_out
+add wave -noupdate -group controller /tb_integrated_cpu/DUT/cpu/controller/write_back
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/clk
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/A_addr
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/A_data
@@ -228,7 +408,6 @@ add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/start_pc
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_in
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_out
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_out_reg
-add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_rdy
 add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/str_addr
 add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/str_data
 add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/val_A
@@ -239,38 +418,163 @@ add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath
 add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/w_data_ldr
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/w_en1
 add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/w_en_ldr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/clk
-add wave -noupdate -expand -group regfile -radix unsigned -childformat {{{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[0]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[1]} -radix binary} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[2]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[3]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[4]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[5]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[6]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[7]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[8]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[9]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[10]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[11]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[12]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[13]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[14]} -radix unsigned} {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[15]} -radix unsigned}} -expand -subitemconfig {{/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[0]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[1]} {-height 15 -radix binary} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[2]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[3]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[4]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[5]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[6]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[7]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[8]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[9]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[10]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[11]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[12]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[13]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[14]} {-height 15 -radix unsigned} {/tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres[15]} {-height 15 -radix unsigned}} /tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/A_addr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/A_data
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/B_addr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/B_data
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/dp_pc
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/load_pc
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/pc_in
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/pc_out
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/reg_addr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/reg_output
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/sel_pc
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/shift_addr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/shift_data
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/start_pc
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/str_addr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/str_data
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_addr1
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_addr_ldr
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_data1
-add wave -noupdate -expand -group regfile -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_data_ldr
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en1
-add wave -noupdate -expand -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en_ldr
-add wave -noupdate -expand -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/address
-add wave -noupdate -expand -group {memory data} /tb_integrated_cpu/DUT/data_memory/clock
-add wave -noupdate -expand -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/data
-add wave -noupdate -expand -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/q
-add wave -noupdate -expand -group {memory data} /tb_integrated_cpu/DUT/data_memory/sub_wire0
-add wave -noupdate -expand -group {memory data} /tb_integrated_cpu/DUT/data_memory/wren
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/clk
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/A_addr
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/A_data
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/A_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/A_reg
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/ALU_op
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/ALU_out
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_addr
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_data
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/B_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/B_reg
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/datapath_out
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_A
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_B
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_S
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/en_status
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/imm12
+add wave -noupdate -group dp -radix binary /tb_integrated_cpu/DUT/cpu/datapath/imm_branch
+add wave -noupdate -group dp -radix decimal /tb_integrated_cpu/DUT/cpu/datapath/imm_data
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/load_pc
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/LR_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/PC
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/pc_out
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/reg_addr
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/reg_output
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/reg_output_rf
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/S_reg
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_A
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_A_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_B
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_B_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_branch_imm
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_pc
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_pre_indexed
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_shift
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_shift_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/sel_w_addr1
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_addr
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_amt
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_data
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_imm
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_op
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/shift_out
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/start_pc
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_in
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_out
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/status_out_reg
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/str_addr
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/str_data
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/val_A
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/val_B
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/w_addr1
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/w_addr_ldr
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/w_data1
+add wave -noupdate -group dp -radix unsigned /tb_integrated_cpu/DUT/cpu/datapath/w_data_ldr
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/w_en1
+add wave -noupdate -group dp /tb_integrated_cpu/DUT/cpu/datapath/w_en_ldr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/clk
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/registeres
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/status_in
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/status_out
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/status_reg
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/en_status
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/A_addr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/A_data
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/B_addr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/B_data
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/dp_pc
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/load_pc
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/pc_in
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/pc_out
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/pc_register
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/reg_addr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/reg_output
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/sel_pc
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/selected_register
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/shift_addr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/shift_data
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/start_pc
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/str_addr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/str_data
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_addr1
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_addr_ldr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_data1
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_data_ldr
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en1
+add wave -noupdate -group regfile /tb_integrated_cpu/DUT/cpu/datapath/regfile/w_en_ldr
+add wave -noupdate -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/address
+add wave -noupdate -group {memory data} /tb_integrated_cpu/DUT/data_memory/clock
+add wave -noupdate -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/data
+add wave -noupdate -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/q
+add wave -noupdate -group {memory data} /tb_integrated_cpu/DUT/data_memory/sub_wire0
+add wave -noupdate -group {memory data} /tb_integrated_cpu/DUT/data_memory/wren
+add wave -noupdate -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/address
+add wave -noupdate -group {memory data} /tb_integrated_cpu/DUT/data_memory/clock
+add wave -noupdate -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/data
+add wave -noupdate -group {memory data} -radix unsigned /tb_integrated_cpu/DUT/data_memory/q
+add wave -noupdate -group {memory data} /tb_integrated_cpu/DUT/data_memory/sub_wire0
+add wave -noupdate -group {memory data} /tb_integrated_cpu/DUT/data_memory/wren
+add wave -noupdate -group DUT /tb_integrated_cpu/reg_addr
+add wave -noupdate -group DUT /tb_integrated_cpu/HEX0
+add wave -noupdate -group DUT /tb_integrated_cpu/HEX1
+add wave -noupdate -group DUT /tb_integrated_cpu/HEX2
+add wave -noupdate -group DUT /tb_integrated_cpu/HEX3
+add wave -noupdate -group DUT /tb_integrated_cpu/HEX4
+add wave -noupdate -group DUT /tb_integrated_cpu/HEX5
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/clk
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/state
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/combined_register
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/display
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/divider_in
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/divider_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX0
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX0_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX1
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX1_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX2
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX2_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX3
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX3_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX4
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX4_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX5
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/HEX5_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/inverter_in
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/is_manual_clk_mode
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/is_show_reg_mode
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/LEDR
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/LEDR_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_decode_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_execute_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_fetch_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_fetch_wait_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_memory_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_memory_wait_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/opcode_writeback_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_decode_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_execute_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_fetch_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_fetch_wait_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_memory_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_memory_wait_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/pc_writeback_unit
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/prev_SW
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/remainder
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/rst_n
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/selected_opcode
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/selected_pc
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/selected_register
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/shift_in
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/shift_out
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/status_register
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/SW
+add wave -noupdate -expand -group FPGA_interface /tb_integrated_cpu/DUT/FPGA_interface/target_value
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {execute_for_BLE {876 ps} 1} {{Memory STR} {4500 ps} 1} {{Cursor 3} {52 ps} 0}
+WaveRestoreCursors {execute_for_BLE {876 ps} 1} {{Memory STR} {4500 ps} 1} {{Cursor 3} {579 ps} 0}
 quietly wave cursor active 3
 configure wave -namecolwidth 199
 configure wave -valuecolwidth 221
@@ -286,4 +590,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {142 ps}
+WaveRestoreZoom {543 ps} {615 ps}
