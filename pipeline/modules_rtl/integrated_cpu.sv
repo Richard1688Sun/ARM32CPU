@@ -104,7 +104,7 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
         .opcode_memory_wait_unit(opcode_memory_wait_unit),
         .opcode_writeback_unit(opcode_writeback_unit),
         .reg_output(reg_output), 
-        .reg_addr(SW[7:3])
+        .reg_addr(SW[6:3])
     );
 
     instruction_queue instruction_queue(

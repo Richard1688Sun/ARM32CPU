@@ -40,7 +40,7 @@ module datapath(
 
     // FPGA Interface
     output [31:0] reg_output, 
-    input [4:0] reg_addr
+    input [3:0] reg_addr
 );
 
     // --- internal wires ---

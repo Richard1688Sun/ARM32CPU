@@ -3,7 +3,7 @@ module inverter (
   output [6:0] out
 );
 
-reg [10:0] out_reg;
+reg [7:0] out_reg;
 assign out = out_reg;
 
 always_comb begin

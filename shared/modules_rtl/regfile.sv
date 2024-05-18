@@ -31,7 +31,7 @@ module regfile(
 
     // FPGA interface
     output [31:0] reg_output, 
-    input [4:0] reg_addr
+    input [3:0] reg_addr
 );
 
     /*
@@ -71,7 +71,6 @@ module regfile(
     assign status_out = status_reg;
 
     // internal connections
-    reg [31:0] selected_register;
     wire [6:0] pc_in;
 
     // read is combinational
@@ -82,30 +81,6 @@ module regfile(
     assign pc_out = pc_register;
     assign pc_in = pc_out + 7'd1;
     assign reg_output = (reg_addr == 4'd15)? pc_register : registeres[reg_addr]; //TODO: remove later, this is only for testing
-
-    // selected register MUX
-    always_comb begin
-        case (reg_addr)
-            5'd0: selected_register = registeres[0];
-            5'd1: selected_register = registeres[1];
-            5'd2: selected_register = registeres[2];
-            5'd3: selected_register = registeres[3];
-            5'd4: selected_register = registeres[4];
-            5'd5: selected_register = registeres[5];
-            5'd6: selected_register = registeres[6];
-            5'd7: selected_register = registeres[7];
-            5'd8: selected_register = registeres[8];
-            5'd9: selected_register = registeres[9];
-            5'd10: selected_register = registeres[10];
-            5'd11: selected_register = registeres[11];
-            5'd12: selected_register = registeres[12];
-            5'd13: selected_register = registeres[13];
-            5'd14: selected_register = registeres[14];
-            5'd15: selected_register = pc_register;
-            5'd16: selected_register = status_reg;
-            default: selected_register = 32'd0; // register DNE
-        endcase
-    end
 
     // write is sequential
     always_ff @(posedge clk) begin

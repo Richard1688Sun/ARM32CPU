@@ -90,8 +90,7 @@ module FPGA_interface(
   assign shift_in = (state == 3'd0) ? status_register[31:28] : shift_out;
 
   // inverter module
-  reg [6:0] inverter_in;
-  wire [6:0] selected_opcode;
+  reg [6:0] selected_opcode;
 
   // remainder singals
   wire [3:0] remainder;
@@ -103,12 +102,6 @@ module FPGA_interface(
     .rst_n(rst_n),
     .divider_in(divider_in),
     .divider_out(divider_out)
-  );
-
-  // inverter module
-  inverter inverter (
-    .in(inverter_in),
-    .out(selected_opcode)
   );
 
   // simple shifter module -> for status register showing
@@ -129,21 +122,21 @@ module FPGA_interface(
       3'b100: selected_pc = pc_memory_unit;
       3'b101: selected_pc = pc_memory_wait_unit;
       3'b110: selected_pc = pc_writeback_unit;
-      default: selected_pc = 7'b0;
+      default: selected_pc = 7'b0100000;
     endcase
   end
 
   // selected_opcode mux
   always_comb begin
     case (SW[2:0])
-      3'b000: inverter_in = opcode_fetch_unit;
-      3'b001: inverter_in = opcode_fetch_wait_unit;
-      3'b010: inverter_in = opcode_decode_unit;
-      3'b011: inverter_in = opcode_execute_unit;
-      3'b100: inverter_in = opcode_memory_unit;
-      3'b101: inverter_in = opcode_memory_wait_unit;
-      3'b110: inverter_in = opcode_writeback_unit;
-      default: inverter_in = 7'b0;
+      3'b000: selected_opcode = opcode_fetch_unit;
+      3'b001: selected_opcode = opcode_fetch_wait_unit;
+      3'b010: selected_opcode = opcode_decode_unit;
+      3'b011: selected_opcode = opcode_execute_unit;
+      3'b100: selected_opcode = opcode_memory_unit;
+      3'b101: selected_opcode = opcode_memory_wait_unit;
+      3'b110: selected_opcode = opcode_writeback_unit;
+      default: selected_opcode = 7'b0;
     endcase
   end
 
@@ -198,10 +191,10 @@ module FPGA_interface(
 
   always_comb begin
     if (is_show_reg_mode == 1'b1) begin
-      LEDR_out = 10'b1111111111;
+      LEDR_out = 10'b0000000000;
     end else begin
       // need to inver the signal
-      LEDR_out = selected_opcode;
+      LEDR_out = {3'b000, selected_opcode};
     end
   end
 endmodule : FPGA_interface
