@@ -82,7 +82,6 @@ module integrated_cpu(input logic CLOCK_50, input logic [3:0] KEY, input logic [
         .rst_n(rst_n),
         .instr(instr_in),
         .ram_data2(ram_data2),
-        .start_pc(7'b0),
         .mem_w_en(mem_w_en),
         .ram_addr2(ram_addr2),
         .ram_in2(ram_in2),
