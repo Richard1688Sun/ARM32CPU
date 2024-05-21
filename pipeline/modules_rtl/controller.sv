@@ -61,6 +61,7 @@ module controller(
     output [1:0] sel_w_addr1,
     output w_en1,
     output mem_w_en,
+    output [6:0] start_pc,
 
     // *** Memory Wait Stage Output ***
     // decoded signals
@@ -163,6 +164,8 @@ module controller(
     wire [1:0] sel_w_addr1_out;
     wire w_en1_out;
     wire mem_w_en_out;
+    wire is_halt;
+    reg [6:0] start_pc_out;
     assign sel_pc = sel_pc_out;
     assign sel_branch_imm = sel_branch_imm_out;
     assign sel_A = sel_A_out;
@@ -173,6 +176,8 @@ module controller(
     assign sel_w_addr1 = sel_w_addr1_out;
     assign w_en1 = w_en1_out;
     assign mem_w_en = mem_w_en_out;
+    assign start_pc_out = (is_halt == 1'b1) ? pc_memory_unit_out : 7'd0;
+    assign start_pc = start_pc_out;
     // global branch reference
     reg branch_ref_global;
 
@@ -291,6 +296,7 @@ module controller(
         .sel_w_addr1(sel_w_addr1_out),
         .w_en1(w_en1_out),
         .mem_w_en(mem_w_en_out),
+        .is_halt(is_halt),
         // global branch reference
         .branch_ref_global(branch_ref_global)
     );
@@ -325,45 +331,38 @@ module controller(
 
 
     // internal signals
-    reg [2:0] state;
-    localparam load_pc_start = 3'b000;
-    localparam start_cpu = 3'b001;
-    localparam fetch = 3'b010;
-    localparam fetch_wait = 3'b011;
-    localparam execute = 3'b100;
-    localparam memory = 3'b101;
-    localparam memory_wait = 3'b110;
-    localparam write_back = 3'b111;
+    reg [1:0] state;
+    reg [1:0] next_state;
+    localparam load_pc_start = 2'b00;
+    localparam run_cpu = 2'b01;
+    localparam stop_cpu = 2'b10;
 
     // state machine
     always_ff @(posedge clk or negedge rst_n) begin
         if (rst_n == 1'b0) begin
             state <= load_pc_start;
         end else begin
+            state <= next_state;
+        end
+    end
+
+    // next state logic
+    always_comb begin
+        if (is_halt == 1'b1) begin
+            next_state <= stop_cpu;
+        end else begin
             case (state)
                 load_pc_start: begin
-                    state <= fetch;
+                    next_state <= run_cpu;
                 end
-                fetch: begin
-                    state <= fetch_wait;
+                run_cpu: begin
+                    next_state <= run_cpu;
                 end
-                fetch_wait: begin
-                    state <= execute;
-                end
-                execute: begin
-                    state <= memory;
-                end
-                memory: begin
-                    state <= memory_wait;
-                end
-                memory_wait: begin
-                    state <= write_back;
-                end
-                write_back: begin
-                    state <= start_cpu;
+                stop_cpu: begin
+                    next_state <= stop_cpu;
                 end
                 default: begin
-                    state <= start_cpu;
+                    next_state <= stop_cpu;
                 end
             endcase
         end

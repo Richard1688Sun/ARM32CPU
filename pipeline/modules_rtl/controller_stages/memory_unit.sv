@@ -26,6 +26,7 @@ module memory_unit(
     output [1:0] sel_w_addr1,
     output w_en1,
     output mem_w_en,
+    output is_halt,
     // global branch reference
     output branch_ref_global
 );
@@ -70,6 +71,7 @@ reg sel_pre_indexed_reg;
 reg [1:0] sel_w_addr1_reg;
 reg w_en1_reg;
 reg mem_w_en_reg;
+reg is_halt_reg;
 assign sel_pc = sel_pc_reg;
 assign sel_branch_imm = sel_branch_imm_reg;
 assign sel_A = sel_A_reg;
@@ -80,6 +82,7 @@ assign sel_pre_indexed = sel_pre_indexed_reg;
 assign sel_w_addr1 = sel_w_addr1_reg;
 assign w_en1 = w_en1_reg;
 assign mem_w_en = mem_w_en_reg;
+assign is_halt = is_halt_reg;
 
 // status bits
 wire N;
@@ -100,6 +103,7 @@ localparam [2:0] XOR = 3'b111;
 
 // localparam for CMP
 localparam [3:0] CMP = 4'b1010; //some overlap with none but should be fine
+localparam [6:0] HALT = 7'b0101010;
 
 // pipeline unit module
 memory_pipeline_unit memory_pipeline_unit(
@@ -145,6 +149,7 @@ always_comb begin
     sel_w_addr1_reg = 2'b00;
     w_en1_reg = 1'b0;
     mem_w_en_reg = 1'b0;
+    is_halt_reg = 1'b0;
     branch_ref_new = branch_ref_global_reg;
 
     //normal instructions
@@ -189,6 +194,7 @@ always_comb begin
 
         // mem_w_en
         mem_w_en_reg = 1'b0;
+        // is_halt
     end else if (opcode[6:5] == 2'b11 || opcode[6:3] == 4'b1000) begin //STR and LDR
 
         // sel_pc_reg
@@ -229,7 +235,7 @@ always_comb begin
         if (opcode[4] == 1'b1) begin    //STR
             mem_w_en_reg = 1'b1;
         end // else default for LDR
-
+        // is_halt
     end else if (opcode[6:3] == 4'b1001) begin  //branching
 
         // sel_pc_reg
@@ -282,6 +288,20 @@ always_comb begin
         end
 
         // mem_w_en
+        // is_halt
+    end else if (opcode == HALT) begin
+        // sel_pc_reg
+        sel_pc_reg = 2'b01;
+        // sel_A
+        // sel_B
+        // ALU_op
+        // sel_pre_indexed
+        // en_status
+        // sel_w_addr1
+        // w_en1
+        // mem_w_en
+        // is_halt
+        is_halt_reg = 1'b1;
     end
 end
 endmodule: memory_unit

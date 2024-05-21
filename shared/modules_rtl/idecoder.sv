@@ -93,7 +93,7 @@ module idecoder(
                                 opcode_reg = 7'b0000000;
                             end
                             default: begin // Return HALT if undefined
-                                opcode_reg = 7'b0101010;
+                                opcode_reg = 7'b0100000;
                             end
                         endcase
                     end else if(type_RS) begin
@@ -121,7 +121,7 @@ module idecoder(
                                 opcode_reg = 7'b0110000;
                             end
                             default: begin // Return HALT if undefined
-                                opcode_reg = 7'b0101010;
+                                opcode_reg = 7'b0100000;
                             end
                         endcase
                     end else begin
@@ -149,7 +149,7 @@ module idecoder(
                                 opcode_reg = 7'b0010000;
                             end
                             default: begin // Return HALT if undefined
-                                opcode_reg = 7'b0101010;
+                                opcode_reg = 7'b0100000;
                             end
                         endcase
                     end 
@@ -167,33 +167,33 @@ module idecoder(
                 end
             end
             2'b01: begin //load and str
-            opcode_reg = {4'b0000, P, U, W};
-            if (instr[20] == 1'b1) begin //LDR
-                case (instr[25])
-                1'b0: begin     //LIT
-                    if (instr[19:16] == 4'b1111) begin
-                        opcode_reg[6:3] = 4'b1000;
-                    end else begin  //Immediate
-                        opcode_reg[6:3] = 4'b1100;
+                opcode_reg = {4'b0000, P, U, W};
+                if (instr[20] == 1'b1) begin //LDR
+                    case (instr[25])
+                    1'b0: begin     //LIT
+                        if (instr[19:16] == 4'b1111) begin
+                            opcode_reg[6:3] = 4'b1000;
+                        end else begin  //Immediate
+                            opcode_reg[6:3] = 4'b1100;
+                        end
                     end
+                    default: begin
+                        opcode_reg[6:3] = 4'b1101;
+                    end
+                    endcase
+                end else begin //STR
+                    case (instr[25])
+                    1'b0: begin     //Immediate
+                        opcode_reg[6:3] = 4'b1110;
+                    end
+                    default: begin
+                        opcode_reg[6:3] = 4'b1111; 
+                    end
+                    endcase
                 end
-                default: begin
-                    opcode_reg[6:3] = 4'b1101;
                 end
-                endcase
-            end else begin //STR
-                case (instr[25])
-                1'b0: begin     //Immediate
-                    opcode_reg[6:3] = 4'b1110;
-                end
-                default: begin
-                    opcode_reg[6:3] = 4'b1111; 
-                end
-                endcase
-            end
-            end
             default: begin // Return HALT if undefined
-                opcode_reg = 7'b0101010;
+                opcode_reg = 7'b0100000;
             end
         endcase
     end
