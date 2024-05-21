@@ -524,6 +524,16 @@ Combinational logic that decodes the 32-bit ARM instruction into their respectiv
       <td align="center">0</td>
       <td align="center">0</td>
     </tr>
+    <tr>
+      <td align="center">HALT</td>
+      <td align="center">0</td>
+      <td align="center">1</td>
+      <td align="center">0</td>
+      <td align="center">1</td>
+      <td align="center">0</td>
+      <td align="center">1</td>
+      <td align="center">0</td>
+    </tr>
   </tbody>
 </table>
 
