@@ -76,16 +76,22 @@ module controller(
     output w_en_ldr,
     output [3:0] rt_writeback_unit
 );
+
+    // *** Non-Stage Specific Signals ***
+    reg cpu_stopped;
+
     // *** Fetch Stage Unit ***
+    wire [6:0] pc_fetch_unit_out;
     // decoded signals
-    assign pc_fetch_unit = pc_in;
+    assign pc_fetch_unit = pc_fetch_unit_out;
     assign opcode_fetch_unit = 7'b0100000;
     // branch value signals
     wire branch_value_fetch_unit;
 
     // *** Fetch Wait Stage Unit ***
+    wire [6:0] pc_fetch_wait_unit_out;
     // decoded signals
-    assign pc_fetch_wait_unit = pc_in - 7'd1;
+    assign pc_fetch_wait_unit = pc_fetch_wait_unit_out;
     assign opcode_fetch_wait_unit = 7'b0100000;
     // branch value signals
     wire branch_value_fetch_wait_unit;
@@ -130,7 +136,7 @@ module controller(
     assign en_A = en_A_out;
     assign en_B = en_B_out;
     assign en_S = en_S_out;
-    assign load_pc = ~stall_pc;
+    assign load_pc = (cpu_stopped == 1'b1) ? 1'b0 : ~stall_pc;
 
     // *** Memory Stage Unit ***
     // decoded signals
@@ -209,8 +215,10 @@ module controller(
         // pipeline_unit signals
         .clk(clk),
         .rst_n(rst_n),
+        .pc_in(pc_in),
         .branch_in(branch_ref_global),
-        .branch_value(branch_value_fetch_unit)
+        .branch_value(branch_value_fetch_unit),
+        .pc_out(pc_fetch_unit_out)
         // controller signals
     );
 
@@ -219,7 +227,9 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .branch_in(branch_value_fetch_unit),
-        .branch_value(branch_value_fetch_wait_unit)
+        .pc_in(pc_fetch_unit_out),
+        .branch_value(branch_value_fetch_wait_unit),
+        .pc_out(pc_fetch_wait_unit_out)
     );
 
     decoder_unit decoder_unit(
@@ -227,7 +237,7 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_in),
-        .pc_in(pc_in - 7'd1),     // subtract 1 since pc gets incremented by 1 right after the clock, hence right before the clk the pc_in, one being fed into here, is just 1 bigger
+        .pc_in(pc_fetch_wait_unit_out),
         .instr_out(instr_decode_unit),
         .pc_out(pc_decode_unit_out)
         // controller signals
@@ -373,9 +383,15 @@ module controller(
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b01;
+                cpu_stopped <= 1'b0;
+            end
+            stop_cpu: begin
+                sel_pc_out <= sel_pc_memory_unit_out;
+                cpu_stopped <= 1'b1;
             end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
+                cpu_stopped <= 1'b0;
             end
         endcase
     end
