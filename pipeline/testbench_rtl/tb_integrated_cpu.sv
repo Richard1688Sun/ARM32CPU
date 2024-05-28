@@ -393,7 +393,7 @@ module tb_integrated_cpu();
         clkR;
         clkR;
         // check that the PC was not incremented
-        displayCheck(pc_before, 84);   // checking that the PC was incremented by 1
+        displayCheck(pc_before, 84);
         // check that the last 2 instructions were not executed
         check(11, DUT.data_memory.altsyncram_component.m_default.altsyncram_inst.mem_data[10], 83);
 

@@ -302,6 +302,9 @@ always_comb begin
         // mem_w_en
         // is_halt
         is_halt_reg = 1'b1;
+
+        // branch_ref_new
+        branch_ref_new = ~branch_ref_global_reg;
     end
 end
 endmodule: memory_unit
