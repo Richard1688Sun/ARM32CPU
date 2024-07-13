@@ -100,8 +100,9 @@ module controller(
     // decoded signals
     wire [6:0] pc_decode_unit_out;
     wire [31:0] instr_decode_unit;
+    wire [6:0] opcode_decode_unit_out;
     assign pc_decode_unit = pc_decode_unit_out;
-    assign opcode_decode_unit = 7'b0100000;     // TODO: optimize the pipeline + have opcode here
+    assign opcode_decode_unit = opcode_decode_unit_out;     // TODO: optimize the pipeline + have opcode here
     // controller signals
 
     // *** Execute Stage Unit ***
@@ -239,7 +240,8 @@ module controller(
         .instr_in(instr_in),
         .pc_in(pc_fetch_wait_unit_out),
         .instr_out(instr_decode_unit),
-        .pc_out(pc_decode_unit_out)
+        .pc_out(pc_decode_unit_out),
+        .opcode_decode_unit(opcode_decode_unit_out)
         // controller signals
     );
 
