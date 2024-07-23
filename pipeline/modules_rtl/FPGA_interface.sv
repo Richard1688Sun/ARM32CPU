@@ -70,7 +70,7 @@ module FPGA_interface(
   assign HEX3 = (is_manual_clk_mode == 1'd1) ? HEX3_out : 7'b1111111;
   assign HEX4 = (is_manual_clk_mode == 1'd1) ? HEX4_out : 7'b1111111;
   assign HEX5 = (is_manual_clk_mode == 1'd1) ? HEX5_out : 7'b1111111;
-  assign LEDR = (is_manual_clk_mode == 1'd1) ? LEDR_out : 10'b1111111111;
+  assign LEDR = (is_manual_clk_mode == 1'd1) ? LEDR_out : 10'd0;
 
   // internal signals
   reg [19:0] target_value;
