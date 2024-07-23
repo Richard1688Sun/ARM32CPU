@@ -122,7 +122,7 @@ module FPGA_interface(
       3'b100: selected_pc = pc_memory_unit;
       3'b101: selected_pc = pc_memory_wait_unit;
       3'b110: selected_pc = pc_writeback_unit;
-      default: selected_pc = 7'b0100000;
+      default: selected_pc = 7'b0000000;
     endcase
   end
 
