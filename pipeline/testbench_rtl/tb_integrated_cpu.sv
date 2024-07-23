@@ -33,6 +33,8 @@ module tb_integrated_cpu();
 
     // internal signals
     reg [4:0] reg_addr;
+    reg [2:0] stage_select;
+    reg is_reg_mode;
 
     //cpu module
     integrated_cpu DUT(
@@ -51,7 +53,7 @@ module tb_integrated_cpu();
     assign CLOCK_50 = clk;
     assign KEY[0] = ~manual_clk;
     assign KEY[1] = rst_n;
-    assign SW = { 2'b11, reg_addr, 3'b000};
+    assign SW = { 1'b1, is_reg_mode, reg_addr, stage_select};
 
     function [3:0] reverse_display (input [6:0] value);
         case (value)
@@ -147,6 +149,13 @@ module tb_integrated_cpu();
         end
     endtask: setRegAddr
 
+    task setStageSelect(input [2:0] stage);
+        begin
+            stage_select = stage;
+            #5;
+        end
+    endtask: setStageSelect
+
     task clkR;
         begin
             manual_clk = 1'b0;
@@ -160,7 +169,9 @@ module tb_integrated_cpu();
         begin
             #5;
             manual_clk = 1'b0;
+            is_reg_mode = 1'b1;
             setRegAddr(18);      // some random default number
+            setStageSelect(0);   // some random default number
             rst_n = 1'b1;
             #5;
             rst_n = 1'b0;
@@ -356,13 +367,36 @@ module tb_integrated_cpu();
         setRegAddr(16);
         displayCheck(32'b00000000_00000000_00000000_00000000, 81);
         setRegAddr(15);
-        // pc_before = reg_output; //  caching the previous PC value //TODO: fix this
+        autoClkTimes(6);    // load the display values
+        pc_before = reverse_display(HEX0) + reverse_display(HEX1) * 10 + reverse_display(HEX2) * 100 + reverse_display(HEX3) * 1000 + reverse_display(HEX4) * 10000 + reverse_display(HEX5) * 100000;
+        // {HEX5, HEX4, HEX3, HEX2, HEX1, HEX0}; //  caching the previous PC value //TODO: fix this
         clkR;
-        // displayCheck(pc_before + 1, 82);   // checking that the PC was incremented by 1
+        // incrementing the PC
+        pc_before = pc_before[5:0] + 1;
+        displayCheck(pc_before, 82);   // checking that the PC was incremented by 1
         
         //STR r0, r0, #1
         clkR;
         check(11, DUT.data_memory.altsyncram_component.m_default.altsyncram_inst.mem_data[10], 83);
+        // should HALT the CPU
+        clkR;
+        is_reg_mode = 0;
+        setStageSelect(5);  // select memory_wait stage
+        autoClkTimes(6);    // load the display values
+        // get the pc value at previous memory stage
+        pc_before = reverse_display(HEX0) + reverse_display(HEX1) * 10 + reverse_display(HEX2) * 100 + reverse_display(HEX3) * 1000 + reverse_display(HEX4) * 10000 + reverse_display(HEX5) * 100000;
+        #5;
+        is_reg_mode = 1;
+        displayCheck(pc_before, 84);   // checking that the PC was incremented by 1
+
+        // should squash the next 2 instructions
+        clkR;
+        clkR;
+        // check that the PC was not incremented
+        displayCheck(pc_before, 84);
+        // check that the last 2 instructions were not executed
+        check(11, DUT.data_memory.altsyncram_component.m_default.altsyncram_inst.mem_data[10], 83);
+
 
         //print final test results
         if (error_count == 0) begin

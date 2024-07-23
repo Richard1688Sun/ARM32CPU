@@ -60,7 +60,7 @@ module idecoder(
                 if(instr[27:21] == 7'b0011001) begin // NOP
                     opcode_reg = 7'b0100000; 
                 end else if(instr[27:21] == 7'b0001000) begin // HALT
-                    opcode_reg = 7'b0000001; // TODO: change later
+                    opcode_reg = 7'b0101010;
                 end else if(instr[27:21] == 7'b0001001) begin // BX and BLX
                     if(instr[5] == 1'b0) begin // BX
                         opcode_reg = 7'b1001001;
@@ -93,7 +93,7 @@ module idecoder(
                                 opcode_reg = 7'b0000000;
                             end
                             default: begin // Return HALT if undefined
-                                opcode_reg = 7'b0000111;
+                                opcode_reg = 7'b0100000;
                             end
                         endcase
                     end else if(type_RS) begin
@@ -121,7 +121,7 @@ module idecoder(
                                 opcode_reg = 7'b0110000;
                             end
                             default: begin // Return HALT if undefined
-                                opcode_reg = 7'b0000001;
+                                opcode_reg = 7'b0100000;
                             end
                         endcase
                     end else begin
@@ -149,24 +149,15 @@ module idecoder(
                                 opcode_reg = 7'b0010000;
                             end
                             default: begin // Return HALT if undefined
-                                opcode_reg = 7'b0000001;
+                                opcode_reg = 7'b0100000;
                             end
                         endcase
                     end 
                 end
             end
-            // 2'b01: begin // Load/Store
-            //     opcode_reg = {3'b101, instr[24:21]};
-            // end
             2'b10: begin // Branch
                 if(instr[25:24] == 4'b10) begin
                     case(instr[31:28])
-                        // 4'b0000: begin // BEQ
-                        //     opcode_reg = 7'b1000100;
-                        // end
-                        // 4'b0001: begin // BNE
-                        //     opcode_reg = 7'b1000101;
-                        // end
                         default: begin // B
                             opcode_reg = 7'b1001000;
                         end
@@ -176,33 +167,33 @@ module idecoder(
                 end
             end
             2'b01: begin //load and str
-            opcode_reg = {4'b0000, P, U, W};
-            if (instr[20] == 1'b1) begin //LDR
-                case (instr[25])
-                1'b0: begin     //LIT
-                    if (instr[19:16] == 4'b1111) begin
-                        opcode_reg[6:3] = 4'b1000;
-                    end else begin  //Immediate
-                        opcode_reg[6:3] = 4'b1100;
+                opcode_reg = {4'b0000, P, U, W};
+                if (instr[20] == 1'b1) begin //LDR
+                    case (instr[25])
+                    1'b0: begin     //LIT
+                        if (instr[19:16] == 4'b1111) begin
+                            opcode_reg[6:3] = 4'b1000;
+                        end else begin  //Immediate
+                            opcode_reg[6:3] = 4'b1100;
+                        end
                     end
+                    default: begin
+                        opcode_reg[6:3] = 4'b1101;
+                    end
+                    endcase
+                end else begin //STR
+                    case (instr[25])
+                    1'b0: begin     //Immediate
+                        opcode_reg[6:3] = 4'b1110;
+                    end
+                    default: begin
+                        opcode_reg[6:3] = 4'b1111; 
+                    end
+                    endcase
                 end
-                default: begin
-                    opcode_reg[6:3] = 4'b1101;
                 end
-                endcase
-            end else begin //STR
-                case (instr[25])
-                1'b0: begin     //Immediate
-                    opcode_reg[6:3] = 4'b1110;
-                end
-                default: begin
-                    opcode_reg[6:3] = 4'b1111; 
-                end
-                endcase
-            end
-            end
             default: begin // Return HALT if undefined
-                opcode_reg = 7'b0000001;
+                opcode_reg = 7'b0100000;
             end
         endcase
     end

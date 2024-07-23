@@ -61,6 +61,7 @@ module controller(
     output [1:0] sel_w_addr1,
     output w_en1,
     output mem_w_en,
+    output [6:0] start_pc,
 
     // *** Memory Wait Stage Output ***
     // decoded signals
@@ -75,16 +76,22 @@ module controller(
     output w_en_ldr,
     output [3:0] rt_writeback_unit
 );
+
+    // *** Non-Stage Specific Signals ***
+    reg cpu_stopped;
+
     // *** Fetch Stage Unit ***
+    wire [6:0] pc_fetch_unit_out;
     // decoded signals
-    assign pc_fetch_unit = pc_in;
+    assign pc_fetch_unit = pc_fetch_unit_out;
     assign opcode_fetch_unit = 7'b0100000;
     // branch value signals
     wire branch_value_fetch_unit;
 
     // *** Fetch Wait Stage Unit ***
+    wire [6:0] pc_fetch_wait_unit_out;
     // decoded signals
-    assign pc_fetch_wait_unit = pc_in - 7'd1;
+    assign pc_fetch_wait_unit = pc_fetch_wait_unit_out;
     assign opcode_fetch_wait_unit = 7'b0100000;
     // branch value signals
     wire branch_value_fetch_wait_unit;
@@ -93,8 +100,9 @@ module controller(
     // decoded signals
     wire [6:0] pc_decode_unit_out;
     wire [31:0] instr_decode_unit;
+    wire [6:0] opcode_decode_unit_out;
     assign pc_decode_unit = pc_decode_unit_out;
-    assign opcode_decode_unit = 7'b0100000;     // TODO: optimize the pipeline + have opcode here
+    assign opcode_decode_unit = opcode_decode_unit_out;     // TODO: optimize the pipeline + have opcode here
     // controller signals
 
     // *** Execute Stage Unit ***
@@ -129,7 +137,7 @@ module controller(
     assign en_A = en_A_out;
     assign en_B = en_B_out;
     assign en_S = en_S_out;
-    assign load_pc = ~stall_pc;
+    assign load_pc = (cpu_stopped == 1'b1) ? 1'b0 : ~stall_pc;
 
     // *** Memory Stage Unit ***
     // decoded signals
@@ -163,6 +171,8 @@ module controller(
     wire [1:0] sel_w_addr1_out;
     wire w_en1_out;
     wire mem_w_en_out;
+    wire is_halt;
+    reg [6:0] start_pc_out;
     assign sel_pc = sel_pc_out;
     assign sel_branch_imm = sel_branch_imm_out;
     assign sel_A = sel_A_out;
@@ -173,6 +183,8 @@ module controller(
     assign sel_w_addr1 = sel_w_addr1_out;
     assign w_en1 = w_en1_out;
     assign mem_w_en = mem_w_en_out;
+    assign start_pc_out = (is_halt == 1'b1) ? pc_memory_unit_out : 7'd0;
+    assign start_pc = start_pc_out;
     // global branch reference
     reg branch_ref_global;
 
@@ -204,8 +216,10 @@ module controller(
         // pipeline_unit signals
         .clk(clk),
         .rst_n(rst_n),
+        .pc_in(pc_in),
         .branch_in(branch_ref_global),
-        .branch_value(branch_value_fetch_unit)
+        .branch_value(branch_value_fetch_unit),
+        .pc_out(pc_fetch_unit_out)
         // controller signals
     );
 
@@ -214,7 +228,9 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .branch_in(branch_value_fetch_unit),
-        .branch_value(branch_value_fetch_wait_unit)
+        .pc_in(pc_fetch_unit_out),
+        .branch_value(branch_value_fetch_wait_unit),
+        .pc_out(pc_fetch_wait_unit_out)
     );
 
     decoder_unit decoder_unit(
@@ -222,9 +238,10 @@ module controller(
         .clk(clk),
         .rst_n(rst_n),
         .instr_in(instr_in),
-        .pc_in(pc_in - 7'd1),     // subtract 1 since pc gets incremented by 1 right after the clock, hence right before the clk the pc_in, one being fed into here, is just 1 bigger
+        .pc_in(pc_fetch_wait_unit_out),
         .instr_out(instr_decode_unit),
-        .pc_out(pc_decode_unit_out)
+        .pc_out(pc_decode_unit_out),
+        .opcode_decode_unit(opcode_decode_unit_out)
         // controller signals
     );
 
@@ -291,6 +308,7 @@ module controller(
         .sel_w_addr1(sel_w_addr1_out),
         .w_en1(w_en1_out),
         .mem_w_en(mem_w_en_out),
+        .is_halt(is_halt),
         // global branch reference
         .branch_ref_global(branch_ref_global)
     );
@@ -325,45 +343,38 @@ module controller(
 
 
     // internal signals
-    reg [2:0] state;
-    localparam load_pc_start = 3'b000;
-    localparam start_cpu = 3'b001;
-    localparam fetch = 3'b010;
-    localparam fetch_wait = 3'b011;
-    localparam execute = 3'b100;
-    localparam memory = 3'b101;
-    localparam memory_wait = 3'b110;
-    localparam write_back = 3'b111;
+    reg [1:0] state;
+    reg [1:0] next_state;
+    localparam load_pc_start = 2'b00;
+    localparam run_cpu = 2'b01;
+    localparam stop_cpu = 2'b10;
 
     // state machine
     always_ff @(posedge clk or negedge rst_n) begin
         if (rst_n == 1'b0) begin
             state <= load_pc_start;
         end else begin
+            state <= next_state;
+        end
+    end
+
+    // next state logic
+    always_comb begin
+        if (is_halt == 1'b1) begin
+            next_state <= stop_cpu;
+        end else begin
             case (state)
                 load_pc_start: begin
-                    state <= fetch;
+                    next_state <= run_cpu;
                 end
-                fetch: begin
-                    state <= fetch_wait;
+                run_cpu: begin
+                    next_state <= run_cpu;
                 end
-                fetch_wait: begin
-                    state <= execute;
-                end
-                execute: begin
-                    state <= memory;
-                end
-                memory: begin
-                    state <= memory_wait;
-                end
-                memory_wait: begin
-                    state <= write_back;
-                end
-                write_back: begin
-                    state <= start_cpu;
+                stop_cpu: begin
+                    next_state <= stop_cpu;
                 end
                 default: begin
-                    state <= start_cpu;
+                    next_state <= stop_cpu;
                 end
             endcase
         end
@@ -374,9 +385,15 @@ module controller(
         case (state)
             load_pc_start: begin
                 sel_pc_out <= 2'b01;
+                cpu_stopped <= 1'b0;
+            end
+            stop_cpu: begin
+                sel_pc_out <= sel_pc_memory_unit_out;
+                cpu_stopped <= 1'b1;
             end
             default: begin
                 sel_pc_out <= sel_pc_memory_unit_out;
+                cpu_stopped <= 1'b0;
             end
         endcase
     end

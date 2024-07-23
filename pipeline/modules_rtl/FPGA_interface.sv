@@ -70,7 +70,7 @@ module FPGA_interface(
   assign HEX3 = (is_manual_clk_mode == 1'd1) ? HEX3_out : 7'b1111111;
   assign HEX4 = (is_manual_clk_mode == 1'd1) ? HEX4_out : 7'b1111111;
   assign HEX5 = (is_manual_clk_mode == 1'd1) ? HEX5_out : 7'b1111111;
-  assign LEDR = (is_manual_clk_mode == 1'd1) ? LEDR_out : 10'b1111111111;
+  assign LEDR = (is_manual_clk_mode == 1'd1) ? LEDR_out : 10'd0;
 
   // internal signals
   reg [19:0] target_value;
@@ -122,7 +122,7 @@ module FPGA_interface(
       3'b100: selected_pc = pc_memory_unit;
       3'b101: selected_pc = pc_memory_wait_unit;
       3'b110: selected_pc = pc_writeback_unit;
-      default: selected_pc = 7'b0100000;
+      default: selected_pc = 7'b0000000;
     endcase
   end
 

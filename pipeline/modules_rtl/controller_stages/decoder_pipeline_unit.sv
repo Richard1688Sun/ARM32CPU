@@ -4,21 +4,31 @@ module decoder_pipeline_unit(
     input [6:0] pc_in,
     input [31:0] instr_in,
     output [31:0] instr_out,
-    output [6:0] pc_out
+    output [6:0] pc_out,
+    output [6:0] opcode_decode_unit
 );
-
-// internal signals
-reg [6:0] pc_reg;
-assign pc_out = pc_reg;
 
 // outputs
 assign instr_out = instr_in;
+assign pc_out = pc_in;
 
-always_ff @( posedge clk or negedge rst_n) begin
-    if (~rst_n) begin
-        pc_reg <= 7'd0;
-    end else begin
-        pc_reg <= pc_in;
-    end
-end
+// module instances
+idecoder decoder(
+    .instr(instr_in),
+    .cond(),
+    .opcode(opcode_decode_unit),
+    .en_status(),
+    .rn(),
+    .rd(),
+    .rs(),
+    .rm(),
+    .shift_op(),
+    .imm5(),
+    .imm12(),
+    .imm_branch(),
+    .P(),
+    .U(),
+    .W()
+);
+
 endmodule: decoder_pipeline_unit

@@ -3,7 +3,6 @@ module cpu (
     input rst_n, 
     input [31:0] instr, 
     input [31:0] ram_data2, 
-    input [6:0] start_pc,
     output mem_w_en, 
     output [6:0] ram_addr2, 
     output [31:0] ram_in2,
@@ -41,6 +40,7 @@ module cpu (
     assign reg_output = reg_output_out;
 
     // controller outputs
+    reg [6:0] start_pc;
     // fetch signals
     wire [6:0] pc_fetch_unit_out;
     wire [6:0] opcode_fetch_unit_out;
@@ -190,6 +190,7 @@ module cpu (
         .sel_w_addr1(sel_w_addr1),
         .w_en1(w_en1),
         .mem_w_en(mem_w_en_out),
+        .start_pc(start_pc),
         .pc_memory_wait_unit(pc_memory_wait_unit_out),
         .opcode_memory_wait_unit(opcode_memory_wait_unit_out),
         .pc_writeback_unit(pc_writeback_unit_out),
